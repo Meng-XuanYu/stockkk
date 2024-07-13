@@ -1,4 +1,7 @@
+import re
+
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
+from exceptions.WrongUsernameException import WrongUsernameException
 
 
 class RegisterDialog(QDialog):
@@ -38,9 +41,20 @@ class RegisterDialog(QDialog):
         username = self.username_entry.text()
         password = self.password_entry.text()
         confirm_password = self.confirm_password_entry.text()
+        if not username or not password or not confirm_password:
+            QMessageBox.warning(self, "注册失败", "用户名和密码不能为空，请重试。")
+            return
+        elif not re.match(r'^[a-zA-Z0-9_]{6,20}$', username) or not re.match(
+                r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,20}$', password):
+            QMessageBox.warning(self, "注册失败", "用户名或密码不符合要求，请重试。")
+            return
         if password == confirm_password:
-            self.interface.create_user(username, password)
-            QMessageBox.information(self, "注册成功", "欢迎，" + username + "！")
+            try:
+                self.interface.create_user(username, password)
+            except WrongUsernameException:
+                QMessageBox.warning(self, "注册失败", "用户名已存在，请重试。")
+                return
+            QMessageBox.information(self, "注册成功", "注册成功，" + username + "！")
             self.close()
         else:
             QMessageBox.warning(self, "注册失败", "两次输入的密码不一致，请重试。")
