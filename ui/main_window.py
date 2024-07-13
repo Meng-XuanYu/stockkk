@@ -3,6 +3,9 @@ from PyQt5.QtWidgets import (QMainWindow, QPushButton, QLineEdit, QLabel,
                              QAction, QTableView, QStatusBar, QProgressBar, QComboBox, QTabWidget, QDialog, QMenu)
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt
+
+from .change_password_dialog import ChangePasswordDialog
+from .change_username_dialog import ChangeUsernameDialog
 from .register_dialog import RegisterDialog
 import pandas as pd
 
@@ -168,7 +171,8 @@ class MainWindow(QMainWindow):
                 return
         else:
             options = QFileDialog.Options()
-            file_path, _ = QFileDialog.getOpenFileName(self, '选择Excel文件', '', 'Excel Files (*.xlsx *.xls)', options=options)
+            file_path, _ = QFileDialog.getOpenFileName(self, '选择Excel文件', '', 'Excel Files (*.xlsx *.xls)',
+                                                       options=options)
         if file_path:
             try:
                 self.file_label.setText(file_path)
@@ -236,9 +240,10 @@ class MainWindow(QMainWindow):
     def close_window(self):
         self.close()
 
-
     def show_change_username_dialog(self):
-        pass
+        change_username_dialog = ChangeUsernameDialog()
+        change_username_dialog.exec_()
 
     def show_change_password_dialog(self):
-        pass
+        change_password_dialog = ChangePasswordDialog()
+        change_password_dialog.exec_()
