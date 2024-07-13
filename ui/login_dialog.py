@@ -12,7 +12,7 @@ class LoginDialog(QDialog):
         self.interface = Interface(self)
 
         self.setWindowTitle("用户登录")
-        self.setGeometry(400, 400, 300, 200)
+        self.setGeometry(400, 400, 400, 300)
 
         layout = QVBoxLayout()
 
