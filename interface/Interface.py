@@ -3,6 +3,7 @@ from exceptions.StockDataNotFoundException import StockDataNotFoundException
 from exceptions.WrongPassWordException import WrongPassWordException
 from exceptions.WrongUsernameException import WrongUsernameException
 from user.User import User
+from data.Stock import Stock
 
 
 class Interface:
@@ -14,7 +15,7 @@ class Interface:
 
     def import_data_frame(self, data_frame):
         grouped = data_frame.groupby('股票代码')
-        self.__stock_data_frame_dic = {key: value for key, value in grouped}
+        self.__stock_data_frame_dic = {key: Stock(value) for key, value in grouped}
 
     def search_stock_by_code(self, stock_code):
         if self.__stock_data_frame_dic is None:
