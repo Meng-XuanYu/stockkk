@@ -1,13 +1,15 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QHBoxLayout
+from interface.Interface import Interface
 from .register_dialog import RegisterDialog
+from .main_window import MainWindow
 from exceptions.WrongPassWordException import WrongPassWordException
 from exceptions.WrongUsernameException import WrongUsernameException
 
 
 class LoginDialog(QDialog):
-    def __init__(self, interface):
+    def __init__(self):
         super().__init__()
-        self.interface = interface
+        self.interface = Interface(self)
 
         self.setWindowTitle("用户登录")
         self.setGeometry(400, 400, 300, 200)
@@ -47,10 +49,11 @@ class LoginDialog(QDialog):
             user = self.interface.get_user(self.username_entry.text(), self.password_entry.text())
             self.accept()
             QMessageBox.information(self, "登录成功", f"欢迎，{user}！")
+            main_window = MainWindow(self.interface, user)
+            main_window.show()
         except (WrongUsernameException, WrongPassWordException):
             QMessageBox.warning(self, "登录失败", "用户名或密码错误，请重试。")
 
     def show_register_dialog(self):
-        self.close()
-        register_dialog = RegisterDialog()
+        register_dialog = RegisterDialog(self.interface)
         register_dialog.exec_()

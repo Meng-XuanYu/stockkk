@@ -2,8 +2,9 @@ from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton
 
 
 class RegisterDialog(QDialog):
-    def __init__(self):
+    def __init__(self, interface):
         super().__init__()
+        self.interface = interface
 
         self.setWindowTitle("用户注册")
         self.setGeometry(400, 400, 300, 250)
@@ -38,7 +39,8 @@ class RegisterDialog(QDialog):
         password = self.password_entry.text()
         confirm_password = self.confirm_password_entry.text()
         if password == confirm_password:
+            self.interface.create_user(username, password)
             QMessageBox.information(self, "注册成功", "欢迎，" + username + "！")
-            self.accept()
+            self.close()
         else:
             QMessageBox.warning(self, "注册失败", "两次输入的密码不一致，请重试。")

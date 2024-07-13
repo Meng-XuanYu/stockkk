@@ -1,9 +1,8 @@
 from PyQt5.QtWidgets import (QMainWindow, QPushButton, QLineEdit, QLabel,
                              QFileDialog, QMessageBox, QVBoxLayout, QHBoxLayout, QWidget,
-                             QAction, QTableView, QStatusBar, QProgressBar, QComboBox, QTabWidget, QDialog)
+                             QAction, QTableView, QStatusBar, QProgressBar, QComboBox, QTabWidget, QDialog, QMenu)
 from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt
-from .login_dialog import LoginDialog
 from .register_dialog import RegisterDialog
 import pandas as pd
 
@@ -11,12 +10,13 @@ from interface.Interface import Interface
 from exceptions.StockCodeNotFoundException import StockCodeNotFoundException
 from exceptions.StockDataNotFoundException import StockDataNotFoundException
 
+
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, interface, user):
         super().__init__()
-        self.interface = Interface(self)
+        self.interface = interface
+        self.user = user
         self.init_ui()
-        self.show_login_dialog()
 
     def init_ui(self):
         self.setWindowTitle('股市数据可视化与分析工具')
@@ -36,7 +36,6 @@ class MainWindow(QMainWindow):
         # 菜单栏
         menubar = self.menuBar()
         file_menu = menubar.addMenu('文件')
-        view_menu = menubar.addMenu('视图')
         account_menu = menubar.addMenu('账户')
 
         open_action = QAction('打开', self)
@@ -47,17 +46,26 @@ class MainWindow(QMainWindow):
         default_open_action.triggered.connect(lambda: self.choose_file(True))
         file_menu.addAction(default_open_action)
 
-        exit_action = QAction('退出', self)
-        exit_action.triggered.connect(self.close_window)
-        file_menu.addAction(exit_action)
-
-        login_action = QAction('登录', self)
-        login_action.triggered.connect(self.show_login_dialog)
-        account_menu.addAction(login_action)
-
         register_action = QAction('注册', self)
         register_action.triggered.connect(self.show_register_dialog)
         account_menu.addAction(register_action)
+
+        # 创建一个子菜单
+        change_info_menu = QMenu('修改信息', self)
+        account_menu.addMenu(change_info_menu)
+
+        # 在子菜单中添加修改用户名和修改密码的选项
+        change_username_action = QAction('修改用户名', self)
+        change_username_action.triggered.connect(self.show_change_username_dialog)
+        change_info_menu.addAction(change_username_action)
+
+        change_password_action = QAction('修改密码', self)
+        change_password_action.triggered.connect(self.show_change_password_dialog)
+        change_info_menu.addAction(change_password_action)
+
+        exit_action = QAction('退出登录', self)
+        exit_action.triggered.connect(self.show_login_dialog_and_close)
+        account_menu.addAction(exit_action)
 
         # 中央窗口小部件和布局
         central_widget = QWidget()
@@ -215,14 +223,22 @@ class MainWindow(QMainWindow):
         QMessageBox.information(self, '图表生成', f'图表类型：{chart_type} 已生成')
         self.statusBar.clearMessage()
 
-    def show_login_dialog(self):
-        login_dialog = LoginDialog(self.interface)
-        if login_dialog.exec_() == QDialog.Accepted:
-            self.statusBar.showMessage('用户已登录')
+    def show_login_dialog_and_close(self):
+        self.close()
+        from .login_dialog import LoginDialog
+        login_dialog = LoginDialog()
+        login_dialog.exec_()
 
     def show_register_dialog(self):
-        register_dialog = RegisterDialog()
+        register_dialog = RegisterDialog(self.interface)
         register_dialog.exec_()
 
     def close_window(self):
         self.close()
+
+
+    def show_change_username_dialog(self):
+        pass
+
+    def show_change_password_dialog(self):
+        pass

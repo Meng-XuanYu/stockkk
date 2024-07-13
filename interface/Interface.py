@@ -41,3 +41,6 @@ class Interface:
                 raise WrongPassWordException('密码错误')
         else:
             raise WrongUsernameException('未找到用户名')
+
+    def create_user(self, username, password):
+        pass

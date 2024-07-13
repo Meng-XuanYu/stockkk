@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication
-from ui.main_window import MainWindow
+from ui.login_dialog import LoginDialog
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
@@ -10,6 +10,6 @@ if __name__ == '__main__':
         style = f.read()
         app.setStyleSheet(style)
 
-    main_window = MainWindow()
-    main_window.show()
+    login_window = LoginDialog()
+    login_window.show()
     sys.exit(app.exec_())
