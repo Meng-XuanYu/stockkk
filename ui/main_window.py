@@ -207,8 +207,8 @@ class MainWindow(QMainWindow):
         if stock_code:
             self.statusBar.showMessage(f'正在搜索股票代码：{stock_code}')
             try:
-                stock_data = self.interface.search_stock_by_code(stock_code)
-                self.display_stock_data(stock_data)
+                stock = self.interface.search_stock_by_code(stock_code)
+                self.display_stock_data(stock)
             except StockDataNotFoundException:
                 QMessageBox.warning(self, '错误', f'请先导入股票数据文件')
             except StockCodeNotFoundException:
