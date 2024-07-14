@@ -230,7 +230,7 @@ class MainWindow(QMainWindow):
     def show_login_dialog_and_close(self):
         self.close()
         from .login_dialog import LoginDialog
-        login_dialog = LoginDialog()
+        login_dialog = LoginDialog(self.interface)
         login_dialog.exec_()
 
     def show_register_dialog(self):
@@ -241,9 +241,9 @@ class MainWindow(QMainWindow):
         self.close()
 
     def show_change_username_dialog(self):
-        change_username_dialog = ChangeUsernameDialog()
+        change_username_dialog = ChangeUsernameDialog(self.interface, self.user)
         change_username_dialog.exec_()
 
     def show_change_password_dialog(self):
-        change_password_dialog = ChangePasswordDialog()
+        change_password_dialog = ChangePasswordDialog(self.interface, self.user)
         change_password_dialog.exec_()

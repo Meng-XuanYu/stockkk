@@ -7,10 +7,12 @@ from exceptions.WrongUsernameException import WrongUsernameException
 
 
 class LoginDialog(QDialog):
-    def __init__(self):
+    def __init__(self, interface=None):
         super().__init__()
-        self.interface = Interface(self)
-
+        if interface is None:
+            self.interface = Interface(self)
+        else:
+            self.interface = interface
         self.setWindowTitle("用户登录")
         self.setGeometry(400, 400, 400, 300)
 

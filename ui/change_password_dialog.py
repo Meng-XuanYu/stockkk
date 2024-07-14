@@ -1,9 +1,12 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
+import re
 
 
 class ChangePasswordDialog(QDialog):
-    def __init__(self):
+    def __init__(self, interface, user):
         super().__init__()
+        self.interface = interface
+        self.user = user
 
         self.setWindowTitle("修改密码")
         self.setGeometry(400, 400, 300, 250)
@@ -38,10 +41,11 @@ class ChangePasswordDialog(QDialog):
         old_password = self.old_password_entry.text()
         new_password = self.new_password_entry.text()
         confirm_new_password = self.confirm_new_password_entry.text()
-
-        if old_password == "admin" and new_password == confirm_new_password:
+        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,20}$', new_password):
+            QMessageBox.warning(self, "修改失败", "新密码不符合要求，请重试。")
+        if self.user.check_password(old_password) and new_password == confirm_new_password:
+            self.interface.change_user_password(self.user, new_password)
             QMessageBox.information(self, "修改成功", "密码修改成功！")
-            # TODO: 实现密码修改功能
             self.close()
         else:
             QMessageBox.warning(self, "修改失败", "旧密码错误或新密码不匹配，请重试。")

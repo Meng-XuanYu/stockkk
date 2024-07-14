@@ -42,3 +42,9 @@ class User:
 
     def get_user_info(self):
         return self.__username + ' ' + self.__encrypted_password
+
+    def rename(self, new_name):
+        self.__username = new_name
+
+    def change_password(self, new_password):
+        self.__encrypted_password = self.__encrypt(new_password, self.__magic_num)
