@@ -1,2 +1,2 @@
 114514
-admin admin
+admin 1

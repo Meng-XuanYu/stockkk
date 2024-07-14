@@ -43,6 +43,7 @@ class ChangePasswordDialog(QDialog):
         confirm_new_password = self.confirm_new_password_entry.text()
         if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,20}$', new_password):
             QMessageBox.warning(self, "修改失败", "新密码不符合要求，请重试。")
+            return
         if self.user.check_password(old_password) and new_password == confirm_new_password:
             self.interface.change_user_password(self.user, new_password)
             QMessageBox.information(self, "修改成功", "密码修改成功！")

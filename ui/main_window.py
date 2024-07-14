@@ -1,17 +1,18 @@
+import pandas as pd
+from PyQt5.QtGui import QFont, QIcon, QStandardItemModel, QStandardItem
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import (QMainWindow, QPushButton, QLineEdit, QLabel,
                              QFileDialog, QMessageBox, QVBoxLayout, QHBoxLayout, QWidget,
-                             QAction, QTableView, QStatusBar, QProgressBar, QComboBox, QTabWidget, QDialog, QMenu)
-from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import Qt
+                             QAction, QStatusBar, QProgressBar, QComboBox, QTabWidget, QMenu, QTableView)
+from bokeh.embed import file_html
+from bokeh.plotting import figure
+from bokeh.resources import INLINE
 
+from exceptions.StockDataNotFoundException import StockDataNotFoundException
+from exceptions.StockCodeNotFoundException import StockCodeNotFoundException
 from .change_password_dialog import ChangePasswordDialog
 from .change_username_dialog import ChangeUsernameDialog
 from .register_dialog import RegisterDialog
-import pandas as pd
-
-from interface.Interface import Interface
-from exceptions.StockCodeNotFoundException import StockCodeNotFoundException
-from exceptions.StockDataNotFoundException import StockDataNotFoundException
 
 
 class MainWindow(QMainWindow):
@@ -19,6 +20,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.interface = interface
         self.user = user
+        self.stock = None
         self.init_ui()
 
     def init_ui(self):
@@ -131,11 +133,7 @@ class MainWindow(QMainWindow):
 
         self.preview_tab = QWidget()
         self.preview_layout = QVBoxLayout()
-        self.preview_label = QLabel('预览区', self)
-        self.preview_label.setFont(QFont('Arial', 12))
-        self.preview_label.setStyleSheet('background-color: lightgray; border: 1px solid #ccc;')
-        self.preview_label.setAlignment(Qt.AlignCenter)
-        self.preview_label.setFixedHeight(300)
+        self.preview_label = QWebEngineView(self)
         self.preview_layout.addWidget(self.preview_label)
         self.preview_tab.setLayout(self.preview_layout)
         self.tab_widget.addTab(self.preview_tab, '预览')
@@ -208,29 +206,160 @@ class MainWindow(QMainWindow):
             self.statusBar.showMessage(f'正在搜索股票代码：{stock_code}')
             try:
                 stock = self.interface.search_stock_by_code(stock_code)
-                self.display_stock_data(stock)
+                self.display_stock_data(stock.get_data_frame())
+                QMessageBox.information(self, '搜索成功', f'可在数据表格中查看数据')
+                self.statusBar.showMessage(f'搜索成功：{stock_code},在数据表格中查看数据')
+                self.stock = stock
             except StockDataNotFoundException:
-                QMessageBox.warning(self, '错误', f'请先导入股票数据文件')
+                QMessageBox.warning(self, '未找到', f'未倒入股票数据，请先导入数据')
             except StockCodeNotFoundException:
                 QMessageBox.warning(self, '未找到', f'未找到股票代码：{stock_code}')
             self.statusBar.clearMessage()
         else:
-            QMessageBox.warning(self, '警告', '请输入股票代码进行搜索')
+            QMessageBox.warning(self, '警告', '请输入股票代码进行搜索或先导入数据')
 
     def display_stock_data(self, stock_data):
-        QMessageBox.information(self, '成功', f'成功找到股票，但输出还是要交给前端')
+        model = QStandardItemModel()
+        model.setColumnCount(len(stock_data.columns))
+        model.setRowCount(len(stock_data))
+        model.setHorizontalHeaderLabels(stock_data.columns)
+
+        for row in range(len(stock_data)):
+            for col in range(len(stock_data.columns)):
+                item = QStandardItem(str(stock_data.iat[row, col]))
+                model.setItem(row, col, item)
+
+        self.data_table.setModel(model)
 
     def generate_chart(self):
+        if self.stock is None:
+            QMessageBox.warning(self, '警告', '请先搜索股票代码')
+            return
+
         chart_type = self.chart_combo.currentText()
         self.statusBar.showMessage(f'生成图表类型：{chart_type}')
-        # 模拟图表生成逻辑
-        QMessageBox.information(self, '图表生成', f'图表类型：{chart_type} 已生成')
+
+        # 根据选择的图表类型生成相应的图表
+        if chart_type == '开盘和收盘价格平均条形图':
+            chart = self.create_open_close_chart()
+        elif chart_type == '总交易量条形图':
+            chart = self.create_total_volume_chart()
+        elif chart_type == '最高价格条形图':
+            chart = self.create_high_price_chart()
+        elif chart_type == '最低价格条形图':
+            chart = self.create_low_price_chart()
+        elif chart_type == '复合增长条形图':
+            chart = self.create_compound_growth_chart()
+        elif chart_type == '振幅散点图':
+            chart = self.create_amplitude_scatter_chart()
+        elif chart_type == '换手率条形图':
+            chart = self.create_turnover_rate_chart()
+
+        # 将图表嵌入到PyQt窗口中
+        self.preview_label.setHtml(file_html(chart, INLINE, "Stock Data Visualization"))
+
         self.statusBar.clearMessage()
+
+    def create_open_close_chart(self):
+        stock_data = self.stock.get_data_frame()
+        dates = pd.to_datetime(stock_data['日期'])
+        open_prices = stock_data['开盘价']
+        close_prices = stock_data['收盘价']
+
+        p = figure(x_axis_type="datetime", title="开盘和收盘价格平均条形图", sizing_mode="stretch_both")
+        p.vbar(x=dates, top=open_prices, width=0.4, legend_label="开盘价", color="blue", alpha=0.5)
+        p.vbar(x=dates, top=close_prices, width=0.4, legend_label="收盘价", color="green", alpha=0.5)
+
+        p.legend.location = "top_left"
+        p.xaxis.axis_label = '日期'
+        p.yaxis.axis_label = '价格'
+
+        return p
+
+    def create_total_volume_chart(self):
+        stock_data = self.stock.get_data_frame()
+        dates = pd.to_datetime(stock_data['日期'])
+        volumes = stock_data['交易量']
+
+        p = figure(x_axis_type="datetime", title="总交易量条形图", sizing_mode="stretch_both")
+        p.vbar(x=dates, top=volumes, width=0.4, color="blue", alpha=0.5)
+
+        p.xaxis.axis_label = '日期'
+        p.yaxis.axis_label = '交易量'
+
+        return p
+
+    def create_high_price_chart(self):
+        stock_data = self.stock.get_data_frame()
+        dates = pd.to_datetime(stock_data['日期'])
+        high_prices = stock_data['最高价']
+
+        p = figure(x_axis_type="datetime", title="最高价格条形图", sizing_mode="stretch_both")
+        p.line(x=dates, y=high_prices, legend_label="最高价", line_width=2, color="green")
+
+        p.legend.location = "top_left"
+        p.xaxis.axis_label = '日期'
+        p.yaxis.axis_label = '价格'
+
+        return p
+
+    def create_low_price_chart(self):
+        stock_data = self.stock.get_data_frame()
+        dates = pd.to_datetime(stock_data['日期'])
+        low_prices = stock_data['最低价']
+
+        p = figure(x_axis_type="datetime", title="最低价格条形图", sizing_mode="stretch_both")
+        p.line(x=dates, y=low_prices, legend_label="最低价", line_width=2, color="red")
+
+        p.legend.location = "top_left"
+        p.xaxis.axis_label = '日期'
+        p.yaxis.axis_label = '价格'
+
+        return p
+
+    def create_compound_growth_chart(self):
+        stock_data = self.stock.get_data_frame()
+        dates = pd.to_datetime(stock_data['日期'])
+        growths = stock_data['涨跌幅']
+
+        p = figure(x_axis_type="datetime", title="复合增长条形图", sizing_mode="stretch_both")
+        p.vbar(x=dates, top=growths, width=0.4, color="purple", alpha=0.5)
+
+        p.xaxis.axis_label = '日期'
+        p.yaxis.axis_label = '涨跌幅'
+
+        return p
+
+    def create_amplitude_scatter_chart(self):
+        stock_data = self.stock.get_data_frame()
+        dates = pd.to_datetime(stock_data['日期'])
+        amplitudes = stock_data['振幅']
+
+        p = figure(x_axis_type="datetime", title="振幅散点图", sizing_mode="stretch_both")
+        p.circle(x=dates, y=amplitudes, size=10, color="navy", alpha=0.5)
+
+        p.xaxis.axis_label = '日期'
+        p.yaxis.axis_label = '振幅'
+
+        return p
+
+    def create_turnover_rate_chart(self):
+        stock_data = self.stock.get_data_frame()
+        dates = pd.to_datetime(stock_data['日期'])
+        turnover_rates = stock_data['换手率']
+
+        p = figure(x_axis_type="datetime", title="换手率条形图", sizing_mode="stretch_both")
+        p.vbar(x=dates, top=turnover_rates, width=0.4, color="orange", alpha=0.5)
+
+        p.xaxis.axis_label = '日期'
+        p.yaxis.axis_label = '换手率'
+
+        return p
 
     def show_login_dialog_and_close(self):
         self.close()
         from .login_dialog import LoginDialog
-        login_dialog = LoginDialog(self.interface)
+        login_dialog = LoginDialog()
         login_dialog.exec_()
 
     def show_register_dialog(self):
