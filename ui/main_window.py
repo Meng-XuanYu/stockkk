@@ -4,10 +4,9 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 from PyQt5.QtWidgets import (QMainWindow, QPushButton, QLineEdit, QLabel,
                              QFileDialog, QMessageBox, QVBoxLayout, QHBoxLayout, QWidget,
                              QAction, QStatusBar, QProgressBar, QComboBox, QTabWidget, QMenu, QTableView)
-from bokeh.embed import file_html
-from bokeh.plotting import figure
-from bokeh.resources import INLINE
-
+from pyecharts import options as opts
+from pyecharts.charts import Kline, Bar, Scatter, Line, Grid
+from pyecharts.globals import CurrentConfig, ThemeType
 from exceptions.StockDataNotFoundException import StockDataNotFoundException
 from exceptions.StockCodeNotFoundException import StockCodeNotFoundException
 from .change_password_dialog import ChangePasswordDialog
@@ -117,7 +116,7 @@ class MainWindow(QMainWindow):
         self.chart_combo = QComboBox(self)
         self.chart_combo.setFont(QFont('Arial', 12))
         self.chart_combo.addItems(['开盘和收盘价格平均条形图', '总交易量条形图', '最高价格条形图',
-                                   '最低价格条形图', '复合增长条形图', '振幅散点图', '换手率条形图'])
+                                   '最低价格条形图', '复合增长条形图', '振幅散点图', '换手率条形图', 'K线图'])
         chart_layout.addWidget(self.chart_combo)
 
         self.generate_chart_btn = QPushButton('生成图表', self)
@@ -233,7 +232,7 @@ class MainWindow(QMainWindow):
 
     def generate_chart(self):
         if self.stock is None:
-            QMessageBox.warning(self, '警告', '请先搜索股票代码')
+            QMessageBox.warning(self, '未选择股票', f'请先选择股票')
             return
 
         chart_type = self.chart_combo.currentText()
@@ -241,120 +240,262 @@ class MainWindow(QMainWindow):
 
         # 根据选择的图表类型生成相应的图表
         if chart_type == '开盘和收盘价格平均条形图':
-            chart = self.create_open_close_chart()
+            chart_html = self.create_open_close_chart()
         elif chart_type == '总交易量条形图':
-            chart = self.create_total_volume_chart()
+            chart_html = self.create_total_volume_chart()
         elif chart_type == '最高价格条形图':
-            chart = self.create_high_price_chart()
+            chart_html = self.create_high_price_chart()
         elif chart_type == '最低价格条形图':
-            chart = self.create_low_price_chart()
+            chart_html = self.create_low_price_chart()
         elif chart_type == '复合增长条形图':
-            chart = self.create_compound_growth_chart()
+            chart_html = self.create_compound_growth_chart()
         elif chart_type == '振幅散点图':
-            chart = self.create_amplitude_scatter_chart()
+            chart_html = self.create_amplitude_scatter_chart()
         elif chart_type == '换手率条形图':
-            chart = self.create_turnover_rate_chart()
+            chart_html = self.create_turnover_rate_chart()
+        elif chart_type == 'K线图':
+            chart_html = self.create_Kline_chart()
+        else:
+            QMessageBox.warning(self, '警告', '请选择图表类型')
+            return
 
         # 将图表嵌入到PyQt窗口中
-        self.preview_label.setHtml(file_html(chart, INLINE, "Stock Data Visualization"))
+        self.preview_label.setHtml(chart_html)
 
         self.statusBar.clearMessage()
 
     def create_open_close_chart(self):
         stock_data = self.stock.get_data_frame()
-        dates = pd.to_datetime(stock_data['日期'])
-        open_prices = stock_data['开盘价']
-        close_prices = stock_data['收盘价']
+        dates = stock_data['日期'].dt.strftime('%Y-%m-%d').tolist()
+        open_prices = stock_data['开盘价'].tolist()
+        close_prices = stock_data['收盘价'].tolist()
 
-        p = figure(x_axis_type="datetime", title="开盘和收盘价格平均条形图", sizing_mode="stretch_both")
-        p.vbar(x=dates, top=open_prices, width=0.4, legend_label="开盘价", color="blue", alpha=0.5)
-        p.vbar(x=dates, top=close_prices, width=0.4, legend_label="收盘价", color="green", alpha=0.5)
+        bar = Bar(
+            init_opts=opts.InitOpts(theme=ThemeType.WHITE, width="100%", height="500%"))  # 设置响应式布局
+        bar.add_xaxis(dates)
+        bar.add_yaxis("开盘价", open_prices, label_opts=opts.LabelOpts(is_show=False))  # 不显示数值
+        bar.add_yaxis("收盘价", close_prices, label_opts=opts.LabelOpts(is_show=False))  # 不显示数值
+        bar.set_global_opts(
+            title_opts=opts.TitleOpts(title="开盘和收盘价格平均条形图"),
+            xaxis_opts=opts.AxisOpts(axislabel_opts=opts.LabelOpts(rotate=-45)),
+            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="shadow"),
 
-        p.legend.location = "top_left"
-        p.xaxis.axis_label = '日期'
-        p.yaxis.axis_label = '价格'
+            yaxis_opts=opts.AxisOpts(
+                is_scale=True,
+                splitarea_opts=opts.SplitAreaOpts(is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1))
+            ),
+            datazoom_opts=[opts.DataZoomOpts(type_="inside")],
+            toolbox_opts=opts.ToolboxOpts(is_show=True, feature={"dataZoom": {"yAxisIndex": "none"}})
+        )
 
-        return p
+        return bar.render_embed()
 
     def create_total_volume_chart(self):
         stock_data = self.stock.get_data_frame()
-        dates = pd.to_datetime(stock_data['日期'])
-        volumes = stock_data['交易量']
+        dates = stock_data['日期'].dt.strftime('%Y-%m-%d').tolist()
+        volumes = stock_data['交易量'].tolist()
 
-        p = figure(x_axis_type="datetime", title="总交易量条形图", sizing_mode="stretch_both")
-        p.vbar(x=dates, top=volumes, width=0.4, color="blue", alpha=0.5)
+        bar = Bar(
+            init_opts=opts.InitOpts(theme=ThemeType.WHITE, width="100%", height="500%"))
+        bar.add_xaxis(dates)
+        bar.add_yaxis("交易量", volumes, label_opts=opts.LabelOpts(is_show=False))
+        bar.set_global_opts(
+            title_opts=opts.TitleOpts(title="总交易量条形图"),
+            xaxis_opts=opts.AxisOpts(axislabel_opts=opts.LabelOpts(rotate=-45)),
+            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="shadow"),
 
-        p.xaxis.axis_label = '日期'
-        p.yaxis.axis_label = '交易量'
+            yaxis_opts=opts.AxisOpts(
+                is_scale=True,
+                splitarea_opts=opts.SplitAreaOpts(is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1))
+            ),
+            datazoom_opts=[opts.DataZoomOpts(type_="inside")],
+            toolbox_opts=opts.ToolboxOpts(is_show=True, feature={"dataZoom": {"yAxisIndex": "none"}})
+        )
 
-        return p
+        return bar.render_embed()
 
     def create_high_price_chart(self):
         stock_data = self.stock.get_data_frame()
-        dates = pd.to_datetime(stock_data['日期'])
-        high_prices = stock_data['最高价']
+        dates = stock_data['日期'].dt.strftime('%Y-%m-%d').tolist()
+        high_prices = stock_data['最高价'].tolist()
 
-        p = figure(x_axis_type="datetime", title="最高价格条形图", sizing_mode="stretch_both")
-        p.line(x=dates, y=high_prices, legend_label="最高价", line_width=2, color="green")
+        line = Line(
+            init_opts=opts.InitOpts(theme=ThemeType.WHITE, width="100%", height="500%"))
+        line.add_xaxis(dates)
+        line.add_yaxis("最高价", high_prices, label_opts=opts.LabelOpts(is_show=False))
+        line.set_global_opts(
+            title_opts=opts.TitleOpts(title="最高价格条形图"),
+            xaxis_opts=opts.AxisOpts(axislabel_opts=opts.LabelOpts(rotate=-45)),
 
-        p.legend.location = "top_left"
-        p.xaxis.axis_label = '日期'
-        p.yaxis.axis_label = '价格'
+            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="shadow"),
 
-        return p
+            yaxis_opts=opts.AxisOpts(
+                is_scale=True,
+                splitarea_opts=opts.SplitAreaOpts(is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1))
+            ),
+            datazoom_opts=[opts.DataZoomOpts(type_="inside")],
+            toolbox_opts=opts.ToolboxOpts(is_show=True, feature={"dataZoom": {"yAxisIndex": "none"}})
+        )
+
+        return line.render_embed(width="100%", height="500%")
 
     def create_low_price_chart(self):
         stock_data = self.stock.get_data_frame()
-        dates = pd.to_datetime(stock_data['日期'])
-        low_prices = stock_data['最低价']
+        dates = stock_data['日期'].dt.strftime('%Y-%m-%d').tolist()
+        low_prices = stock_data['最低价'].tolist()
 
-        p = figure(x_axis_type="datetime", title="最低价格条形图", sizing_mode="stretch_both")
-        p.line(x=dates, y=low_prices, legend_label="最低价", line_width=2, color="red")
+        line = Line(init_opts=opts.InitOpts(theme=ThemeType.WHITE, width="100%", height="500%"))
+        line.add_xaxis(dates)
+        line.add_yaxis("最低价", low_prices, label_opts=opts.LabelOpts(is_show=False))
+        line.set_global_opts(
+            title_opts=opts.TitleOpts(title="最低价格条形图"),
+            xaxis_opts=opts.AxisOpts(axislabel_opts=opts.LabelOpts(rotate=-45)),
+            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="shadow"),
 
-        p.legend.location = "top_left"
-        p.xaxis.axis_label = '日期'
-        p.yaxis.axis_label = '价格'
+            yaxis_opts=opts.AxisOpts(
+                is_scale=True,
+                splitarea_opts=opts.SplitAreaOpts(is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1))
+            ),
+            datazoom_opts=[opts.DataZoomOpts(type_="inside")],
+            toolbox_opts=opts.ToolboxOpts(is_show=True, feature={"dataZoom": {"yAxisIndex": "none"}})
+        )
 
-        return p
+        return line.render_embed()
 
     def create_compound_growth_chart(self):
         stock_data = self.stock.get_data_frame()
-        dates = pd.to_datetime(stock_data['日期'])
-        growths = stock_data['涨跌幅']
+        dates = stock_data['日期'].dt.strftime('%Y-%m-%d').tolist()
+        growths = stock_data['涨跌幅'].tolist()
 
-        p = figure(x_axis_type="datetime", title="复合增长条形图", sizing_mode="stretch_both")
-        p.vbar(x=dates, top=growths, width=0.4, color="purple", alpha=0.5)
+        bar = Bar(
+            init_opts=opts.InitOpts(theme=ThemeType.WHITE, width="100%", height="500%"))
+        bar.add_xaxis(dates)
+        bar.add_yaxis("涨跌幅", growths, label_opts=opts.LabelOpts(is_show=False))
+        bar.set_global_opts(
+            title_opts=opts.TitleOpts(title="复合增长条形图"),
+            xaxis_opts=opts.AxisOpts(axislabel_opts=opts.LabelOpts(rotate=-45)),
+            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="shadow"),
 
-        p.xaxis.axis_label = '日期'
-        p.yaxis.axis_label = '涨跌幅'
+            yaxis_opts=opts.AxisOpts(
+                is_scale=True,
+                splitarea_opts=opts.SplitAreaOpts(is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1))
+            ),
+            datazoom_opts=[opts.DataZoomOpts(type_="inside")],
+            toolbox_opts=opts.ToolboxOpts(is_show=True, feature={"dataZoom": {"yAxisIndex": "none"}})
+        )
 
-        return p
+        return bar.render_embed()
 
     def create_amplitude_scatter_chart(self):
         stock_data = self.stock.get_data_frame()
-        dates = pd.to_datetime(stock_data['日期'])
-        amplitudes = stock_data['振幅']
+        dates = stock_data['日期'].dt.strftime('%Y-%m-%d').tolist()
+        amplitudes = stock_data['振幅'].tolist()
 
-        p = figure(x_axis_type="datetime", title="振幅散点图", sizing_mode="stretch_both")
-        p.circle(x=dates, y=amplitudes, size=10, color="navy", alpha=0.5)
+        scatter = Scatter(init_opts=opts.InitOpts(theme=ThemeType.WHITE, width="100%", height="500%"))
+        scatter.add_xaxis(dates)
+        scatter.add_yaxis("振幅", amplitudes, label_opts=opts.LabelOpts(is_show=False))
+        scatter.set_global_opts(
+            title_opts=opts.TitleOpts(title="振幅散点图"),
+            xaxis_opts=opts.AxisOpts(axislabel_opts=opts.LabelOpts(rotate=-45)),
+            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="shadow"),
 
-        p.xaxis.axis_label = '日期'
-        p.yaxis.axis_label = '振幅'
+            yaxis_opts=opts.AxisOpts(
+                is_scale=True,
+                splitarea_opts=opts.SplitAreaOpts(is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1))
+            ),
+            datazoom_opts=[opts.DataZoomOpts(type_="inside")],
+            toolbox_opts=opts.ToolboxOpts(is_show=True, feature={"dataZoom": {"yAxisIndex": "none"}})
+        )
 
-        return p
+        return scatter.render_embed()
 
     def create_turnover_rate_chart(self):
         stock_data = self.stock.get_data_frame()
-        dates = pd.to_datetime(stock_data['日期'])
-        turnover_rates = stock_data['换手率']
+        dates = stock_data['日期'].dt.strftime('%Y-%m-%d').tolist()
+        turnover_rates = stock_data['换手率'].tolist()
 
-        p = figure(x_axis_type="datetime", title="换手率条形图", sizing_mode="stretch_both")
-        p.vbar(x=dates, top=turnover_rates, width=0.4, color="orange", alpha=0.5)
+        bar = Bar(
+            init_opts=opts.InitOpts(theme=ThemeType.WHITE, width="100%", height="500%"))
+        bar.add_xaxis(dates)
+        bar.add_yaxis("换手率", turnover_rates, label_opts=opts.LabelOpts(is_show=False))
+        bar.set_global_opts(
+            title_opts=opts.TitleOpts(title="换手率条形图"),
+            xaxis_opts=opts.AxisOpts(axislabel_opts=opts.LabelOpts(rotate=-45)),
+            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="shadow"),
 
-        p.xaxis.axis_label = '日期'
-        p.yaxis.axis_label = '换手率'
+            yaxis_opts=opts.AxisOpts(
+                is_scale=True,
+                splitarea_opts=opts.SplitAreaOpts(is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1))
+            ),
+            datazoom_opts=[opts.DataZoomOpts(type_="inside")],
+            toolbox_opts=opts.ToolboxOpts(is_show=True, feature={"dataZoom": {"yAxisIndex": "none"}})
+        )
 
-        return p
+        return bar.render_embed()
+
+    def create_Kline_chart(self):
+        stock_data = self.stock.get_data_frame()
+        dates = stock_data['日期'].dt.strftime('%Y-%m-%d').tolist()
+
+        kline = Kline(init_opts=opts.InitOpts(theme=ThemeType.WHITE, width="100%", height="500%"))
+        kline.add_xaxis(dates)
+        kline.add_yaxis(
+            "K线图",
+            stock_data[['开盘价', '收盘价', '最高价', '最低价']].values.tolist(),
+            markpoint_opts=opts.MarkPointOpts(
+                data=[
+                    opts.MarkPointItem(type_="max", name="最大值"),
+                    opts.MarkPointItem(type_="min", name="最小值")]
+            ),
+        )
+
+        ma10 = stock_data['收盘价'].rolling(window=10).mean().dropna()
+        start_date = ma10.index[0]
+
+        line_ma10 = Line()
+        line_ma10.add_xaxis(dates[start_date:])
+        line_ma10.add_yaxis(
+            "MA10",
+            ma10.tolist(),
+            is_smooth=True,
+            is_symbol_show=False,
+            label_opts=opts.LabelOpts(is_show=False)
+        )
+        line_ma10.set_global_opts(legend_opts=opts.LegendOpts(pos_left="right"))
+
+        ma20 = stock_data['收盘价'].rolling(window=20, min_periods=1).mean().dropna()
+        line_ma20 = Line()
+        line_ma20.add_xaxis(dates[start_date:])
+        line_ma20.add_yaxis(
+            "MA20",
+            ma20.tolist(),
+            is_smooth=True,
+            is_symbol_show=False,
+            label_opts=opts.LabelOpts(is_show=False)
+        )
+
+        kline.set_global_opts(
+            xaxis_opts=opts.AxisOpts(is_scale=True),
+            yaxis_opts=opts.AxisOpts(
+                is_scale=True,
+                splitarea_opts=opts.SplitAreaOpts(is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1))
+            ),
+            datazoom_opts=[opts.DataZoomOpts(type_="inside")],
+            title_opts=opts.TitleOpts(title="K线图"),
+            tooltip_opts=opts.TooltipOpts(trigger="axis", axis_pointer_type="cross"),
+            toolbox_opts=opts.ToolboxOpts(is_show=True, feature={"dataZoom": {"yAxisIndex": "none"}})
+        )
+
+        kline.overlap(line_ma10)
+        kline.overlap(line_ma20)
+
+        grid = Grid(init_opts=opts.InitOpts(theme=ThemeType.WHITE, width="100%", height="500%"))
+        grid.add(
+            kline,
+            grid_opts=opts.GridOpts(pos_left="10%", pos_right="10%", height="60%"),
+        )
+
+        return kline.render_embed()
 
     def show_login_dialog_and_close(self):
         self.close()
