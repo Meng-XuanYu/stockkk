@@ -1,18 +1,8 @@
-import sys
-from exceptions.WrongParamException import WrongParamException
-
-
 class User:
-    def __init__(self, magic_num, username=None, password=None, user_info=None):
+    def __init__(self, magic_num, username, password):
         self.__magic_num = magic_num
-        if user_info is None:
-            self.__username = username
-            self.__encrypted_password = self.__encrypt(password, magic_num)
-        elif username is None and password is None:
-            self.__username, self.__encrypted_password = user_info.split()
-        else:
-            sys.stderr.write('User构造函数参数错误')
-            raise WrongParamException('User构造函数参数错误')
+        self.__username = username
+        self.__encrypted_password = self.__encrypt(password, magic_num)
 
     @staticmethod
     def __decrypt(encrypted_password, key):
@@ -40,8 +30,8 @@ class User:
     def check_password(self, password):
         return password == User.__decrypt(self.__encrypted_password, self.__magic_num)
 
-    def get_user_info(self):
-        return self.__username + ' ' + self.__encrypted_password
+    def get_encrypted_password(self):
+        return self.__encrypted_password
 
     def rename(self, new_name):
         self.__username = new_name

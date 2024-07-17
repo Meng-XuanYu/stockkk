@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 import re
 
+from exceptions.WrongUsernameException import WrongUsernameException
+
 
 class ChangeUsernameDialog(QDialog):
     def __init__(self, interface, user):
@@ -39,7 +41,11 @@ class ChangeUsernameDialog(QDialog):
             QMessageBox.warning(self, "修改失败", "新用户名不能与原用户名相同，请重新输入。")
             return
         if new_username == confirmed_new_username:
-            self.interface.user_rename(self.user, confirmed_new_username)
+            try:
+                self.interface.user_rename(self.user, confirmed_new_username)
+            except WrongUsernameException:
+                QMessageBox.warning(self, "修改失败", "该用户名已存在，请重新输入。")
+                return
             QMessageBox.information(self, "修改成功", "用户名修改成功！")
             self.close()
         else:
