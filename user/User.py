@@ -1,8 +1,13 @@
 class User:
-    def __init__(self, magic_num, username, password):
+    def __init__(self, magic_num, username, encrypted_password=None, password=None):
         self.__magic_num = magic_num
         self.__username = username
-        self.__encrypted_password = self.__encrypt(password, magic_num)
+        if encrypted_password is not None:
+            self.__encrypted_password = encrypted_password
+        elif password is not None:
+            self.__encrypted_password = self.__encrypt(password, magic_num)
+        else:
+            self.__encrypted_password = ''
 
     @staticmethod
     def __decrypt(encrypted_password, key):

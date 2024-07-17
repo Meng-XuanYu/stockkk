@@ -94,7 +94,7 @@ class Interface:
         if username in self.__users:
             raise WrongUsernameException('用户名重复')
         else:
-            new_user = User(self.__magic_num, username, password)
+            new_user = User(self.__magic_num, username, password=password)
             self.__users[username] = new_user
             self.__cursor.execute(f'''
                 insert into users values('{new_user.get_name()}', '{new_user.get_encrypted_password()}');
@@ -110,9 +110,9 @@ class Interface:
             ''')
             user_info_rows = self.__cursor.fetchall()
             for user_info_row in user_info_rows:
-                username = user_info_row[0]
-                encrypted_password = user_info_row[1]
-                self.__users[username] = encrypted_password
+                username = user_info_row['username']
+                encrypted_password = user_info_row['encrypted_password']
+                self.__users[username] = User(self.__magic_num, username, encrypted_password)
 
     def user_rename(self, user, new_name):
         if new_name in self.__users:
