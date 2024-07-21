@@ -7,9 +7,10 @@ class LoginPage(QWidget):
         super().__init__()
         self.setObjectName("login_page")
         self.setStyleSheet("background-color: rgb(40, 44, 52);")
-        self.initUI()
+        self.init_ui()
 
-    def initUI(self):
+    # noinspection DuplicatedCode
+    def init_ui(self):
         layout = QVBoxLayout(self)
         layout.setSpacing(20)
         layout.setContentsMargins(50, 50, 50, 50)
@@ -21,17 +22,20 @@ class LoginPage(QWidget):
 
         self.username_input = QLineEdit(self)
         self.username_input.setPlaceholderText("用户名")
-        self.username_input.setStyleSheet("background-color: rgb(33, 37, 43); color: rgb(221, 221, 221); border-radius: 5px; padding: 10px;")
+        self.username_input.setStyleSheet(
+            "background-color: rgb(33, 37, 43); color: rgb(221, 221, 221); border-radius: 5px; padding: 10px;")
         layout.addWidget(self.username_input)
 
         self.password_input = QLineEdit(self)
         self.password_input.setPlaceholderText("密码")
         self.password_input.setEchoMode(QLineEdit.Password)
-        self.password_input.setStyleSheet("background-color: rgb(33, 37, 43); color: rgb(221, 221, 221); border-radius: 5px; padding: 10px;")
+        self.password_input.setStyleSheet(
+            "background-color: rgb(33, 37, 43); color: rgb(221, 221, 221); border-radius: 5px; padding: 10px;")
         layout.addWidget(self.password_input)
 
         self.login_button = QPushButton("登录", self)
-        self.login_button.setStyleSheet("background-color: rgb(52, 59, 72); color: rgb(221, 221, 221); border-radius: 5px; padding: 10px;")
+        self.login_button.setStyleSheet(
+            "background-color: rgb(52, 59, 72); color: rgb(221, 221, 221); border-radius: 5px; padding: 10px;")
         self.login_button.clicked.connect(self.login)
         layout.addWidget(self.login_button)
 

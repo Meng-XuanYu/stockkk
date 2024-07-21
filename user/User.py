@@ -11,7 +11,7 @@ class User:
 
     @staticmethod
     def __decrypt(encrypted_password, key):
-        # result = ""
+        # result = ''
         # for i in range(len(encrypted_password)):
         #     result += chr(ord(encrypted_password[i]) ^ ord(key[i % len(key)]))
         # return result
@@ -19,7 +19,7 @@ class User:
 
     @staticmethod
     def __encrypt(password, key):
-        # result = ""
+        # result = ''
         # for i in range(len(password)):
         #     result += chr(ord(password[i]) ^ ord(key[i % len(key)]))
         #     print(result)
