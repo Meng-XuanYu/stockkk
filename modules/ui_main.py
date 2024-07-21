@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
         self.styleSheet = QWidget(MainWindow)
         self.styleSheet.setObjectName(u"styleSheet")
         font = QFont()
-        font.setFamilies([u"Segoe UI"])
+        font.setFamilies([u"Arial"])
         font.setPointSize(10)
         font.setBold(False)
         font.setItalic(False)
@@ -36,7 +36,7 @@ class Ui_MainWindow(object):
                                       "\n"
                                       "QWidget{\n"
                                       "	color: rgb(221, 221, 221);\n"
-                                      "	font: 10pt \"Segoe UI\";\n"
+                                      "	font: 10pt \"Arial\";\n"
                                       "}\n"
                                       "\n"
                                       "/* /////////////////////////////////////////////////////////////////////////////////////////////////\n"
@@ -76,8 +76,8 @@ class Ui_MainWindow(object):
                                       " height: 10px;\n"
                                       " width: 10px;\n"
                                       "}\n"
-                                      "#titleLeftApp { font: 63 12pt \"Segoe UI Semibold\"; }\n"
-                                      "#titleLeftDescription { font: 8pt \"Segoe UI\"; color: rgb(189, 147, 249); }\n"
+                                      "#titleLeftApp { font: 63 12pt \"Arial\"; }\n"
+                                      "#titleLeftDescription { font: 8pt \"Arial\"; color: rgb(189, 147, 249); }\n"
                                       "\n"
                                       "/* MENUS */\n"
                                       "#topMenu .QPushButton {	\n"
@@ -589,7 +589,7 @@ class Ui_MainWindow(object):
         self.titleLeftApp.setObjectName(u"titleLeftApp")
         self.titleLeftApp.setGeometry(QRect(70, 8, 160, 20))
         font1 = QFont()
-        font1.setFamilies([u"Segoe UI Semibold"])
+        font1.setFamilies([u"Arial"])
         font1.setPointSize(12)
         font1.setItalic(False)
         self.titleLeftApp.setFont(font1)
@@ -599,7 +599,7 @@ class Ui_MainWindow(object):
         self.titleLeftDescription.setGeometry(QRect(70, 27, 160, 16))
         self.titleLeftDescription.setMaximumSize(QSize(16777215, 16))
         font2 = QFont()
-        font2.setFamilies([u"Segoe UI"])
+        font2.setFamilies([u"Arial"])
         font2.setPointSize(8)
         font2.setBold(False)
         font2.setItalic(False)
@@ -902,7 +902,7 @@ class Ui_MainWindow(object):
         self.maximizeRestoreAppBtn.setMinimumSize(QSize(28, 28))
         self.maximizeRestoreAppBtn.setMaximumSize(QSize(28, 28))
         font3 = QFont()
-        font3.setFamilies([u"Segoe UI"])
+        font3.setFamilies([u"Arial"])
         font3.setPointSize(10)
         font3.setBold(False)
         font3.setItalic(False)
@@ -958,12 +958,17 @@ class Ui_MainWindow(object):
         self.stackedWidget = QStackedWidget(self.pagesContainer)
         self.stackedWidget.setObjectName(u"stackedWidget")
         self.stackedWidget.setStyleSheet(u"background: transparent;")
+
+
+
+        # 主页页面
         self.home_page = QWidget()
         self.home_page.setObjectName(u"home")
         self.home_page.setStyleSheet(u"background-image: url(./images/images/stockkk_horizontal.jpg);\n"
                                 "background-position: center;\n"
                                 "background-repeat: no-repeat;")
         self.stackedWidget.addWidget(self.home_page)
+        # 读取数据页面
         self.read_data_page = QWidget()
         self.read_data_page.setObjectName(u"read_data_page")
         self.read_data_page.setStyleSheet(u"b")
@@ -1106,7 +1111,7 @@ class Ui_MainWindow(object):
         if self.tableWidget.rowCount() < 16:
             self.tableWidget.setRowCount(16)
         font4 = QFont()
-        font4.setFamilies([u"Segoe UI"])
+        font4.setFamilies([u"Arial"])
         __qtablewidgetitem10 = QTableWidgetItem()
         __qtablewidgetitem10.setFont(font4);
         self.tableWidget.setVerticalHeaderItem(0, __qtablewidgetitem10)
@@ -1223,7 +1228,34 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.row_3)
         self.verticalLayout.addWidget(self.row_2)
 
+        self.searchLineEdit = QLineEdit()
+        self.searchLineEdit.setObjectName("searchLineEdit")
+        self.searchLineEdit.setPlaceholderText("输入股票代码搜索")
+        self.searchLineEdit.setFixedSize(200, 30)  # 调整宽度和高度
+
+        self.searchButton = QPushButton()
+        self.searchButton.setObjectName("searchButton")
+        self.searchButton.setText("显示数据")
+        self.searchButton.setFixedSize(60, 30)  # 调整宽度和高度
+
+        # 添加 errorLabel
+        self.errorLabel = QLabel(self.read_data_page)
+        self.errorLabel.setObjectName("errorLabel")
+        self.errorLabel.setText("")
+        self.errorLabel.setAlignment(Qt.AlignCenter)
+        self.verticalLayout.addWidget(self.errorLabel)
+
+        QMetaObject.connectSlotsByName(MainWindow)
+
+        searchLayout = QHBoxLayout()
+        searchLayout.setSpacing(10)
+
+        errorLayout = QHBoxLayout()
+        errorLayout.setSpacing(0)
+        errorLayout.addWidget(self.errorLabel)
         self.stackedWidget.addWidget(self.read_data_page)
+
+
 
         self.verticalLayout_15.addWidget(self.stackedWidget)
 
@@ -1322,7 +1354,7 @@ class Ui_MainWindow(object):
         self.creditsLabel.setObjectName(u"creditsLabel")
         self.creditsLabel.setMaximumSize(QSize(16777215, 16))
         font5 = QFont()
-        font5.setFamilies([u"Segoe UI"])
+        font5.setFamilies([u"Arial"])
         font5.setBold(False)
         font5.setItalic(False)
         self.creditsLabel.setFont(font5)
@@ -1355,60 +1387,16 @@ class Ui_MainWindow(object):
 
         MainWindow.setCentralWidget(self.styleSheet)
 
-        self.retranslateUi(MainWindow)
-
-        self.stackedWidget.setCurrentIndex(2)
-
         QMetaObject.connectSlotsByName(MainWindow)
 
-        # 后续布局更改
-        self.searchLineEdit = QLineEdit()
-        self.searchLineEdit.setObjectName("searchLineEdit")
-        self.searchLineEdit.setPlaceholderText("输入股票代码搜索")
-        self.searchLineEdit.setFixedSize(200, 30)  # 调整宽度和高度
 
-        self.searchButton = QPushButton()
-        self.searchButton.setObjectName("searchButton")
-        self.searchButton.setText("显示数据")
-        self.searchButton.setFixedSize(60, 30)  # 调整宽度和高度
 
-        # 添加 errorLabel
-        self.errorLabel = QLabel(self.read_data_page)
-        self.errorLabel.setObjectName("errorLabel")
-        self.errorLabel.setText("")
-        self.errorLabel.setAlignment(Qt.AlignCenter)
-        self.verticalLayout.addWidget(self.errorLabel)
-
-        self.retranslateUi(MainWindow)
-
-        QMetaObject.connectSlotsByName(MainWindow)
-
-        searchLayout = QHBoxLayout()
-        searchLayout.setSpacing(10)
-
-        errorLayout = QHBoxLayout()
-        errorLayout.setSpacing(0)
-        errorLayout.addWidget(self.errorLabel)
-
-        # 将 searchLineEdit 和 searchButton 添加到这个水平布局中
-        searchLayout.addWidget(self.searchLineEdit)
-        searchLayout.addWidget(self.searchButton)
-        # 添加弹簧以实现居中效果
-        self.horizontalLayout_13.addStretch()
-        self.horizontalLayout_13.addLayout(searchLayout)
-        self.horizontalLayout_13.addStretch()
-
-        # 将这个水平布局添加到 row_3 中
-        self.horizontalLayout_13.addLayout(searchLayout)
-        self.horizontalLayout_14.addLayout(errorLayout)
-
-        # 添加 picture_page.py
+        # picture_page 区域
         self.picture_page = QWidget()
         self.picture_page.setObjectName(u"picture_page")
         self.verticalLayout_21 = QVBoxLayout(self.picture_page)
         self.verticalLayout_21.setObjectName(u"verticalLayout_21")
         self.verticalLayout_21.setContentsMargins(10, 10, 10, 10)
-
         # 添加 row_3 布局
         self.row_3_picture = QFrame(self.picture_page)
         self.row_3_picture.setObjectName(u"row_3_picture")
@@ -1417,25 +1405,21 @@ class Ui_MainWindow(object):
         self.horizontalLayout_15 = QHBoxLayout(self.row_3_picture)
         self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
         self.horizontalLayout_15.setContentsMargins(0, 0, 0, 0)
-
         # 添加搜索栏和按钮
         self.searchLineEdit_picture = QLineEdit()
         self.searchLineEdit_picture.setObjectName(u"searchLineEdit_picture")
         self.searchLineEdit_picture.setPlaceholderText("输入股票代码搜索")
         self.searchLineEdit_picture.setFixedSize(200, 30)
-
         self.searchButton_picture = QPushButton()
         self.searchButton_picture.setObjectName(u"searchButton_picture")
         self.searchButton_picture.setText("生成图片")
         self.searchButton_picture.setFixedSize(60, 30)
-
         # 添加图表类型选择栏
         self.chartTypeButton = QToolButton()
         self.chartTypeButton.setObjectName(u"chartTypeButton")
         self.chartTypeButton.setText("选择图表类型")
         self.chartTypeButton.setFixedSize(200, 30)
         self.chartTypeButton.setPopupMode(QToolButton.InstantPopup)
-
         # 创建图表类型菜单
         self.chartTypeMenu = QMenu(self.chartTypeButton)
         chart_types = ['开盘和收盘价格平均条形图', '总交易量条形图', '最高价格条形图',
@@ -1444,13 +1428,12 @@ class Ui_MainWindow(object):
             action = self.chartTypeMenu.addAction(chart_type)
             action.triggered.connect(lambda checked, t=chart_type: self.chartTypeButton.setText(t))
         self.chartTypeButton.setMenu(self.chartTypeMenu)
-
+        # 添加错误提示框
         self.errorLabel_picpage = QLabel()
         self.errorLabel_picpage.setObjectName("errorLabel")
         self.errorLabel_picpage.setText("")
-        self.errorLabel_picpage.setFixedSize(160, 30)
+        self.errorLabel_picpage.setFixedSize(200, 30)
         self.errorLabel_picpage.setAlignment(Qt.AlignCenter)
-
         searchLayout_picpage = QHBoxLayout()
         searchLayout_picpage.setSpacing(10)
         searchLayout_picpage.addWidget(self.searchLineEdit_picture)
@@ -1467,7 +1450,7 @@ class Ui_MainWindow(object):
         self.row_2_picture.setObjectName(u"row_2_picture")
         self.row_2_picture.setFrameShape(QFrame.StyledPanel)
         self.row_2_picture.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_16 = QHBoxLayout(self.row_2_picture)
+        self.horizontalLayout_16 = QHBoxLayout()
         self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
         self.horizontalLayout_16.setContentsMargins(0, 0, 0, 0)
 
@@ -1485,7 +1468,7 @@ class Ui_MainWindow(object):
                 border-radius: 5px;
                 padding: 5px;
                 color: rgb(221, 221, 221);
-                font: 10pt "Segoe UI";
+                font: 10pt "Arial";
             }
             QToolButton:hover {
                 background-color: rgb(61, 70, 86);
@@ -1507,26 +1490,24 @@ class Ui_MainWindow(object):
                 background-color: rgb(61, 70, 86);
             }
         """)
-
-        # 将 row_1, row_3, row_2 添加到 picture_page.py
         self.verticalLayout_21.addWidget(self.row_3_picture)
         self.verticalLayout_21.addWidget(self.row_2_picture)
-
-        # 将 picture_page.py 添加到 stackedWidget
         self.stackedWidget.addWidget(self.picture_page)
 
         # 前端功能区
         # 设置文件选择按钮和表格
         self.pushButton.clicked.connect(self.select_file)
         self.searchButton.clicked.connect(self.search_stock)
-
         self.searchButton_picture.clicked.connect(self.generate_chart)
 
+        # 登录注册页面
         self.register_page = RegisterPage()
         self.login_page = LoginPage()
         self.stackedWidget.addWidget(self.login_page)
         self.stackedWidget.addWidget(self.register_page)
 
+        # 最后的处理
+        self.retranslateUi(MainWindow)
 
     def select_file(self):
         options = QFileDialog.Options()
@@ -1873,7 +1854,7 @@ class Ui_MainWindow(object):
                                                          "hr { height: 1px; border-width: 0; }\n"
                                                          "li.unchecked::marker { content: \"\\2610\"; }\n"
                                                          "li.checked::marker { content: \"\\2612\"; }\n"
-                                                         "</style></head><body style=\" font-family:'Segoe UI'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+                                                         "</style></head><body style=\" font-family:'Arial'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
                                                          "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600; color:#ff79c6;\">Stockkk</span></p>\n"
                                                          "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#ffffff;\">可以让yxs别叫</span></p>\n"
                                                          "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-le"

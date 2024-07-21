@@ -15,6 +15,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         global widgets
         widgets = self.ui
+        app.setWindowIcon(QIcon("images/images/stockkk.jpg"))
 
         # mac用false, windows用true，windows效果好一点
         Settings.ENABLE_CUSTOM_TITLE_BAR = True
@@ -100,9 +101,13 @@ class MainWindow(QMainWindow):
     def resizeEvent(self, event):
         UIFunctions.resize_grips(self)
 
+    def mousePressEvent(self, event):
+        self.dragPos = event.globalPosition().toPoint()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon("icon.ico"))
     window = MainWindow()
+    window.show()
     sys.exit(app.exec())
