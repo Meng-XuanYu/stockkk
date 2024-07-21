@@ -18,6 +18,7 @@ class MainWindow(QMainWindow):
 
         # mac用false, windows用true，windows效果好一点
         Settings.ENABLE_CUSTOM_TITLE_BAR = True
+        # Settings.ENABLE_CUSTOM_TITLE_BAR = False
 
         title = "Stockkk"
         description = "Stockkk APP - Stock market data visualizer and analysis tool."

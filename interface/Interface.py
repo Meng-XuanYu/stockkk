@@ -1,6 +1,7 @@
 import pymysql
 import json
 import os
+from pyecharts.charts import Kline, Bar, Scatter, Line, Grid
 
 from exceptions.StockCodeNotFoundException import StockCodeNotFoundException
 from exceptions.StockDataNotFoundException import StockDataNotFoundException
@@ -66,10 +67,23 @@ class Interface:
                 encrypted_password varchar(50)
             );
         ''')
+        self.__cursor.execute('''
+            create table if not exists stocks (
+                stock_code varchar(50) primary key,
+                open_close longtext default null,
+                total_volume longtext default null,
+                high_price longtext default null,
+                low_price longtext default null,
+                compound_growth longtext default null,
+                amplitude_scatter longtext default null,
+                turnover_rate longtext default null,
+                kline longtext default null
+            );
+        ''')
 
     def import_data_frame(self, data_frame):
         grouped = data_frame.groupby('股票代码')
-        self.__stock_data_frame_dic = {str(key): Stock(value) for key, value in grouped}
+        self.__stock_data_frame_dic = {str(key): Stock(self, str(key), value) for key, value in grouped}
 
     def search_stock_by_code(self, stock_code):
         if self.__stock_data_frame_dic is None:
@@ -97,7 +111,7 @@ class Interface:
             new_user = User(self.__magic_num, username, password=password)
             self.__users[username] = new_user
             self.__cursor.execute(f'''
-                insert into users values('{new_user.get_name()}', '{new_user.get_encrypted_password()}');
+                insert into users values ('{new_user.get_name()}', '{new_user.get_encrypted_password()}');
             ''')
             self.__connection.commit()
 
@@ -132,3 +146,22 @@ class Interface:
             update users set password = '{user.get_encrypted_password()}' where username = '{user.get_name()}';
         ''')
         self.__connection.commit()
+
+    def store_chart_into_db(self, stock_code, chart_type, chart_html):
+        sql = f'''
+            insert into stocks (stock_code, {chart_type.get_chart_type_name()})
+            values (%s, %s)
+            on duplicate key update {chart_type.get_chart_type_name()} = values ({chart_type.get_chart_type_name()});
+        '''
+        self.__cursor.execute(sql, (stock_code, chart_html))
+        self.__connection.commit()
+
+    def get_chart_from_db(self, stock_code, chart_type):
+        self.__cursor.execute(f'''
+            select {chart_type.get_chart_type_name()} from stocks where stock_code = '{stock_code}';
+        ''')
+        result = self.__cursor.fetchall()
+        if len(result) == 0:
+            return None
+        else:
+            return list(result[0].values())[0]

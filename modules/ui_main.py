@@ -6,6 +6,7 @@ from PySide6.QtWidgets import *
 from exceptions.StockDataNotFoundException import StockDataNotFoundException
 from exceptions.StockCodeNotFoundException import StockCodeNotFoundException
 from interface.Interface import Interface
+from interface.ChartType import ChartType
 from pages.LoginPage import LoginPage
 from pages.RegisterPage import RegisterPage
 from .resources_rc import *
@@ -1587,30 +1588,15 @@ class Ui_MainWindow(object):
         stock_code = self.searchLineEdit_picture.text()
         if stock_code:
             try:
-                filtered_data = self.interface.search_stock_by_code(stock_code)
-                chart_type = self.chartTypeButton.text()
+                stock = self.interface.search_stock_by_code(stock_code)
+                chart_type_text = self.chartTypeButton.text()
 
                 # 根据选择的图表类型生成相应的图表
-                if chart_type == '选择图表类型':
+                if chart_type_text == '选择图表类型':
                     self.errorLabel_picpage.setText('未选择图表类型')
                     self.errorLabel_picpage.setStyleSheet("color: #fb7756;")
                 else:
-                    if chart_type == '开盘和收盘价格平均条形图':
-                        chart_html = self.create_open_close_chart(filtered_data.get_data_frame())
-                    elif chart_type == '总交易量条形图':
-                        chart_html = self.create_total_volume_chart(filtered_data.get_data_frame())
-                    elif chart_type == '最高价格条形图':
-                        chart_html = self.create_high_price_chart(filtered_data.get_data_frame())
-                    elif chart_type == '最低价格条形图':
-                        chart_html = self.create_low_price_chart(filtered_data.get_data_frame())
-                    elif chart_type == '复合增长条形图':
-                        chart_html = self.create_compound_growth_chart(filtered_data.get_data_frame())
-                    elif chart_type == '振幅散点图':
-                        chart_html = self.create_amplitude_scatter_chart(filtered_data.get_data_frame())
-                    elif chart_type == '换手率条形图':
-                        chart_html = self.create_turnover_rate_chart(filtered_data.get_data_frame())
-                    elif chart_type == 'K线图':
-                        chart_html = self.create_Kline_chart(filtered_data.get_data_frame())
+                    chart_html = self.create_chart(stock, ChartType.get_chart_type_from_text(chart_type_text))
                     self.errorLabel_picpage.setText('图片生成成功')
                     self.errorLabel_picpage.setStyleSheet("color: #58b368;")
                     self.webEngineView.setHtml(chart_html)
@@ -1623,6 +1609,26 @@ class Ui_MainWindow(object):
         else:
             self.errorLabel_picpage.setStyleSheet("color: #dad873;")
             self.errorLabel_picpage.setText('请先输入股票代码')
+
+    def create_chart(self, stock, chart_type):
+        chart = stock.get_chart(chart_type)
+        if chart is not None:
+            return chart
+
+        # 数据库没有则生成并存入
+        mapping = {
+            ChartType.OPEN_CLOSE: self.create_open_close_chart,
+            ChartType.TOTAL_VOLUME: self.create_total_volume_chart,
+            ChartType.HIGH_PRICE: self.create_high_price_chart,
+            ChartType.LOW_PRICE: self.create_low_price_chart,
+            ChartType.COMPOUND_GROWTH: self.create_compound_growth_chart,
+            ChartType.AMPLITUDE_SCATTER: self.create_amplitude_scatter_chart,
+            ChartType.TURNOVER_RATE: self.create_turnover_rate_chart,
+            ChartType.KLINE: self.create_kline_chart,
+        }
+        chart = mapping[chart_type](stock.get_data_frame())
+        stock.store_chart(chart_type, chart)
+        return chart
 
     def create_open_close_chart(self, stock_data):
         dates = stock_data['日期'].tolist()
@@ -1786,7 +1792,7 @@ class Ui_MainWindow(object):
 
         return bar.render_embed()
 
-    def create_Kline_chart(self, stock_data):
+    def create_kline_chart(self, stock_data):
         dates = stock_data['日期'].tolist()
 
         kline = Kline(init_opts=opts.InitOpts(theme=ThemeType.WHITE, width="100%", height="500%"))
@@ -1875,9 +1881,9 @@ class Ui_MainWindow(object):
                                                          "li.checked::marker { content: \"\\2612\"; }\n"
                                                          "</style></head><body style=\" font-family:'Segoe UI'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
                                                          "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600; color:#ff79c6;\">Stockkk</span></p>\n"
-                                                         "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#ffffff;\">可以让yxs别叫</span></p>\n"
+                                                         "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#ffffff;\">可以让别XuanYu_Master叫</span></p>\n"
                                                          "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-le"
-                                                         "ft:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#bd93f9;\">Created by: XuanYu_Master</span></p>\n"
+                                                         "ft:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#bd93f9;\">Created by: yxs</span></p>\n"
                                                          "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600; color:#ff79c6;\">Convert UI</span></p>\n"
                                                          "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:9pt; color:#ffffff;\">pyside6-uic main.ui(已弃用 &gt; ui_main.py</span></p>\n"
                                                          "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600; color:#ff79c6;\">Convert QRC</span></p>\n"
