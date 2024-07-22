@@ -873,6 +873,13 @@ class UIMainWindow(object):
         self.horizontalLayout_2.setSpacing(5)
         self.horizontalLayout_2.setObjectName(u'horizontalLayout_2')
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+
+        self.userInfoLabel = QLabel(self.rightButtons)
+        self.userInfoLabel.setObjectName(u'userInfoLabel')
+        if self.interface.get_current_user() is not None:
+            self.userInfoLabel.setText(f'当前用户: {self.interface.get_current_user().get_username()}')
+        else:
+            self.userInfoLabel.setText('当前未登录')
         self.userBtn = QPushButton(self.rightButtons)
         self.userBtn.setObjectName(u'userBtn')
         self.userBtn.setMinimumSize(QSize(28, 28))
@@ -883,6 +890,7 @@ class UIMainWindow(object):
         self.userBtn.setIcon(icon1)
         self.userBtn.setIconSize(QSize(20, 20))
 
+        self.horizontalLayout_2.addWidget(self.userInfoLabel)
         self.horizontalLayout_2.addWidget(self.userBtn)
 
         self.minimizeAppBtn = QPushButton(self.rightButtons)
@@ -1305,40 +1313,38 @@ class UIMainWindow(object):
         self.verticalLayout_14.setContentsMargins(0, 0, 0, 0)
 
         self.btn_login = QPushButton(self.topMenus)
-        self.btn_login.setObjectName(u'btn_login')
-        size_policy.setHeightForWidth(self.btn_login.sizePolicy().hasHeightForWidth())
-        self.btn_login.setSizePolicy(size_policy)
-        self.btn_login.setMinimumSize(QSize(0, 45))
-        self.btn_login.setFont(font)
-        self.btn_login.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.btn_login.setLayoutDirection(Qt.LeftToRight)
-        self.btn_login.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-user.png);')
-
-        self.verticalLayout_14.addWidget(self.btn_login)
-
         self.btn_register = QPushButton(self.topMenus)
-        self.btn_register.setObjectName(u'btn_register')
-        size_policy.setHeightForWidth(self.btn_register.sizePolicy().hasHeightForWidth())
-        self.btn_register.setSizePolicy(size_policy)
-        self.btn_register.setMinimumSize(QSize(0, 45))
-        self.btn_register.setFont(font)
-        self.btn_register.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.btn_register.setLayoutDirection(Qt.LeftToRight)
-        self.btn_register.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-user-follow.png);')
-
-        self.verticalLayout_14.addWidget(self.btn_register)
-
         self.btn_logout = QPushButton(self.topMenus)
-        self.btn_logout.setObjectName(u'btn_logout')
-        size_policy.setHeightForWidth(self.btn_logout.sizePolicy().hasHeightForWidth())
-        self.btn_logout.setSizePolicy(size_policy)
-        self.btn_logout.setMinimumSize(QSize(0, 45))
-        self.btn_logout.setFont(font)
-        self.btn_logout.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.btn_logout.setLayoutDirection(Qt.LeftToRight)
-        self.btn_logout.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-account-logout.png);')
+        if self.interface.get_current_user() is None:
+            self.btn_login.setObjectName(u'btn_login')
+            size_policy.setHeightForWidth(self.btn_login.sizePolicy().hasHeightForWidth())
+            self.btn_login.setSizePolicy(size_policy)
+            self.btn_login.setMinimumSize(QSize(0, 45))
+            self.btn_login.setFont(font)
+            self.btn_login.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.btn_login.setLayoutDirection(Qt.LeftToRight)
+            self.btn_login.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-user.png);')
+            self.verticalLayout_14.addWidget(self.btn_login)
 
-        self.verticalLayout_14.addWidget(self.btn_logout)
+            self.btn_register.setObjectName(u'btn_register')
+            size_policy.setHeightForWidth(self.btn_register.sizePolicy().hasHeightForWidth())
+            self.btn_register.setSizePolicy(size_policy)
+            self.btn_register.setMinimumSize(QSize(0, 45))
+            self.btn_register.setFont(font)
+            self.btn_register.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.btn_register.setLayoutDirection(Qt.LeftToRight)
+            self.btn_register.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-user-follow.png);')
+            self.verticalLayout_14.addWidget(self.btn_register)
+        else:
+            self.btn_logout.setObjectName(u'btn_logout')
+            size_policy.setHeightForWidth(self.btn_logout.sizePolicy().hasHeightForWidth())
+            self.btn_logout.setSizePolicy(size_policy)
+            self.btn_logout.setMinimumSize(QSize(0, 45))
+            self.btn_logout.setFont(font)
+            self.btn_logout.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.btn_logout.setLayoutDirection(Qt.LeftToRight)
+            self.btn_logout.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-account-logout.png);')
+            self.verticalLayout_14.addWidget(self.btn_logout)
 
         self.verticalLayout_13.addWidget(self.topMenus, 0, Qt.AlignTop)
 
@@ -1721,8 +1727,10 @@ class UIMainWindow(object):
         ___qtablewidgetitem35.setText(QCoreApplication.translate('MainWindow', u'\u6362\u624b\u7387', None))
         self.tableWidget.setSortingEnabled(__sortingEnabled)
 
-        self.btn_login.setText(QCoreApplication.translate('MainWindow', u'\u7528\u6237\u767b\u5f55', None))
-        self.btn_register.setText(QCoreApplication.translate('MainWindow', u'\u7528\u6237\u6ce8\u518c', None))
-        self.btn_logout.setText(QCoreApplication.translate('MainWindow', u'\u9000\u51fa\u767b\u5f55', None))
+        if self.interface.get_current_user() is None:
+            self.btn_login.setText(QCoreApplication.translate('MainWindow', u'\u7528\u6237\u767b\u5f55', None))
+            self.btn_register.setText(QCoreApplication.translate('MainWindow', u'\u7528\u6237\u6ce8\u518c', None))
+        else:
+            self.btn_logout.setText(QCoreApplication.translate('MainWindow', u'\u9000\u51fa\u767b\u5f55', None))
         self.creditsLabel.setText(QCoreApplication.translate('MainWindow', u'By: XuanYu_Master', None))
         self.version.setText(QCoreApplication.translate('MainWindow', u'v0.8.1', None))

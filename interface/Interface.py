@@ -197,3 +197,6 @@ class Interface:
             return None
         else:
             return list(result[0].values())[0]
+
+    def get_current_user(self):
+        return self.__cur_user
