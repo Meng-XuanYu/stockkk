@@ -1,7 +1,6 @@
 import pymysql
 import json
 import os
-from pyecharts.charts import Kline, Bar, Scatter, Line, Grid
 
 from exceptions.StockCodeNotFoundException import StockCodeNotFoundException
 from exceptions.StockDataNotFoundException import StockDataNotFoundException
@@ -22,8 +21,10 @@ class Interface:
         self.__connection = None
         self.__cursor = None
         self.connect_to_database()
+        self.__cur_user = None
 
-    def connect_to_database(self):
+    @staticmethod
+    def __create_connection():
         not_found_types = []
         host = None
         user = None
@@ -51,13 +52,16 @@ class Interface:
             raise ConfigNotFoundException(not_found_types, '获取配置失败')
 
         # 连接数据库
-        self.__connection = pymysql.connect(
+        return pymysql.connect(
             host=host,
             user=user,
             password=password,
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
         )
+
+    def connect_to_database(self):
+        self.__connection = self.__create_connection()
         self.__cursor = self.__connection.cursor()
         self.__cursor.execute('create database if not exists stockkk;')
         self.__cursor.execute('use stockkk;')
@@ -80,6 +84,14 @@ class Interface:
                 kline longtext default null
             );
         ''')
+        self.__cursor.execute('''
+            create table if not exists log_records (
+                id int auto_increment primary key,
+                username varchar(50),
+                is_login bool,
+                log_time datetime default current_timestamp
+            );
+        ''')
 
     def import_data_frame(self, data_frame):
         grouped = data_frame.groupby('股票代码')
@@ -93,7 +105,23 @@ class Interface:
         else:
             raise StockCodeNotFoundException('股票代码不存在')
 
-    def get_user(self, username, password):
+    def user_login(self, username, password):
+        self.__cur_user = self.__get_user(username, password)
+        self.__cur_user.login(self.__create_connection())
+        self.__cursor.execute(f'''
+            insert into log_records (username, is_login) values ('{username}', true);
+        ''')
+        self.__connection.commit()
+
+    def user_logout(self, username):
+        self.__cur_user.logout()
+        self.__cur_user = None
+        self.__cursor.execute(f'''
+            insert into log_records (username, is_login) values ('{username}', false);
+        ''')
+        self.__connection.commit()
+
+    def __get_user(self, username, password):
         self.__load_user_info()
         if username in self.__users:
             if self.__users[username].check_password(password):
@@ -108,7 +136,7 @@ class Interface:
         if username in self.__users:
             raise WrongUsernameException('用户名重复')
         else:
-            new_user = User(self.__magic_num, username, password=password)
+            new_user = User(self, self.__magic_num, username, password=password)
             self.__users[username] = new_user
             self.__cursor.execute(f'''
                 insert into users values ('{new_user.get_name()}', '{new_user.get_encrypted_password()}');
@@ -126,7 +154,7 @@ class Interface:
             for user_info_row in user_info_rows:
                 username = user_info_row['username']
                 encrypted_password = user_info_row['encrypted_password']
-                self.__users[username] = User(self.__magic_num, username, encrypted_password)
+                self.__users[username] = User(self, self.__magic_num, username, encrypted_password)
 
     def user_rename(self, user, new_name):
         if new_name in self.__users:
@@ -148,6 +176,7 @@ class Interface:
         self.__connection.commit()
 
     def store_chart_into_db(self, stock_code, chart_type, chart_html):
+        self.__cur_user.store_chart_into_user_db(stock_code, chart_type, chart_html)
         sql = f'''
             insert into stocks (stock_code, {chart_type.get_chart_type_name()})
             values (%s, %s)
@@ -157,6 +186,8 @@ class Interface:
         self.__connection.commit()
 
     def get_chart_from_db(self, stock_code, chart_type):
+        # TODO
+        # 由于在整体和用户级都有存储，需要考虑一下调用的优先级
         self.__cursor.execute(f'''
             select {chart_type.get_chart_type_name()} from stocks where stock_code = '{stock_code}';
         ''')

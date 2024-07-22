@@ -1,7 +1,10 @@
 class User:
-    def __init__(self, magic_num, username, encrypted_password=None, password=None):
+    def __init__(self, interface, magic_num, username, encrypted_password=None, password=None):
+        self.__interface = interface
         self.__magic_num = magic_num
         self.__username = username
+        self.__connection = None
+        self.__cursor = None
         if encrypted_password is not None:
             self.__encrypted_password = encrypted_password
         elif password is not None:
@@ -43,3 +46,60 @@ class User:
 
     def change_password(self, new_password):
         self.__encrypted_password = self.__encrypt(new_password, self.__magic_num)
+
+    def login(self, connection):
+        self.__connection = connection
+        self.__cursor = connection.cursor()
+        self.__cursor.execute(f'create database if not exists stockkk_user_{self.__username};')
+        self.__cursor.execute(f'use stockkk_user_{self.__username};')
+        self.__cursor.execute('''
+            create table if not exists log_records (
+                id int auto_increment primary key,
+                is_login bool,
+                log_time datetime default current_timestamp
+            );
+        ''')
+        self.__cursor.execute('''
+            create table if not exists chart_records (
+                stock_code varchar(50) primary key,
+                open_close longtext default null,
+                total_volume longtext default null,
+                high_price longtext default null,
+                low_price longtext default null,
+                compound_growth longtext default null,
+                amplitude_scatter longtext default null,
+                turnover_rate longtext default null,
+                kline longtext default null
+            );
+        ''')
+        self.__cursor.execute('''
+            insert into log_records (is_login) values (true);
+        ''')
+        self.__connection.commit()
+
+    def logout(self):
+        self.__cursor.execute('''
+            insert into log_records (is_login) values (false);
+        ''')
+        self.__connection.commit()
+        self.__cursor = None
+        self.__connection = None
+
+    def clear_log_records(self):
+        self.__cursor.execute('''
+            truncate table log_records;
+        ''')
+
+    def clear_chart_records(self):
+        self.__cursor.execute('''
+            truncate table chart_records;
+        ''')
+
+    def store_chart_into_user_db(self, stock_code, chart_type, chart_html):
+        sql = f'''
+            insert into chart_records (stock_code, {chart_type.get_chart_type_name()})
+            values (%s, %s)
+            on duplicate key update {chart_type.get_chart_type_name()} = values ({chart_type.get_chart_type_name()});
+        '''
+        self.__cursor.execute(sql, (stock_code, chart_html))
+        self.__connection.commit()

@@ -45,7 +45,7 @@ class LoginPage(QWidget):
 
     def login(self):
         try:
-            user = self.interface.get_user(self.username_input.text(), self.password_input.text())
+            self.interface.user_login(self.username_input.text(), self.password_input.text())
             QMessageBox.information(self, "成功", "登录成功")
             # TODO
             # main_window = MainWindow(self.interface, user)
