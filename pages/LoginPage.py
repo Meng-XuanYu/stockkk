@@ -1,10 +1,14 @@
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 
+from exceptions.WrongUsernameException import WrongUsernameException
+from exceptions.WrongPassWordException import WrongPassWordException
+
 
 class LoginPage(QWidget):
-    def __init__(self):
+    def __init__(self, interface):
         super().__init__()
+        self.interface = interface
         self.setObjectName("login_page")
         self.setStyleSheet("background-color: rgb(40, 44, 52);")
         self.init_ui()
@@ -40,11 +44,11 @@ class LoginPage(QWidget):
         layout.addWidget(self.login_button)
 
     def login(self):
-        username = self.username_input.text()
-        password = self.password_input.text()
-
-        # 这里添加登录逻辑
-        if username == "admin" and password == "admin":
+        try:
+            user = self.interface.get_user(self.username_input.text(), self.password_input.text())
             QMessageBox.information(self, "成功", "登录成功")
-        else:
+            # TODO
+            # main_window = MainWindow(self.interface, user)
+            # main_window.show()
+        except (WrongUsernameException, WrongPassWordException):
             QMessageBox.warning(self, "错误", "用户名或密码错误")

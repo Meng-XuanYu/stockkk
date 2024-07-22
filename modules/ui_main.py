@@ -1506,8 +1506,8 @@ class UIMainWindow(object):
         self.searchButton_picture.clicked.connect(self.generate_chart)
 
         # 登录注册页面
-        self.register_page = RegisterPage()
-        self.login_page = LoginPage()
+        self.register_page = RegisterPage(self.interface)
+        self.login_page = LoginPage(self.interface)
         self.stackedWidget.addWidget(self.login_page)
         self.stackedWidget.addWidget(self.register_page)
 

@@ -1,10 +1,14 @@
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
+import re
+
+from exceptions.WrongUsernameException import WrongUsernameException
 
 
 class RegisterPage(QWidget):
-    def __init__(self):
+    def __init__(self, interface):
         super().__init__()
+        self.interface = interface
         self.setObjectName('register_page')
         self.setStyleSheet('background-color: rgb(40, 44, 52);')
         self.init_ui()
@@ -50,9 +54,20 @@ class RegisterPage(QWidget):
         username = self.username_input.text()
         password = self.password_input.text()
         confirm_password = self.confirm_password_input.text()
-
-        if password != confirm_password:
-            QMessageBox.warning(self, '错误', '密码不匹配')
-        else:
-            # 这里添加注册逻辑
+        if not username or not password or not confirm_password:
+            QMessageBox.warning(self, "注册失败", "用户名和密码不能为空")
+            return
+        elif not re.match(r'^[a-zA-Z0-9_]{6,20}$', username) or not re.match(
+                r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,20}$', password):
+            QMessageBox.warning(self, "注册失败", "用户名或密码不符合要求")
+            return
+        if password == confirm_password:
+            try:
+                self.interface.create_user(username, password)
+            except WrongUsernameException:
+                QMessageBox.warning(self, "注册失败", "用户名已存在，请重试。")
+                return
             QMessageBox.information(self, '成功', '注册成功')
+            self.close()
+        else:
+            QMessageBox.warning(self, '错误', '密码不匹配')
