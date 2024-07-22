@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
         def open_close_left_box():
             UIFunctions.toggle_left_box(self, True)
 
-        widgets.toggleLeftBox.clicked.connect(open_close_left_box)
+        widgets.toggle_left_box.clicked.connect(open_close_left_box)
         widgets.extraCloseColumnBtn.clicked.connect(open_close_left_box)
 
         # 右边栏动画是否开启
