@@ -1250,6 +1250,18 @@ class UIMainWindow(object):
         error_layout = QHBoxLayout()
         error_layout.setSpacing(0)
         error_layout.addWidget(self.errorLabel)
+
+        # 将 searchLineEdit 和 searchButton 添加到这个水平布局中
+        search_layout.addWidget(self.searchLineEdit)
+        search_layout.addWidget(self.searchButton)
+        # 添加弹簧以实现居中效果
+        self.horizontalLayout_13.addStretch()
+        self.horizontalLayout_13.addLayout(search_layout)
+        self.horizontalLayout_13.addStretch()
+
+        # 将这个水平布局添加到 row_3 中
+        self.horizontalLayout_13.addLayout(search_layout)
+        self.horizontalLayout_14.addLayout(error_layout)
         self.stackedWidget.addWidget(self.read_data_page)
 
         self.verticalLayout_15.addWidget(self.stackedWidget)
