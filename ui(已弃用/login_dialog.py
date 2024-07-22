@@ -10,7 +10,7 @@ class LoginDialog(QDialog):
     def __init__(self, interface=None):
         super().__init__()
         if interface is None:
-            self.interface = Interface(self)
+            self.interface = Interface()
         else:
             self.interface = interface
         self.setWindowTitle("用户登录")

@@ -14,14 +14,16 @@ from data.Stock import Stock
 
 class Interface:
     def __init__(self, window=None):
+        self.__file_name = None
         self.__stock_data_frame_dic = None
         self.__users = None
-        self.__magic_num = None
+        self.__magic_num = '114514'
         self.__connection = None
         self.__cursor = None
-        self.connect_to_database()
+        self.__connect_to_database()
         self.__cur_user = None
         self.__window = window
+        self.__set_default_file_name()
 
     @staticmethod
     def __create_connection():
@@ -60,7 +62,7 @@ class Interface:
             cursorclass=pymysql.cursors.DictCursor
         )
 
-    def connect_to_database(self):
+    def __connect_to_database(self):
         self.__connection = self.__create_connection()
         self.__cursor = self.__connection.cursor()
         self.__cursor.execute('create database if not exists stockkk;')
@@ -92,6 +94,35 @@ class Interface:
                 log_time datetime default current_timestamp
             );
         ''')
+        self.__cursor.execute('''
+            create table if not exists default_file_name (
+                magic_num varchar(50) primary key,
+                file_name varchar(260) default null
+            );
+        ''')
+        self.__cursor.execute(f'''
+            insert into default_file_name (magic_num)
+            values (%s)
+            on duplicate key update magic_num = values (magic_num);
+        ''', (self.__magic_num,))
+        self.__connection.commit()
+
+    def __set_default_file_name(self):
+        self.__cursor.execute(f'''
+            select file_name from default_file_name where magic_num = %s;
+        ''', (self.__magic_num,))
+        self.__file_name = list(self.__cursor.fetchall()[0].values())[0]
+
+    def set_file_name(self, file_name):
+        if file_name != self.__file_name:
+            self.__file_name = file_name
+            self.__cursor.execute(f'''
+                update default_file_name set file_name = %s where magic_num = %s
+            ''', (file_name, self.__magic_num))
+            self.__connection.commit()
+            self.__cursor.execute('''
+                truncate table stocks;
+            ''')
 
     def import_data_frame(self, data_frame):
         grouped = data_frame.groupby('股票代码')
@@ -121,6 +152,9 @@ class Interface:
         ''')
         self.__connection.commit()
 
+    def get_current_user(self):
+        return self.__cur_user
+
     def __get_user(self, username, password):
         self.__load_user_info()
         if username in self.__users:
@@ -146,7 +180,6 @@ class Interface:
     def __load_user_info(self):
         if self.__users is None:
             self.__users = {}
-            self.__magic_num = 'magic_num'
             self.__cursor.execute(f'''
                 select * from users;
             ''')
@@ -197,9 +230,6 @@ class Interface:
             return None
         else:
             return list(result[0].values())[0]
-
-    def get_current_user(self):
-        return self.__cur_user
 
     def change_window(self, window):
         self.__window.close()

@@ -59,6 +59,8 @@ class User:
                 log_time datetime default current_timestamp
             );
         ''')
+        # TODO
+        # 对于user的历史记录，应当记录文件路径等更多内容
         self.__cursor.execute('''
             create table if not exists chart_records (
                 stock_code varchar(50) primary key,
