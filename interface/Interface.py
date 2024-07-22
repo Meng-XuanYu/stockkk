@@ -13,8 +13,7 @@ from data.Stock import Stock
 
 
 class Interface:
-    def __init__(self, stock_visualizer):
-        self.__stock_visualizer = stock_visualizer
+    def __init__(self, window=None):
         self.__stock_data_frame_dic = None
         self.__users = None
         self.__magic_num = None
@@ -22,6 +21,7 @@ class Interface:
         self.__cursor = None
         self.connect_to_database()
         self.__cur_user = None
+        self.__window = window
 
     @staticmethod
     def __create_connection():
@@ -200,3 +200,10 @@ class Interface:
 
     def get_current_user(self):
         return self.__cur_user
+
+    def change_window(self, window):
+        self.__window.close()
+        self.__window = window
+
+    def set_window(self, window):
+        self.__window = window

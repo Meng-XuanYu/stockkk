@@ -1,21 +1,28 @@
 import sys
 import os
 import platform
-from modules import *
-from widgets import *
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QMainWindow, QApplication, QHeaderView
 
+from interface.Interface import Interface
+from widgets import *
 widgets = None
 
 
 class MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, interface=None):
+        from modules import UIMainWindow, Settings, UIFunctions, AppFunctions
         QMainWindow.__init__(self)
 
-        self.ui = UIMainWindow()
+        if interface is None:
+            self.ui = UIMainWindow()
+        else:
+            self.ui = UIMainWindow(interface)
         self.ui.setup_ui(self)
         global widgets
         widgets = self.ui
-        app.setWindowIcon(QIcon('images/images/stockkk.jpg'))
+        if interface is None:
+            app.setWindowIcon(QIcon('images/images/stockkk.jpg'))
 
         # mac用false, windows用true，windows效果好一点
         Settings.ENABLE_CUSTOM_TITLE_BAR = True
@@ -64,6 +71,7 @@ class MainWindow(QMainWindow):
 
     # 点击事件
     def button_click(self):
+        from modules import UIFunctions
         btn = self.sender()
         btn_name = btn.objectName()
 
@@ -100,6 +108,7 @@ class MainWindow(QMainWindow):
 
     # 实时变化
     def resizeEvent(self, event):
+        from modules import UIFunctions
         UIFunctions.resize_grips(self)
 
     def mousePressEvent(self, event):
@@ -109,6 +118,8 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon('icon.ico'))
-    window = MainWindow()
+    interface = Interface()
+    window = MainWindow(interface)
+    interface.set_window(window)
     window.show()
     sys.exit(app.exec())

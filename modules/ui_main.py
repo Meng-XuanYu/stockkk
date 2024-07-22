@@ -10,15 +10,17 @@ from interface.ChartType import ChartType
 from pages.LoginPage import LoginPage
 from pages.RegisterPage import RegisterPage
 from . import picture_generator
-from . import picture_window
 from .picture_window import ChartDisplayWindow
 from .resources_rc import *
 
 
 class UIMainWindow(object):
-    def __init__(self):
+    def __init__(self, interface=None):
         self.stock_data = None
-        self.interface = Interface(self)
+        if interface is None:
+            self.interface = Interface()
+        else:
+            self.interface = interface
         self.chart_display_windows = []  # 存储所有ChartDisplayWindow实例的列表
 
     def setup_ui(self, main_window):
@@ -877,7 +879,7 @@ class UIMainWindow(object):
         self.userInfoLabel = QLabel(self.rightButtons)
         self.userInfoLabel.setObjectName(u'userInfoLabel')
         if self.interface.get_current_user() is not None:
-            self.userInfoLabel.setText(f'当前用户: {self.interface.get_current_user().get_username()}')
+            self.userInfoLabel.setText(f'当前用户: {self.interface.get_current_user().get_name()}')
         else:
             self.userInfoLabel.setText('当前未登录')
         self.userBtn = QPushButton(self.rightButtons)
@@ -1315,6 +1317,12 @@ class UIMainWindow(object):
         self.btn_login = QPushButton(self.topMenus)
         self.btn_register = QPushButton(self.topMenus)
         self.btn_logout = QPushButton(self.topMenus)
+        self.btn_change_password = QPushButton(self.topMenus)
+        self.btn_change_username = QPushButton(self.topMenus)
+        self.btn_delete_user = QPushButton(self.topMenus)
+        self.btn_delete_cache = QPushButton(self.topMenus)
+        self.btn_delete_history = QPushButton(self.topMenus)
+
         if self.interface.get_current_user() is None:
             self.btn_login.setObjectName(u'btn_login')
             size_policy.setHeightForWidth(self.btn_login.sizePolicy().hasHeightForWidth())
@@ -1335,7 +1343,64 @@ class UIMainWindow(object):
             self.btn_register.setLayoutDirection(Qt.LeftToRight)
             self.btn_register.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-user-follow.png);')
             self.verticalLayout_14.addWidget(self.btn_register)
+
+            self.btn_logout.hide()
+            self.btn_change_password.hide()
+            self.btn_change_username.hide()
+            self.btn_delete_user.hide()
+            self.btn_delete_cache.hide()
+            self.btn_delete_history.hide()
         else:
+            self.btn_change_password.setObjectName(u'btn_change_password')
+            size_policy.setHeightForWidth(self.btn_change_password.sizePolicy().hasHeightForWidth())
+            self.btn_change_password.setSizePolicy(size_policy)
+            self.btn_change_password.setMinimumSize(QSize(0, 45))
+            self.btn_change_password.setFont(font)
+            self.btn_change_password.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.btn_change_password.setLayoutDirection(Qt.LeftToRight)
+            self.btn_change_password.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-lock-unlocked.png);')
+            self.verticalLayout_14.addWidget(self.btn_change_password)
+
+            self.btn_change_username.setObjectName(u'btn_change_username')
+            size_policy.setHeightForWidth(self.btn_change_username.sizePolicy().hasHeightForWidth())
+            self.btn_change_username.setSizePolicy(size_policy)
+            self.btn_change_username.setMinimumSize(QSize(0, 45))
+            self.btn_change_username.setFont(font)
+            self.btn_change_username.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.btn_change_username.setLayoutDirection(Qt.LeftToRight)
+            self.btn_change_username.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-featured-playlist.png);')
+            self.verticalLayout_14.addWidget(self.btn_change_username)
+
+            self.btn_delete_cache.setObjectName(u'btn_delete_cache')
+            size_policy.setHeightForWidth(self.btn_delete_cache.sizePolicy().hasHeightForWidth())
+            self.btn_delete_cache.setSizePolicy(size_policy)
+            self.btn_delete_cache.setMinimumSize(QSize(0, 45))
+            self.btn_delete_cache.setFont(font)
+            self.btn_delete_cache.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.btn_delete_cache.setLayoutDirection(Qt.LeftToRight)
+            self.btn_delete_cache.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-chart.png);')
+            self.verticalLayout_14.addWidget(self.btn_delete_cache)
+
+            self.btn_delete_history.setObjectName(u'btn_delete_history')
+            size_policy.setHeightForWidth(self.btn_delete_history.sizePolicy().hasHeightForWidth())
+            self.btn_delete_history.setSizePolicy(size_policy)
+            self.btn_delete_history.setMinimumSize(QSize(0, 45))
+            self.btn_delete_history.setFont(font)
+            self.btn_delete_history.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.btn_delete_history.setLayoutDirection(Qt.LeftToRight)
+            self.btn_delete_history.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-notes.png);')
+            self.verticalLayout_14.addWidget(self.btn_delete_history)
+
+            self.btn_delete_user.setObjectName(u'btn_delete_user')
+            size_policy.setHeightForWidth(self.btn_delete_user.sizePolicy().hasHeightForWidth())
+            self.btn_delete_user.setSizePolicy(size_policy)
+            self.btn_delete_user.setMinimumSize(QSize(0, 45))
+            self.btn_delete_user.setFont(font)
+            self.btn_delete_user.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.btn_delete_user.setLayoutDirection(Qt.LeftToRight)
+            self.btn_delete_user.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-user-unfollow.png);')
+            self.verticalLayout_14.addWidget(self.btn_delete_user)
+
             self.btn_logout.setObjectName(u'btn_logout')
             size_policy.setHeightForWidth(self.btn_logout.sizePolicy().hasHeightForWidth())
             self.btn_logout.setSizePolicy(size_policy)
@@ -1345,6 +1410,9 @@ class UIMainWindow(object):
             self.btn_logout.setLayoutDirection(Qt.LeftToRight)
             self.btn_logout.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-account-logout.png);')
             self.verticalLayout_14.addWidget(self.btn_logout)
+
+            self.btn_register.hide()
+            self.btn_login.hide()
 
         self.verticalLayout_13.addWidget(self.topMenus, 0, Qt.AlignTop)
 
@@ -1507,7 +1575,7 @@ class UIMainWindow(object):
 
         # 登录注册页面
         self.register_page = RegisterPage(self.interface)
-        self.login_page = LoginPage(self.interface)
+        self.login_page = LoginPage(self.interface, self)
         self.stackedWidget.addWidget(self.login_page)
         self.stackedWidget.addWidget(self.register_page)
 
@@ -1732,5 +1800,10 @@ class UIMainWindow(object):
             self.btn_register.setText(QCoreApplication.translate('MainWindow', u'\u7528\u6237\u6ce8\u518c', None))
         else:
             self.btn_logout.setText(QCoreApplication.translate('MainWindow', u'\u9000\u51fa\u767b\u5f55', None))
+            self.btn_change_password.setText(QCoreApplication.translate('MainWindow', u'修改密码', None))
+            self.btn_change_username.setText(QCoreApplication.translate('MainWindow', u'修改用户名', None))
+            self.btn_delete_user.setText(QCoreApplication.translate('MainWindow', u'注销账号', None))
+            self.btn_delete_cache.setText(QCoreApplication.translate('MainWindow', u'清除缓存', None))
+            self.btn_delete_history.setText(QCoreApplication.translate('MainWindow', u'清除历史', None))
         self.creditsLabel.setText(QCoreApplication.translate('MainWindow', u'By: XuanYu_Master', None))
         self.version.setText(QCoreApplication.translate('MainWindow', u'v0.8.1', None))

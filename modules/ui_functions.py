@@ -1,6 +1,12 @@
 # MAIN FILE
 # ///////////////////////////////////////////////////////////////
-from main import *
+from PySide6.QtCore import QPropertyAnimation, QEasingCurve, QParallelAnimationGroup, QEvent, QTimer
+from PySide6.QtGui import QIcon, Qt, QColor
+from PySide6.QtWidgets import QPushButton, QGraphicsDropShadowEffect, QSizeGrip
+
+from main import MainWindow
+from modules import Settings
+from widgets import CustomGrip
 
 # GLOBALS
 # ///////////////////////////////////////////////////////////////

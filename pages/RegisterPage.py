@@ -1,4 +1,4 @@
-from PySide6.QtGui import Qt
+from PySide6.QtGui import Qt, QIcon
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 import re
 
@@ -13,16 +13,15 @@ class RegisterPage(QWidget):
         self.setStyleSheet('background-color: rgb(40, 44, 52);')
         self.init_ui()
 
-    # noinspection DuplicatedCode
     def init_ui(self):
         layout = QVBoxLayout(self)
         layout.setSpacing(20)
         layout.setContentsMargins(50, 50, 50, 50)
 
-        title = QLabel('注册', self)
-        title.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet('font-size: 24px; color: rgb(221, 221, 221);')
-        layout.addWidget(title)
+        app_icon = QLabel(self)
+        app_icon.setAlignment(Qt.AlignCenter)
+        app_icon.setPixmap(QIcon("./images/images/stockkk_vertical.jpg").pixmap(235, 246))  # 替换为你的图标路径和大小
+        layout.addWidget(app_icon)
 
         self.username_input = QLineEdit(self)
         self.username_input.setPlaceholderText('用户名')

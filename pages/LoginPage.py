@@ -1,28 +1,28 @@
-from PySide6.QtGui import Qt
+from PySide6.QtGui import Qt, QIcon
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
-
 from exceptions.WrongUsernameException import WrongUsernameException
 from exceptions.WrongPassWordException import WrongPassWordException
 
 
 class LoginPage(QWidget):
-    def __init__(self, interface):
+    def __init__(self, interface, ui_main_window):
         super().__init__()
         self.interface = interface
+        self.ui_main_window = ui_main_window
         self.setObjectName("login_page")
         self.setStyleSheet("background-color: rgb(40, 44, 52);")
         self.init_ui()
 
-    # noinspection DuplicatedCode
     def init_ui(self):
         layout = QVBoxLayout(self)
         layout.setSpacing(20)
         layout.setContentsMargins(50, 50, 50, 50)
 
-        title = QLabel("登录", self)
-        title.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet("font-size: 24px; color: rgb(221, 221, 221);")
-        layout.addWidget(title)
+        # 添加应用程序图标
+        app_icon = QLabel(self)
+        app_icon.setAlignment(Qt.AlignCenter)
+        app_icon.setPixmap(QIcon("./images/images/stockkk_vertical.jpg").pixmap(280, 295))  # 替换为你的图标路径和大小
+        layout.addWidget(app_icon)
 
         self.username_input = QLineEdit(self)
         self.username_input.setPlaceholderText("用户名")
@@ -45,10 +45,14 @@ class LoginPage(QWidget):
 
     def login(self):
         try:
+            import main
             self.interface.user_login(self.username_input.text(), self.password_input.text())
             QMessageBox.information(self, "成功", "登录成功")
-            # TODO
-            # main_window = MainWindow(self.interface, user)
-            # main_window.show()
+
+            self.new_main_window = main.MainWindow(self.interface)
+            self.interface.change_window(self.new_main_window)
+            self.new_main_window.show()
+
+
         except (WrongUsernameException, WrongPassWordException):
             QMessageBox.warning(self, "错误", "用户名或密码错误")

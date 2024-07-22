@@ -1,6 +1,7 @@
 # MAIN FILE
 # ///////////////////////////////////////////////////////////////
 from main import *
+from modules import Settings
 
 
 # WITH ACCESS TO MAIN WINDOW WIDGETS
