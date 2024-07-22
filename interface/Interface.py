@@ -176,7 +176,8 @@ class Interface:
         self.__connection.commit()
 
     def store_chart_into_db(self, stock_code, chart_type, chart_html):
-        self.__cur_user.store_chart_into_user_db(stock_code, chart_type, chart_html)
+        if self.__cur_user is not None:
+            self.__cur_user.store_chart_into_user_db(stock_code, chart_type, chart_html)
         sql = f'''
             insert into stocks (stock_code, {chart_type.get_chart_type_name()})
             values (%s, %s)

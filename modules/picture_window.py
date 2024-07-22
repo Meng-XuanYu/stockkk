@@ -1,6 +1,7 @@
-from PySide6.QtWebEngineWidgets import QWebEngineView
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton
+import csv
 from PySide6.QtCore import QSize
+from PySide6.QtWebEngineWidgets import QWebEngineView
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog
 
 
 class ChartDisplayWindow(QWidget):
@@ -9,7 +10,7 @@ class ChartDisplayWindow(QWidget):
         self.setWindowTitle("Chart Display")
         self.setMinimumSize(QSize(800, 600))
         self.html = html
-        self.data = data
+        self.data = data.get_data_frame()
 
         self.setStyleSheet('''
             QWidget {
@@ -40,22 +41,7 @@ class ChartDisplayWindow(QWidget):
         self.webEngineView = QWebEngineView()
         main_layout.addWidget(self.webEngineView)
 
-        # 调整 HTML 内容的颜色
-        html1 = f'''
-        <html>
-        <head>
-            <style>
-                body {{
-                    background-color: rgb(40, 44, 52);
-                    color: rgb(221, 221, 221);
-                }}
-            </style>
-        </head>
-        </html>
-        '''
-        self.webEngineView.setHtml(html1)
         self.webEngineView.setHtml(self.html)
-
         self.export_data_button = QPushButton("导出股票数据")
         self.export_table_button = QPushButton("导出表格文件")
 
@@ -70,9 +56,19 @@ class ChartDisplayWindow(QWidget):
         self.export_table_button.clicked.connect(self.export_table)
 
     def export_data(self):
-        # todo 实现导出股票数据的逻辑
-        print("导出股票数据")
+        # 实现导出股票数据的逻辑
+        file_path, _ = QFileDialog.getSaveFileName(None, "保存股票数据文件", "", "CSV files (*.csv);;All files (*)")
+
+        with open(file_path, mode='w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerow(self.data[0].keys())  # 写入表头
+            for row in self.data:
+                writer.writerow(row.values())
 
     def export_table(self):
-        # todo 实现导出表格文件的逻辑
-        print("导出表格文件")
+        # 弹出文件选择对话框，让用户选择存储路径
+        file_path, _ = QFileDialog.getSaveFileName(None, "保存表格文件", "", "HTML files (*.html);;All files (*)")
+
+        # 实现导出表格文件的逻辑
+        with open(file_path, mode='w', encoding='utf-8') as file:
+            file.write(self.html)

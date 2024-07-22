@@ -1,59 +1,9 @@
-from interface.ChartType import ChartType
 from pyecharts import options as opts
 from pyecharts.charts import Kline, Bar, Scatter, Line, Grid
-from pyecharts.globals import CurrentConfig, ThemeType
+from pyecharts.globals import ThemeType
 
-# 定义自定义主题
-custom_theme = '''
-    "backgroundColor": "#1e1e1e",
-    "textStyle": {
-        "color": "#ffffff"
-    },
-    "title": {
-        "textStyle": {
-            "color": "#ffffff"
-        },
-        "subtextStyle": {
-            "color": "#ffffff"
-        }
-    },
-    "line": {
-        "lineStyle": {
-            "color": "#ffffff"
-        }
-    },
-    "xAxis": {
-        "axisLine": {
-            "lineStyle": {
-                "color": "#ffffff"
-            }
-        },
-        "axisLabel": {
-            "color": "#ffffff"
-        }
-    },
-    "yAxis": {
-        "axisLine": {
-            "lineStyle": {
-                "color": "#ffffff"
-            }
-        },
-        "axisLabel": {
-            "color": "#ffffff"
-        }
-    },
-    "tooltip": {
-        "backgroundColor": "#333333",
-        "textStyle": {
-            "color": "#ffffff"
-        }
-    },
-    "dataZoom": {
-        "backgroundColor": "#333333",
-        "dataBackgroundColor": "#555555",
-        "fillerColor": "rgba(255,255,255,0.1)",
-        "handleColor": "#ffffff"
-    }'''
+from interface.ChartType import ChartType
+
 
 def create_chart(stock, chart_type):
     chart = stock.get_chart(chart_type)
@@ -82,7 +32,7 @@ def create_open_close_chart(stock_data):
     close_prices = stock_data['收盘价'].tolist()
 
     bar = Bar(
-        init_opts=opts.InitOpts(theme=custom_theme, width='100%', height='500%'))  # 设置响应式布局
+        init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%'))  # 设置响应式布局
     bar.add_xaxis(dates)
     bar.add_yaxis('开盘价', open_prices, label_opts=opts.LabelOpts(is_show=False))  # 不显示数值
     bar.add_yaxis('收盘价', close_prices, label_opts=opts.LabelOpts(is_show=False))  # 不显示数值
@@ -107,7 +57,7 @@ def create_total_volume_chart(stock_data):
     volumes = stock_data['交易量'].tolist()
 
     bar = Bar(
-        init_opts=opts.InitOpts(theme=custom_theme, width='100%', height='500%'))
+        init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%'))
     bar.add_xaxis(dates)
     bar.add_yaxis('交易量', volumes, label_opts=opts.LabelOpts(is_show=False))
     bar.set_global_opts(
@@ -131,7 +81,7 @@ def create_high_price_chart(stock_data):
     high_prices = stock_data['最高价'].tolist()
 
     line = Line(
-        init_opts=opts.InitOpts(theme=custom_theme, width='100%', height='500%'))
+        init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%'))
     line.add_xaxis(dates)
     line.add_yaxis('最高价', high_prices, label_opts=opts.LabelOpts(is_show=False))
     line.set_global_opts(
@@ -155,7 +105,7 @@ def create_low_price_chart(stock_data):
     dates = stock_data['日期'].tolist()
     low_prices = stock_data['最低价'].tolist()
 
-    line = Line(init_opts=opts.InitOpts(theme=custom_theme, width='100%', height='500%'))
+    line = Line(init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%'))
     line.add_xaxis(dates)
     line.add_yaxis('最低价', low_prices, label_opts=opts.LabelOpts(is_show=False))
     line.set_global_opts(
@@ -179,7 +129,7 @@ def create_compound_growth_chart(stock_data):
     growths = stock_data['涨跌幅'].tolist()
 
     bar = Bar(
-        init_opts=opts.InitOpts(theme=custom_theme, width='100%', height='500%'))
+        init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%'))
     bar.add_xaxis(dates)
     bar.add_yaxis('涨跌幅', growths, label_opts=opts.LabelOpts(is_show=False))
     bar.set_global_opts(
@@ -202,7 +152,7 @@ def create_amplitude_scatter_chart(stock_data):
     dates = stock_data['日期'].tolist()
     amplitudes = stock_data['振幅'].tolist()
 
-    scatter = Scatter(init_opts=opts.InitOpts(theme=custom_theme, width='100%', height='500%'))
+    scatter = Scatter(init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%'))
     scatter.add_xaxis(dates)
     scatter.add_yaxis('振幅', amplitudes, label_opts=opts.LabelOpts(is_show=False))
     scatter.set_global_opts(
@@ -226,7 +176,7 @@ def create_turnover_rate_chart(stock_data):
     turnover_rates = stock_data['换手率'].tolist()
 
     bar = Bar(
-        init_opts=opts.InitOpts(theme=custom_theme, width='100%', height='500%'))
+        init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%'))
     bar.add_xaxis(dates)
     bar.add_yaxis('换手率', turnover_rates, label_opts=opts.LabelOpts(is_show=False))
     bar.set_global_opts(
@@ -248,7 +198,7 @@ def create_turnover_rate_chart(stock_data):
 def create_kline_chart(stock_data):
     dates = stock_data['日期'].tolist()
 
-    kline = Kline(init_opts=opts.InitOpts(theme=custom_theme, width='100%', height='500%'))
+    kline = Kline(init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%'))
     kline.add_xaxis(dates)
     kline.add_yaxis(
         'K线图',
@@ -300,7 +250,7 @@ def create_kline_chart(stock_data):
     kline.overlap(line_ma10)
     kline.overlap(line_ma20)
 
-    grid = Grid(init_opts=opts.InitOpts(theme=custom_theme, width='100%', height='500%'))
+    grid = Grid(init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%'))
     grid.add(
         kline,
         grid_opts=opts.GridOpts(pos_left='10%', pos_right='10%', height='60%'),
