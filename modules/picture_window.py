@@ -59,16 +59,11 @@ class ChartDisplayWindow(QWidget):
         # 实现导出股票数据的逻辑
         file_path, _ = QFileDialog.getSaveFileName(None, "保存股票数据文件", "", "CSV files (*.csv);;All files (*)")
 
-        with open(file_path, mode='w', newline='', encoding='utf-8') as file:
-            writer = csv.writer(file)
-            writer.writerow(self.data[0].keys())  # 写入表头
-            for row in self.data:
-                writer.writerow(row.values())
+        if file_path:
+            self.data.to_csv(file_path, index=False, encoding='utf-8', quoting=csv.QUOTE_NONNUMERIC)
 
     def export_table(self):
-        # 弹出文件选择对话框，让用户选择存储路径
         file_path, _ = QFileDialog.getSaveFileName(None, "保存表格文件", "", "HTML files (*.html);;All files (*)")
 
-        # 实现导出表格文件的逻辑
         with open(file_path, mode='w', encoding='utf-8') as file:
             file.write(self.html)
