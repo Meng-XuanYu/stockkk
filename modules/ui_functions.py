@@ -190,6 +190,10 @@ class UIFunctions(MainWindow):
             if w.objectName() != widget:
                 w.setStyleSheet(UIFunctions.deselect_menu(w.styleSheet()))
 
+        for w in self.ui.topMenus.findChildren(QPushButton):
+            if w.objectName() != widget:
+                w.setStyleSheet(UIFunctions.deselect_menu(w.styleSheet()))
+
     # START - GUI DEFINITIONS
     # ///////////////////////////////////////////////////////////////
     def ui_definitions(self):
