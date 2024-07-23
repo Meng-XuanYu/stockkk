@@ -21,6 +21,7 @@ class Interface:
         self.__connection = None
         self.__cursor = None
         self.__connect_to_database()
+        self.__load_user_info()
         self.__cur_user = None
         self.__window = window
         self.__set_default_file_name()
@@ -175,7 +176,6 @@ class Interface:
             raise WrongUsernameException('未找到用户名')
 
     def create_user(self, username, password):
-        self.__load_user_info()
         if username in self.__users:
             raise WrongUsernameException('用户名重复')
         else:
@@ -229,7 +229,8 @@ class Interface:
         self.__connection.commit()
 
     def store_chart_into_user_db_only(self, stock_code, chart_type, chart_html):
-        self.__cur_user.store_chart_into_user_db(stock_code, chart_type, chart_html, self.__file_name)
+        if self.__cur_user is not None:
+            self.__cur_user.store_chart_into_user_db(stock_code, chart_type, chart_html, self.__file_name)
 
     def get_chart_from_db(self, stock_code, chart_type):
         # TODO

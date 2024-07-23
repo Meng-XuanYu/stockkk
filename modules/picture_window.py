@@ -56,7 +56,6 @@ class ChartDisplayWindow(QWidget):
         self.export_table_button.clicked.connect(self.export_table)
 
     def export_data(self):
-        # 实现导出股票数据的逻辑
         file_path, _ = QFileDialog.getSaveFileName(None, "保存股票数据文件", "", "CSV files (*.csv);;All files (*)")
 
         if file_path:

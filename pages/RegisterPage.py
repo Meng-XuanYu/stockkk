@@ -1,6 +1,8 @@
 import re
 from PySide6.QtGui import Qt, QPixmap
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QSizePolicy
+
+import main
 from exceptions.WrongUsernameException import WrongUsernameException
 
 
@@ -92,7 +94,11 @@ class RegisterPage(QWidget):
             except WrongUsernameException:
                 QMessageBox.warning(self, "注册失败", "用户名已存在，请重试。")
                 return
-            QMessageBox.information(self, '成功', '注册成功')
+            QMessageBox.information(self, '成功', '注册成功,已自动登录。')
+            self.interface.user_login(self.username_input.text(), self.password_input.text())
+            self.new_main_window = main.MainWindow(self.interface)
+            self.interface.change_window(self.new_main_window)
+            self.new_main_window.show()
             self.close()
         else:
             QMessageBox.warning(self, '错误', '密码不匹配')

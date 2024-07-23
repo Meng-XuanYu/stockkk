@@ -2,6 +2,7 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
+import main
 from exceptions.StockDataNotFoundException import StockDataNotFoundException
 from exceptions.StockCodeNotFoundException import StockCodeNotFoundException
 from interface.Interface import Interface
@@ -1851,3 +1852,6 @@ class UIMainWindow(object):
         result = msg_box.exec_()
         if result == QMessageBox.Yes:
             self.interface.user_delete()
+            self.new_main_window = main.MainWindow(self.interface)
+            self.interface.change_window(self.new_main_window)
+            self.new_main_window.show()
