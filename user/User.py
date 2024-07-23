@@ -59,19 +59,13 @@ class User:
                 log_time datetime default current_timestamp
             );
         ''')
-        # TODO
-        # 对于user的历史记录，应当记录文件路径等更多内容
         self.__cursor.execute('''
             create table if not exists chart_records (
-                stock_code varchar(50) primary key,
-                open_close longtext default null,
-                total_volume longtext default null,
-                high_price longtext default null,
-                low_price longtext default null,
-                compound_growth longtext default null,
-                amplitude_scatter longtext default null,
-                turnover_rate longtext default null,
-                kline longtext default null
+                store_time datetime primary key default current_timestamp,
+                stock_code varchar(50),
+                chart_type varchar(50),
+                chart longtext,
+                file_name varchar(260)
             );
         ''')
         self.__cursor.execute('''
@@ -97,11 +91,9 @@ class User:
             truncate table chart_records;
         ''')
 
-    def store_chart_into_user_db(self, stock_code, chart_type, chart_html):
+    def store_chart_into_user_db(self, stock_code, chart_type, chart_html, file_name):
         sql = f'''
-            insert into chart_records (stock_code, {chart_type.get_chart_type_name()})
-            values (%s, %s)
-            on duplicate key update {chart_type.get_chart_type_name()} = values ({chart_type.get_chart_type_name()});
+            insert ignore into chart_records (stock_code, chart_type, chart, file_name) values (%s, %s, %s, %s)
         '''
-        self.__cursor.execute(sql, (stock_code, chart_html))
+        self.__cursor.execute(sql, (stock_code, chart_type.get_chart_type_name(), chart_html, file_name))
         self.__connection.commit()

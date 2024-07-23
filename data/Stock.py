@@ -22,6 +22,8 @@ class Stock:
                 return None
             else:
                 self.__charts[chart_type] = chart
+                self.__interface.store_chart_into_user_db_only(self.__stock_code, chart_type, chart)
                 return chart
         else:
+            self.__interface.store_chart_into_user_db_only(self.__stock_code, chart_type, self.__charts[chart_type])
             return self.__charts[chart_type]

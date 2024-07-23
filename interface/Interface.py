@@ -101,7 +101,7 @@ class Interface:
             );
         ''')
         self.__cursor.execute(f'''
-            insert ignore into default_file_name (magic_num) values (%s)
+            insert ignore into default_file_name (magic_num) values (%s);
         ''', (self.__magic_num,))
         self.__connection.commit()
 
@@ -115,7 +115,7 @@ class Interface:
         if file_name != self.__file_name:
             self.__file_name = file_name
             self.__cursor.execute(f'''
-                update default_file_name set file_name = %s where magic_num = %s
+                update default_file_name set file_name = %s where magic_num = %s;
             ''', (file_name, self.__magic_num))
             self.__connection.commit()
             self.__cursor.execute('''
@@ -208,7 +208,7 @@ class Interface:
 
     def store_chart_into_db(self, stock_code, chart_type, chart_html):
         if self.__cur_user is not None:
-            self.__cur_user.store_chart_into_user_db(stock_code, chart_type, chart_html)
+            self.__cur_user.store_chart_into_user_db(stock_code, chart_type, chart_html, self.__file_name)
         sql = f'''
             insert into stocks (stock_code, {chart_type.get_chart_type_name()})
             values (%s, %s)
@@ -216,6 +216,9 @@ class Interface:
         '''
         self.__cursor.execute(sql, (stock_code, chart_html))
         self.__connection.commit()
+
+    def store_chart_into_user_db_only(self, stock_code, chart_type, chart_html):
+        self.__cur_user.store_chart_into_user_db(stock_code, chart_type, chart_html, self.__file_name)
 
     def get_chart_from_db(self, stock_code, chart_type):
         # TODO
