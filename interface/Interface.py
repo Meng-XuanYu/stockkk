@@ -202,7 +202,7 @@ class Interface:
     def change_user_password(self, user, new_password):
         user.change_password(new_password)
         self.__cursor.execute(f'''
-            update users set password = %s where username = %s;
+            update users set encrypted_password = %s where username = %s;
         ''', (user.get_encrypted_password(), user.get_name()))
         self.__connection.commit()
 
@@ -235,3 +235,6 @@ class Interface:
 
     def set_window(self, window):
         self.__window = window
+
+    def get_window(self):
+        return self.__window

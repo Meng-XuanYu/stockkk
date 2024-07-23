@@ -7,6 +7,8 @@ from exceptions.StockDataNotFoundException import StockDataNotFoundException
 from exceptions.StockCodeNotFoundException import StockCodeNotFoundException
 from interface.Interface import Interface
 from interface.ChartType import ChartType
+from pages.ChangePasswordPage import ChangePasswordPage
+from pages.ChangeUsernamePage import ChangeUsernamePage
 from pages.LoginPage import LoginPage
 from pages.RegisterPage import RegisterPage
 from . import picture_generator
@@ -1575,9 +1577,16 @@ class UIMainWindow(object):
 
         # 登录注册页面
         self.register_page = RegisterPage(self.interface)
-        self.login_page = LoginPage(self.interface, self)
+        self.login_page = LoginPage(self.interface)
         self.stackedWidget.addWidget(self.login_page)
         self.stackedWidget.addWidget(self.register_page)
+
+        self.change_password_page = ChangePasswordPage(self.interface)
+        self.stackedWidget.addWidget(self.change_password_page)
+
+        self.change_username_page = ChangeUsernamePage(self.interface)
+        self.stackedWidget.addWidget(self.change_username_page)
+
 
         # 最后的处理
         self.retranslate_ui(main_window)

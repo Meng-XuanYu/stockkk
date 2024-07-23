@@ -10,18 +10,20 @@ widgets = None
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, interface=None):
+    def __init__(self, interface=None, first_time=False):
         from modules import UIMainWindow, Settings, UIFunctions, AppFunctions
         QMainWindow.__init__(self)
 
         if interface is None:
+            self.interface = Interface()
             self.ui = UIMainWindow()
         else:
+            self.interface = interface
             self.ui = UIMainWindow(interface)
         self.ui.setup_ui(self)
         global widgets
         widgets = self.ui
-        if interface is None:
+        if first_time:
             app.setWindowIcon(QIcon('images/images/stockkk.jpg'))
 
         # mac用false, windows用true，windows效果好一点
@@ -48,6 +50,11 @@ class MainWindow(QMainWindow):
         widgets.btn_login.clicked.connect(self.button_click)
         widgets.btn_logout.clicked.connect(self.button_click)
         widgets.btn_register.clicked.connect(self.button_click)
+        widgets.btn_change_password.clicked.connect(self.button_click)
+        widgets.btn_change_username.clicked.connect(self.button_click)
+        widgets.btn_delete_user.clicked.connect(self.button_click)
+        widgets.btn_delete_cache.clicked.connect(self.button_click)
+        widgets.btn_delete_history.clicked.connect(self.button_click)
 
         # 左边栏动画是否开启
         def open_close_left_box():
@@ -99,12 +106,33 @@ class MainWindow(QMainWindow):
             btn.setStyleSheet(UIFunctions.select_menu(btn.styleSheet()))
 
         if btn_name == 'btn_logout':
-            pass
+            new_window = MainWindow()
+            self.interface.change_window(new_window)
+            new_window.show()
 
         if btn_name == 'btn_register':
             widgets.stackedWidget.setCurrentWidget(widgets.register_page)
             UIFunctions.reset_style(self, btn_name)
             btn.setStyleSheet(UIFunctions.select_menu(btn.styleSheet()))
+
+        if btn_name == 'btn_change_password':
+            widgets.stackedWidget.setCurrentWidget(widgets.change_password_page)
+            UIFunctions.reset_style(self, btn_name)
+            btn.setStyleSheet(UIFunctions.select_menu(btn.styleSheet()))
+
+        if btn_name == 'btn_change_username':
+            widgets.stackedWidget.setCurrentWidget(widgets.change_username_page)
+            UIFunctions.reset_style(self, btn_name)
+            btn.setStyleSheet(UIFunctions.select_menu(btn.styleSheet()))
+
+        if btn_name == 'btn_delete_user':
+            pass
+
+        if btn_name == 'btn_delete_cache':
+            pass
+
+        if btn_name == 'btn_delete_history':
+            pass
 
     # 实时变化
     def resizeEvent(self, event):
@@ -114,12 +142,20 @@ class MainWindow(QMainWindow):
     def mousePressEvent(self, event):
         self.dragPos = event.globalPosition().toPoint()
 
+    def back_home_page(self):
+        from modules import UIFunctions
+        global widgets
+        widgets = self.ui
+        widgets.stackedWidget.setCurrentWidget(widgets.home_page)
+        UIFunctions.reset_style(self, 'btn_home')
+
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon('icon.ico'))
     interface = Interface()
-    window = MainWindow(interface)
+    window = MainWindow(interface, first_time=True)
     interface.set_window(window)
     window.show()
     sys.exit(app.exec())

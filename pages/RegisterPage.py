@@ -1,7 +1,6 @@
-from PySide6.QtGui import Qt, QIcon
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 import re
-
+from PySide6.QtGui import Qt, QPixmap
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QSizePolicy
 from exceptions.WrongUsernameException import WrongUsernameException
 
 
@@ -15,19 +14,31 @@ class RegisterPage(QWidget):
 
     def init_ui(self):
         layout = QVBoxLayout(self)
-        layout.setSpacing(20)
         layout.setContentsMargins(50, 50, 50, 50)
 
-        app_icon = QLabel(self)
-        app_icon.setAlignment(Qt.AlignCenter)
-        app_icon.setPixmap(QIcon("./images/images/stockkk_vertical.jpg").pixmap(235, 246))  # 替换为你的图标路径和大小
-        layout.addWidget(app_icon)
+        self.app_icon = QLabel(self)
+        self.app_icon.setAlignment(Qt.AlignCenter)
+        self.app_icon.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.app_icon.setPixmap(QPixmap("./images/images/stockkk_vertical.jpg"))
+        self.app_icon.adjustSize()
+        layout.addWidget(self.app_icon)
+
+        layout.addSpacing(10)
 
         self.username_input = QLineEdit(self)
         self.username_input.setPlaceholderText('用户名')
         self.username_input.setStyleSheet(
             'background-color: rgb(33, 37, 43); color: rgb(221, 221, 221); border-radius: 5px; padding: 10px;')
         layout.addWidget(self.username_input)
+
+        layout.addSpacing(3)
+
+        username_requirements = QLabel(
+            '用户名要求：6-20个字符，只能包含字母、数字和下划线', self)
+        username_requirements.setStyleSheet('color: rgb(150, 150, 150);')  # 将文字颜色调成灰色
+        layout.addWidget(username_requirements)
+
+        layout.addSpacing(10)
 
         self.password_input = QLineEdit(self)
         self.password_input.setPlaceholderText('密码')
@@ -36,6 +47,13 @@ class RegisterPage(QWidget):
             'background-color: rgb(33, 37, 43); color: rgb(221, 221, 221); border-radius: 5px; padding: 10px;')
         layout.addWidget(self.password_input)
 
+        layout.addSpacing(3)
+
+        password_requirements = QLabel(
+            '密码要求：8-20个字符，必须包含至少一个大写字母、一个小写字母、一个数字和一个特殊字符', self)
+        password_requirements.setStyleSheet('color: rgb(150, 150, 150);')  # 将文字颜色调成灰色
+        layout.addWidget(password_requirements)
+
         self.confirm_password_input = QLineEdit(self)
         self.confirm_password_input.setPlaceholderText('确认密码')
         self.confirm_password_input.setEchoMode(QLineEdit.Password)
@@ -43,11 +61,19 @@ class RegisterPage(QWidget):
             'background-color: rgb(33, 37, 43); color: rgb(221, 221, 221); border-radius: 5px; padding: 10px;')
         layout.addWidget(self.confirm_password_input)
 
+        layout.addSpacing(10)
+
         self.register_button = QPushButton('注册', self)
         self.register_button.setStyleSheet(
-            'background-color: rgb(52, 59, 72); color: rgb(221, 221, 221); border-radius: 5px; padding: 10px;')
+            'background-color: rgb(52, 59, 72); color: rgb(221, 221, 221); border-radius: 5px; padding: 10px; font-size: 18px;')
         self.register_button.clicked.connect(self.register)
         layout.addWidget(self.register_button)
+
+    def resizeEvent(self, event):
+        pixmap = QPixmap("./images/images/stockkk_vertical.jpg")
+        scaled_pixmap = pixmap.scaled(self.app_icon.width(), self.app_icon.height(), Qt.KeepAspectRatio)
+        self.app_icon.setPixmap(scaled_pixmap)
+        super().resizeEvent(event)
 
     def register(self):
         username = self.username_input.text()
