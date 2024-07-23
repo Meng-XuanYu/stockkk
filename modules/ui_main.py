@@ -1828,8 +1828,7 @@ class UIMainWindow(object):
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         result = msg_box.exec_()
         if result == QMessageBox.Yes:
-            # TODO: Implement delete_history function
-            pass
+            self.interface.get_current_user().clear_log_records()
 
     def delete_cache(self):
         msg_box = QMessageBox()
@@ -1840,8 +1839,7 @@ class UIMainWindow(object):
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         result = msg_box.exec_()
         if result == QMessageBox.Yes:
-            # TODO: Implement delete_cache function
-            pass
+            self.interface.get_current_user().clear_chart_records()
 
     def delete_user(self):
         msg_box = QMessageBox()
@@ -1852,5 +1850,4 @@ class UIMainWindow(object):
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         result = msg_box.exec_()
         if result == QMessageBox.Yes:
-            # TODO: Implement delete_user function
-            pass
+            self.interface.user_delete()

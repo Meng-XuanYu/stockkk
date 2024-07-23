@@ -97,3 +97,9 @@ class User:
         '''
         self.__cursor.execute(sql, (stock_code, chart_type.get_chart_type_name(), chart_html, file_name))
         self.__connection.commit()
+
+    def delete(self):
+        self.__cursor.execute(f'''
+            drop database stockkk_user_{self.__username};
+        ''')
+        self.__connection.commit()

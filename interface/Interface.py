@@ -142,13 +142,24 @@ class Interface:
         ''', (username,))
         self.__connection.commit()
 
-    def user_logout(self, username):
+    def user_logout(self):
+        username = self.__cur_user.get_name()
         self.__cur_user.logout()
         self.__cur_user = None
         self.__cursor.execute(f'''
             insert into log_records (username, is_login) values (%s, false);
         ''', (username,))
         self.__connection.commit()
+
+    def user_delete(self):
+        username = self.__cur_user.get_name()
+        self.__cursor.execute(f'''
+            delete from users where username = %s;
+        ''', (username,))
+        self.__connection.commit()
+        self.__cur_user.delete()
+        self.__cur_user = None
+        del self.__users[username]
 
     def get_current_user(self):
         return self.__cur_user
@@ -241,6 +252,3 @@ class Interface:
 
     def get_window(self):
         return self.__window
-
-    def logout(self):
-        self.__cur_user = None
