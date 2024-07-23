@@ -241,3 +241,6 @@ class Interface:
 
     def get_window(self):
         return self.__window
+
+    def logout(self):
+        self.__cur_user = None

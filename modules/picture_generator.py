@@ -32,7 +32,7 @@ def create_open_close_chart(stock_data):
     close_prices = stock_data['收盘价'].tolist()
 
     bar = Bar(
-        init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%'))  # 设置响应式布局
+        init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%', bg_color='rgb(40, 44, 52)', is_fill_bg_color=True))  # 设置响应式布局
     bar.add_xaxis(dates)
     bar.add_yaxis('开盘价', open_prices, label_opts=opts.LabelOpts(is_show=False))  # 不显示数值
     bar.add_yaxis('收盘价', close_prices, label_opts=opts.LabelOpts(is_show=False))  # 不显示数值
@@ -48,7 +48,6 @@ def create_open_close_chart(stock_data):
         datazoom_opts=[opts.DataZoomOpts(type_='inside')],
         toolbox_opts=opts.ToolboxOpts(is_show=True, feature={'dataZoom': {'yAxisIndex': 'none'}})
     )
-
     return bar.render_embed()
 
 

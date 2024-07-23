@@ -112,7 +112,8 @@ class MainWindow(QMainWindow):
             msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             result = msg_box.exec_()
             if result == QMessageBox.Yes:
-                new_window = MainWindow()
+                self.interface.logout()
+                new_window = MainWindow(self.interface)
                 self.interface.change_window(new_window)
                 new_window.show()
 
