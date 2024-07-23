@@ -702,6 +702,18 @@ class UIMainWindow(object):
 
         self.verticalLayout_8.addWidget(self.btn_history)
 
+        self.btn_delete_cache = QPushButton(self.topMenu)
+        self.btn_delete_cache.setObjectName(u'btn_delete_cache')
+        size_policy.setHeightForWidth(self.btn_delete_cache.sizePolicy().hasHeightForWidth())
+        self.btn_delete_cache.setSizePolicy(size_policy)
+        self.btn_delete_cache.setMinimumSize(QSize(0, 45))
+        self.btn_delete_cache.setFont(font)
+        self.btn_delete_cache.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.btn_delete_cache.setLayoutDirection(Qt.LeftToRight)
+        self.btn_delete_cache.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-x-circle.png);')
+
+        self.verticalLayout_8.addWidget(self.btn_delete_cache)
+
         self.verticalMenuLayout.addWidget(self.topMenu, 0, Qt.AlignTop)
 
         self.bottomMenu = QFrame(self.leftMenuFrame)
@@ -1322,8 +1334,8 @@ class UIMainWindow(object):
         self.btn_change_password = QPushButton(self.topMenus)
         self.btn_change_username = QPushButton(self.topMenus)
         self.btn_delete_user = QPushButton(self.topMenus)
-        self.btn_delete_cache = QPushButton(self.topMenus)
-        self.btn_delete_history = QPushButton(self.topMenus)
+        self.btn_delete_chart_history = QPushButton(self.topMenus)
+        self.btn_delete_log_history = QPushButton(self.topMenus)
 
         if self.interface.get_current_user() is None:
             self.btn_login.setObjectName(u'btn_login')
@@ -1350,8 +1362,8 @@ class UIMainWindow(object):
             self.btn_change_password.hide()
             self.btn_change_username.hide()
             self.btn_delete_user.hide()
-            self.btn_delete_cache.hide()
-            self.btn_delete_history.hide()
+            self.btn_delete_chart_history.hide()
+            self.btn_delete_log_history.hide()
         else:
             self.btn_change_password.setObjectName(u'btn_change_password')
             size_policy.setHeightForWidth(self.btn_change_password.sizePolicy().hasHeightForWidth())
@@ -1373,25 +1385,25 @@ class UIMainWindow(object):
             self.btn_change_username.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-featured-playlist.png);')
             self.verticalLayout_14.addWidget(self.btn_change_username)
 
-            self.btn_delete_cache.setObjectName(u'btn_delete_cache')
-            size_policy.setHeightForWidth(self.btn_delete_cache.sizePolicy().hasHeightForWidth())
-            self.btn_delete_cache.setSizePolicy(size_policy)
-            self.btn_delete_cache.setMinimumSize(QSize(0, 45))
-            self.btn_delete_cache.setFont(font)
-            self.btn_delete_cache.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            self.btn_delete_cache.setLayoutDirection(Qt.LeftToRight)
-            self.btn_delete_cache.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-chart.png);')
-            self.verticalLayout_14.addWidget(self.btn_delete_cache)
+            self.btn_delete_chart_history.setObjectName(u'btn_delete_cache')
+            size_policy.setHeightForWidth(self.btn_delete_chart_history.sizePolicy().hasHeightForWidth())
+            self.btn_delete_chart_history.setSizePolicy(size_policy)
+            self.btn_delete_chart_history.setMinimumSize(QSize(0, 45))
+            self.btn_delete_chart_history.setFont(font)
+            self.btn_delete_chart_history.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.btn_delete_chart_history.setLayoutDirection(Qt.LeftToRight)
+            self.btn_delete_chart_history.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-chart.png);')
+            self.verticalLayout_14.addWidget(self.btn_delete_chart_history)
 
-            self.btn_delete_history.setObjectName(u'btn_delete_history')
-            size_policy.setHeightForWidth(self.btn_delete_history.sizePolicy().hasHeightForWidth())
-            self.btn_delete_history.setSizePolicy(size_policy)
-            self.btn_delete_history.setMinimumSize(QSize(0, 45))
-            self.btn_delete_history.setFont(font)
-            self.btn_delete_history.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            self.btn_delete_history.setLayoutDirection(Qt.LeftToRight)
-            self.btn_delete_history.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-notes.png);')
-            self.verticalLayout_14.addWidget(self.btn_delete_history)
+            self.btn_delete_log_history.setObjectName(u'btn_delete_history')
+            size_policy.setHeightForWidth(self.btn_delete_log_history.sizePolicy().hasHeightForWidth())
+            self.btn_delete_log_history.setSizePolicy(size_policy)
+            self.btn_delete_log_history.setMinimumSize(QSize(0, 45))
+            self.btn_delete_log_history.setFont(font)
+            self.btn_delete_log_history.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.btn_delete_log_history.setLayoutDirection(Qt.LeftToRight)
+            self.btn_delete_log_history.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-notes.png);')
+            self.verticalLayout_14.addWidget(self.btn_delete_log_history)
 
             self.btn_delete_user.setObjectName(u'btn_delete_user')
             size_policy.setHeightForWidth(self.btn_delete_user.sizePolicy().hasHeightForWidth())
@@ -1574,8 +1586,9 @@ class UIMainWindow(object):
         self.pushButton.clicked.connect(self.select_file)
         self.searchButton.clicked.connect(self.search_stock)
         self.searchButton_picture.clicked.connect(self.generate_chart)
-        self.btn_delete_history.clicked.connect(self.delete_history)
+        self.btn_delete_log_history.clicked.connect(self.delete_log_history)
         self.btn_delete_user.clicked.connect(self.delete_user)
+        self.btn_delete_chart_history.clicked.connect(self.delete_chart_history)
         self.btn_delete_cache.clicked.connect(self.delete_cache)
 
         # 登录注册页面
@@ -1689,6 +1702,7 @@ class UIMainWindow(object):
         self.toggleButton.setText(QCoreApplication.translate('MainWindow', u'隐藏', None))
         self.btn_home.setText(QCoreApplication.translate('MainWindow', u'主页', None))
         self.btn_read_data.setText(QCoreApplication.translate('MainWindow', u'读取数据', None))
+        self.btn_delete_cache.setText(QCoreApplication.translate('MainWindow', u'清除缓存', None))
         self.btn_history.setText(QCoreApplication.translate('MainWindow', u'历史记录', None))
         self.toggle_left_box.setText(QCoreApplication.translate('MainWindow', u'使用帮助', None))
         self.extraLabel.setText(QCoreApplication.translate('MainWindow', u'使用帮助', None))
@@ -1815,27 +1829,29 @@ class UIMainWindow(object):
             self.btn_change_password.setText(QCoreApplication.translate('MainWindow', u'修改密码', None))
             self.btn_change_username.setText(QCoreApplication.translate('MainWindow', u'修改用户名', None))
             self.btn_delete_user.setText(QCoreApplication.translate('MainWindow', u'注销账号', None))
-            self.btn_delete_cache.setText(QCoreApplication.translate('MainWindow', u'清除缓存', None))
-            self.btn_delete_history.setText(QCoreApplication.translate('MainWindow', u'清除历史', None))
+            self.btn_delete_chart_history.setText(QCoreApplication.translate('MainWindow', u'清除图片记录', None))
+            self.btn_delete_log_history.setText(QCoreApplication.translate('MainWindow', u'清除登录记录', None))
         self.creditsLabel.setText(QCoreApplication.translate('MainWindow', u'By: XuanYu_Master', None))
         self.version.setText(QCoreApplication.translate('MainWindow', u'v0.8.9', None))
 
-    def delete_history(self):
+    def delete_log_history(self):
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Question)
-        msg_box.setIconPixmap(QPixmap('images/images/stockkk.jpg'))
-        msg_box.setText("确定要删除历史记录吗？")
+        icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+        msg_box.setIconPixmap(icon_pixmap)
+        msg_box.setText("确定要删除登录历史记录吗？")
         msg_box.setWindowTitle("确认删除")
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         result = msg_box.exec_()
         if result == QMessageBox.Yes:
             self.interface.get_current_user().clear_log_records()
 
-    def delete_cache(self):
+    def delete_chart_history(self):
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Question)
-        msg_box.setIconPixmap(QPixmap('images/images/stockkk.jpg'))
-        msg_box.setText("确定要清除缓存吗？")
+        icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+        msg_box.setIconPixmap(icon_pixmap)
+        msg_box.setText("确定要删除图表记录吗？")
         msg_box.setWindowTitle("确认清除")
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         result = msg_box.exec_()
@@ -1845,7 +1861,8 @@ class UIMainWindow(object):
     def delete_user(self):
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Question)
-        msg_box.setIconPixmap(QPixmap('images/images/stockkk.jpg'))
+        icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+        msg_box.setIconPixmap(icon_pixmap)
         msg_box.setText("确定要注销账号吗？")
         msg_box.setWindowTitle("确认注销")
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
@@ -1855,3 +1872,16 @@ class UIMainWindow(object):
             self.new_main_window = main.MainWindow(self.interface)
             self.interface.change_window(self.new_main_window)
             self.new_main_window.show()
+
+    def delete_cache(self):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Question)
+        icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+        msg_box.setIconPixmap(icon_pixmap)
+        msg_box.setText("确定要清除缓存吗？")
+        msg_box.setWindowTitle("确认清除")
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        result = msg_box.exec_()
+        if result == QMessageBox.Yes:
+            # todo 清除缓存
+            pass

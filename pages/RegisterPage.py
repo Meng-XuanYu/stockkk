@@ -37,7 +37,7 @@ class RegisterPage(QWidget):
 
         username_requirements = QLabel(
             '用户名要求：6-20个字符，只能包含字母、数字和下划线', self)
-        username_requirements.setStyleSheet('color: rgb(150, 150, 150);')  # 将文字颜色调成灰色
+        username_requirements.setStyleSheet('color: rgb(150, 150, 150);')
         layout.addWidget(username_requirements)
 
         layout.addSpacing(10)
@@ -82,7 +82,14 @@ class RegisterPage(QWidget):
         password = self.password_input.text()
         confirm_password = self.confirm_password_input.text()
         if not username or not password or not confirm_password:
-            QMessageBox.warning(self, "注册失败", "用户名和密码不能为空")
+            information_box = QMessageBox()
+            information_box.setIcon(QMessageBox.Warning)
+            icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+            information_box.setIconPixmap(icon_pixmap)
+            information_box.setText("用户名或密码不能为空")
+            information_box.setWindowTitle("注册失败")
+            information_box.setStandardButtons(QMessageBox.Ok)
+            information_box.exec_()
             return
         elif not re.match(r'^[a-zA-Z0-9_]{6,20}$', username) or not re.match(
                 r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,20}$', password):
@@ -92,13 +99,35 @@ class RegisterPage(QWidget):
             try:
                 self.interface.create_user(username, password)
             except WrongUsernameException:
-                QMessageBox.warning(self, "注册失败", "用户名已存在，请重试。")
+                information_box = QMessageBox()
+                information_box.setIcon(QMessageBox.Warning)
+                icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+                information_box.setIconPixmap(icon_pixmap)
+                information_box.setText("用户名已存在，请重试。")
+                information_box.setWindowTitle("注册失败")
+                information_box.setStandardButtons(QMessageBox.Ok)
+                information_box.exec_()
                 return
-            QMessageBox.information(self, '成功', '注册成功,已自动登录。')
+            information_box = QMessageBox()
+            information_box.setIcon(QMessageBox.Warning)
+            icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+            information_box.setIconPixmap(icon_pixmap)
+            information_box.setText("注册成功，已帮您自动登录")
+            information_box.setWindowTitle("注册成功")
+            information_box.setStandardButtons(QMessageBox.Ok)
+            information_box.exec_()
             self.interface.user_login(self.username_input.text(), self.password_input.text())
             self.new_main_window = main.MainWindow(self.interface)
             self.interface.change_window(self.new_main_window)
             self.new_main_window.show()
             self.close()
         else:
-            QMessageBox.warning(self, '错误', '密码不匹配')
+            information_box = QMessageBox()
+            information_box.setIcon(QMessageBox.Warning)
+            icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+            information_box.setIconPixmap(icon_pixmap)
+            information_box.setText("两次密码不匹配")
+            information_box.setWindowTitle("注册失败")
+            information_box.setStandardButtons(QMessageBox.Ok)
+            information_box.exec_()
+            return

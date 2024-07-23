@@ -51,13 +51,36 @@ class LoginPage(QWidget):
         super().resizeEvent(event)
 
     def login(self):
-        try:
-            import main
-            self.interface.user_login(self.username_input.text(), self.password_input.text())
-            QMessageBox.information(self, "成功", "登录成功")
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Question)
+        icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+        msg_box.setIconPixmap(icon_pixmap)
+        msg_box.setText("确定要登入该账号吗？")
+        msg_box.setWindowTitle("确认登录")
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        result = msg_box.exec_()
+        if result == QMessageBox.Yes:
+            try:
+                import main
+                self.interface.user_login(self.username_input.text(), self.password_input.text())
+                information_box = QMessageBox()
+                information_box.setIcon(QMessageBox.Information)
+                icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+                information_box.setIconPixmap(icon_pixmap)
+                information_box.setText("登录成功！")
+                information_box.setWindowTitle("成功")
+                information_box.setStandardButtons(QMessageBox.Ok)
+                information_box.exec_()
 
-            self.new_main_window = main.MainWindow(self.interface)
-            self.interface.change_window(self.new_main_window)
-            self.new_main_window.show()
-        except (WrongUsernameException, WrongPassWordException):
-            QMessageBox.warning(self, "错误", "用户名或密码错误")
+                self.new_main_window = main.MainWindow(self.interface)
+                self.interface.change_window(self.new_main_window)
+                self.new_main_window.show()
+            except (WrongUsernameException, WrongPassWordException):
+                information_box = QMessageBox()
+                information_box.setIcon(QMessageBox.Information)
+                icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+                information_box.setIconPixmap(icon_pixmap)
+                information_box.setText("用户名或密码错误")
+                information_box.setWindowTitle("错误")
+                information_box.setStandardButtons(QMessageBox.Ok)
+                information_box.exec_()

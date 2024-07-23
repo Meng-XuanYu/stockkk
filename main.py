@@ -1,10 +1,8 @@
 import sys
 import os
 import platform
-
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import QMainWindow, QApplication, QHeaderView, QMessageBox
-
 from interface.Interface import Interface
 from widgets import *
 widgets = None
@@ -106,7 +104,8 @@ class MainWindow(QMainWindow):
         if btn_name == 'btn_logout':
             msg_box = QMessageBox()
             msg_box.setIcon(QMessageBox.Question)
-            msg_box.setIconPixmap(QPixmap('images/images/stockkk.jpg'))
+            icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+            msg_box.setIconPixmap(icon_pixmap)
             msg_box.setText("确定要退出登录吗？")
             msg_box.setWindowTitle("确认退出")
             msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
@@ -146,7 +145,6 @@ class MainWindow(QMainWindow):
         widgets = self.ui
         widgets.stackedWidget.setCurrentWidget(widgets.home_page)
         UIFunctions.reset_style(self, 'btn_home')
-
 
 
 if __name__ == '__main__':

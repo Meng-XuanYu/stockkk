@@ -63,7 +63,8 @@ class ChangeUsernamePage(QWidget):
     def change_username(self):
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Question)
-        msg_box.setIconPixmap(QPixmap('images/images/stockkk.jpg'))
+        icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+        msg_box.setIconPixmap(icon_pixmap)
         msg_box.setText("确定要修改用户名吗？")
         msg_box.setWindowTitle("确认修改")
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
