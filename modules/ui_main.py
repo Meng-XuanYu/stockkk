@@ -1996,5 +1996,8 @@ class UIMainWindow(object):
         self.scrollAreaLayout.addWidget(record_layout_widget)
 
     def on_view_button_clicked(self, file_name, stock_code, chart_type):
-        # todo 打开图片
+        # todo 从数据库中获取html和stock对象
+        new_chart_window = ChartDisplayWindow(chart_html, stock)
+        new_chart_window.show()
+        self.chart_display_windows.append(new_chart_window)
         print(f"Viewing record: {file_name}, {stock_code}, {chart_type}")
