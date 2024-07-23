@@ -71,20 +71,28 @@ class ChangePasswordPage(QWidget):
         super().resizeEvent(event)
 
     def change_password(self):
-        current_password = self.current_password_input.text()
-        new_password = self.new_password_input.text()
-        confirm_new_password = self.confirm_new_password_input.text()
-        if not current_password or not new_password or not confirm_new_password:
-            QMessageBox.warning(self, "修改密码失败", "所有字段均不能为空")
-        elif not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,20}$', new_password):
-            QMessageBox.warning(self, "修改密码失败", "新密码不符合要求")
-            return
-        elif not self.interface.get_current_user().check_password(current_password):
-            QMessageBox.warning(self, "修改密码失败", "当前密码错误")
-        else:
-            if new_password == confirm_new_password:
-                self.interface.change_user_password(self.interface.get_current_user(), new_password)
-                QMessageBox.information(self, '成功', '密码修改成功')
-                self.interface.get_window().back_home_page()
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Question)
+        msg_box.setIconPixmap(QPixmap('images/images/stockkk.jpg'))
+        msg_box.setText("确定要修改密码吗？")
+        msg_box.setWindowTitle("确认修改")
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        result = msg_box.exec_()
+        if result == QMessageBox.Yes:
+            current_password = self.current_password_input.text()
+            new_password = self.new_password_input.text()
+            confirm_new_password = self.confirm_new_password_input.text()
+            if not current_password or not new_password or not confirm_new_password:
+                QMessageBox.warning(self, "修改密码失败", "所有字段均不能为空")
+            elif not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,20}$', new_password):
+                QMessageBox.warning(self, "修改密码失败", "新密码不符合要求")
+                return
+            elif not self.interface.get_current_user().check_password(current_password):
+                QMessageBox.warning(self, "修改密码失败", "当前密码错误")
             else:
-                QMessageBox.warning(self, '错误', '新密码不匹配')
+                if new_password == confirm_new_password:
+                    self.interface.change_user_password(self.interface.get_current_user(), new_password)
+                    QMessageBox.information(self, '成功', '密码修改成功')
+                    self.interface.get_window().back_home_page()
+                else:
+                    QMessageBox.warning(self, '错误', '新密码不匹配')

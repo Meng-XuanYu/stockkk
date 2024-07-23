@@ -1,8 +1,9 @@
 import sys
 import os
 import platform
-from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QMainWindow, QApplication, QHeaderView
+
+from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtWidgets import QMainWindow, QApplication, QHeaderView, QMessageBox
 
 from interface.Interface import Interface
 from widgets import *
@@ -52,9 +53,6 @@ class MainWindow(QMainWindow):
         widgets.btn_register.clicked.connect(self.button_click)
         widgets.btn_change_password.clicked.connect(self.button_click)
         widgets.btn_change_username.clicked.connect(self.button_click)
-        widgets.btn_delete_user.clicked.connect(self.button_click)
-        widgets.btn_delete_cache.clicked.connect(self.button_click)
-        widgets.btn_delete_history.clicked.connect(self.button_click)
 
         # 左边栏动画是否开启
         def open_close_left_box():
@@ -106,9 +104,17 @@ class MainWindow(QMainWindow):
             btn.setStyleSheet(UIFunctions.select_menu(btn.styleSheet()))
 
         if btn_name == 'btn_logout':
-            new_window = MainWindow()
-            self.interface.change_window(new_window)
-            new_window.show()
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Question)
+            msg_box.setIconPixmap(QPixmap('images/images/stockkk.jpg'))
+            msg_box.setText("确定要退出登录吗？")
+            msg_box.setWindowTitle("确认退出")
+            msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            result = msg_box.exec_()
+            if result == QMessageBox.Yes:
+                new_window = MainWindow()
+                self.interface.change_window(new_window)
+                new_window.show()
 
         if btn_name == 'btn_register':
             widgets.stackedWidget.setCurrentWidget(widgets.register_page)
@@ -124,15 +130,6 @@ class MainWindow(QMainWindow):
             widgets.stackedWidget.setCurrentWidget(widgets.change_username_page)
             UIFunctions.reset_style(self, btn_name)
             btn.setStyleSheet(UIFunctions.select_menu(btn.styleSheet()))
-
-        if btn_name == 'btn_delete_user':
-            pass
-
-        if btn_name == 'btn_delete_cache':
-            pass
-
-        if btn_name == 'btn_delete_history':
-            pass
 
     # 实时变化
     def resizeEvent(self, event):

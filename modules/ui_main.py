@@ -1574,6 +1574,9 @@ class UIMainWindow(object):
         self.pushButton.clicked.connect(self.select_file)
         self.searchButton.clicked.connect(self.search_stock)
         self.searchButton_picture.clicked.connect(self.generate_chart)
+        self.btn_delete_history.clicked.connect(self.delete_history)
+        self.btn_delete_user.clicked.connect(self.delete_user)
+        self.btn_delete_cache.clicked.connect(self.delete_cache)
 
         # 登录注册页面
         self.register_page = RegisterPage(self.interface)
@@ -1815,4 +1818,40 @@ class UIMainWindow(object):
             self.btn_delete_cache.setText(QCoreApplication.translate('MainWindow', u'清除缓存', None))
             self.btn_delete_history.setText(QCoreApplication.translate('MainWindow', u'清除历史', None))
         self.creditsLabel.setText(QCoreApplication.translate('MainWindow', u'By: XuanYu_Master', None))
-        self.version.setText(QCoreApplication.translate('MainWindow', u'v0.8.1', None))
+        self.version.setText(QCoreApplication.translate('MainWindow', u'v0.8.9', None))
+
+    def delete_history(self):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Question)
+        msg_box.setIconPixmap(QPixmap('images/images/stockkk.jpg'))
+        msg_box.setText("确定要删除历史记录吗？")
+        msg_box.setWindowTitle("确认删除")
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        result = msg_box.exec_()
+        if result == QMessageBox.Yes:
+            # TODO: Implement delete_history function
+            pass
+
+    def delete_cache(self):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Question)
+        msg_box.setIconPixmap(QPixmap('images/images/stockkk.jpg'))
+        msg_box.setText("确定要清除缓存吗？")
+        msg_box.setWindowTitle("确认清除")
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        result = msg_box.exec_()
+        if result == QMessageBox.Yes:
+            # TODO: Implement delete_cache function
+            pass
+
+    def delete_user(self):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Question)
+        msg_box.setIconPixmap(QPixmap('images/images/stockkk.jpg'))
+        msg_box.setText("确定要注销账号吗？")
+        msg_box.setWindowTitle("确认注销")
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        result = msg_box.exec_()
+        if result == QMessageBox.Yes:
+            # TODO: Implement delete_user function
+            pass

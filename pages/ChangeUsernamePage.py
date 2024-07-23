@@ -61,17 +61,25 @@ class ChangeUsernamePage(QWidget):
         super().resizeEvent(event)
 
     def change_username(self):
-        current_password = self.current_password_input.text()
-        new_username = self.new_username_input.text()
-        if not current_password or not new_username:
-            QMessageBox.warning(self, "修改用户名失败", "所有字段不能为空")
-            return
-        elif not re.match(r'^[a-zA-Z0-9_]{6,20}$', new_username):
-            QMessageBox.warning(self, "修改用户名失败", "新用户名不符合要求")
-            return
-        elif not self.interface.get_current_user().check_password(current_password):
-            QMessageBox.warning(self, "修改用户名失败", "当前密码错误")
-        else:
-            self.interface.user_rename(self.interface.get_current_user(), new_username)
-            QMessageBox.information(self, '成功', '用户名修改成功')
-            self.interface.get_window().back_home_page()
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Question)
+        msg_box.setIconPixmap(QPixmap('images/images/stockkk.jpg'))
+        msg_box.setText("确定要修改用户名吗？")
+        msg_box.setWindowTitle("确认修改")
+        msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        result = msg_box.exec_()
+        if result == QMessageBox.Yes:
+            current_password = self.current_password_input.text()
+            new_username = self.new_username_input.text()
+            if not current_password or not new_username:
+                QMessageBox.warning(self, "修改用户名失败", "所有字段不能为空")
+                return
+            elif not re.match(r'^[a-zA-Z0-9_]{6,20}$', new_username):
+                QMessageBox.warning(self, "修改用户名失败", "新用户名不符合要求")
+                return
+            elif not self.interface.get_current_user().check_password(current_password):
+                QMessageBox.warning(self, "修改用户名失败", "当前密码错误")
+            else:
+                self.interface.user_rename(self.interface.get_current_user(), new_username)
+                QMessageBox.information(self, '成功', '用户名修改成功')
+                self.interface.get_window().back_home_page()
