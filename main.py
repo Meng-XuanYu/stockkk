@@ -89,7 +89,9 @@ class MainWindow(QMainWindow):
             btn.setStyleSheet(UIFunctions.select_menu(btn.styleSheet()))
 
         if btn_name == 'btn_history':
-            pass
+            widgets.stackedWidget.setCurrentWidget(widgets.user_log_page)
+            UIFunctions.reset_style(self, btn_name)
+            btn.setStyleSheet(UIFunctions.select_menu(btn.styleSheet()))
 
         if btn_name == 'btn_picture':
             widgets.stackedWidget.setCurrentWidget(widgets.picture_page)

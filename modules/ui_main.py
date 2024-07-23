@@ -11,6 +11,7 @@ from pages.ChangePasswordPage import ChangePasswordPage
 from pages.ChangeUsernamePage import ChangeUsernamePage
 from pages.LoginPage import LoginPage
 from pages.RegisterPage import RegisterPage
+from pages.user_log_page import UserLogPage
 from . import picture_generator
 from .picture_window import ChartDisplayWindow
 from .resources_rc import *
@@ -691,16 +692,6 @@ class UIMainWindow(object):
         self.verticalLayout_8.addWidget(self.btn_picture)
 
         self.btn_history = QPushButton(self.topMenu)
-        self.btn_history.setObjectName(u'btn_history')
-        size_policy.setHeightForWidth(self.btn_history.sizePolicy().hasHeightForWidth())
-        self.btn_history.setSizePolicy(size_policy)
-        self.btn_history.setMinimumSize(QSize(0, 45))
-        self.btn_history.setFont(font)
-        self.btn_history.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.btn_history.setLayoutDirection(Qt.LeftToRight)
-        self.btn_history.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-save.png)')
-
-        self.verticalLayout_8.addWidget(self.btn_history)
 
         self.btn_delete_cache = QPushButton(self.topMenu)
         self.btn_delete_cache.setObjectName(u'btn_delete_cache')
@@ -990,6 +981,9 @@ class UIMainWindow(object):
                                      'background-position: center;\n'
                                      'background-repeat: no-repeat;')
         self.stackedWidget.addWidget(self.home_page)
+
+
+
         # 读取数据页面
         self.read_data_page = QWidget()
         self.read_data_page.setObjectName(u'read_data_page')
@@ -1364,6 +1358,7 @@ class UIMainWindow(object):
             self.btn_delete_user.hide()
             self.btn_delete_chart_history.hide()
             self.btn_delete_log_history.hide()
+            self.btn_history.hide()
         else:
             self.btn_change_password.setObjectName(u'btn_change_password')
             size_policy.setHeightForWidth(self.btn_change_password.sizePolicy().hasHeightForWidth())
@@ -1424,6 +1419,16 @@ class UIMainWindow(object):
             self.btn_logout.setLayoutDirection(Qt.LeftToRight)
             self.btn_logout.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-account-logout.png);')
             self.verticalLayout_14.addWidget(self.btn_logout)
+
+            self.btn_history.setObjectName(u'btn_history')
+            size_policy.setHeightForWidth(self.btn_history.sizePolicy().hasHeightForWidth())
+            self.btn_history.setSizePolicy(size_policy)
+            self.btn_history.setMinimumSize(QSize(0, 45))
+            self.btn_history.setFont(font)
+            self.btn_history.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.btn_history.setLayoutDirection(Qt.LeftToRight)
+            self.btn_history.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-save.png);')
+            self.verticalLayout_8.addWidget(self.btn_history)
 
             self.btn_register.hide()
             self.btn_login.hide()
@@ -1544,9 +1549,60 @@ class UIMainWindow(object):
         self.row_2_picture.setObjectName(u'row_2_picture')
         self.row_2_picture.setFrameShape(QFrame.StyledPanel)
         self.row_2_picture.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_16 = QHBoxLayout()
+        self.horizontalLayout_16 = QHBoxLayout(self.row_2_picture)
         self.horizontalLayout_16.setObjectName(u'horizontalLayout_16')
         self.horizontalLayout_16.setContentsMargins(0, 0, 0, 0)
+
+        # 添加滚动区域
+        self.scrollArea = QScrollArea(self.row_2_picture)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollArea.setObjectName(u'scrollArea')
+        self.scrollArea.setStyleSheet('''
+            QScrollArea {
+                background-color: transparent;
+                border-radius: 5px;
+            }
+        ''')
+
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u'scrollAreaWidgetContents')
+        self.scrollAreaWidgetContents.setGeometry(0, 0, 600, 400)
+
+        self.scrollAreaLayout = QVBoxLayout(self.scrollAreaWidgetContents)
+        self.scrollAreaLayout.setObjectName(u'scrollAreaLayout')
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+
+        title_layout = QHBoxLayout()
+        title_label = QLabel("可视化历史记录")
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setFixedWidth(300)
+        title_label.setFixedHeight(50)
+        title_label.setStyleSheet("""
+            QLabel {
+                font-size: 16px;
+                font-weight: bold;
+                color: #9AB1D6; 
+                padding: 0px; 
+                border-radius: 5px; 
+                border: transparent;
+            }
+        """)
+        title_layout.addStretch()  # 添加弹簧以居中标签
+        title_layout.addWidget(title_label)
+        title_layout.addStretch()  # 添加弹簧以居中标签
+        self.scrollAreaLayout.addLayout(title_layout)
+
+        self.horizontalLayout_16.addWidget(self.scrollArea)
+
+        self.add_history_record("example_file.xlsx", "123456", "K线图")
+        self.add_history_record("another_file.xlsx", "654321", "总交易量条形图")
+        self.add_history_record("example_file.xlsx", "123456", "K线图")
+        self.add_history_record("another_file.xlsx", "654321", "总交易量条形图")
+        self.add_history_record("example_file.xlsx", "123456", "K线图")
+        self.add_history_record("another_file.xlsx", "654321", "总交易量条形图")
+        self.add_history_record("another_file.xlsx", "654321", "总交易量条形图")
+        self.add_history_record("example_file.xlsx", "123456", "K线图")
+        self.add_history_record("another_file.xlsx", "654321", "总交易量条形图")
 
         self.chartTypeButton.setStyleSheet('''
             QToolButton {
@@ -1603,6 +1659,8 @@ class UIMainWindow(object):
         self.change_username_page = ChangeUsernamePage(self.interface)
         self.stackedWidget.addWidget(self.change_username_page)
 
+        self.user_log_page = UserLogPage(self.interface)
+        self.stackedWidget.addWidget(self.user_log_page)
 
         # 最后的处理
         self.retranslate_ui(main_window)
@@ -1703,7 +1761,7 @@ class UIMainWindow(object):
         self.btn_home.setText(QCoreApplication.translate('MainWindow', u'主页', None))
         self.btn_read_data.setText(QCoreApplication.translate('MainWindow', u'读取数据', None))
         self.btn_delete_cache.setText(QCoreApplication.translate('MainWindow', u'清除缓存', None))
-        self.btn_history.setText(QCoreApplication.translate('MainWindow', u'历史记录', None))
+        self.btn_history.setText(QCoreApplication.translate('MainWindow', u'用户登录历史记录', None))
         self.toggle_left_box.setText(QCoreApplication.translate('MainWindow', u'使用帮助', None))
         self.extraLabel.setText(QCoreApplication.translate('MainWindow', u'使用帮助', None))
         self.extraCloseColumnBtn.setToolTip(QCoreApplication.translate('MainWindow', u'收起使用帮助', None))
@@ -1885,3 +1943,58 @@ class UIMainWindow(object):
         if result == QMessageBox.Yes:
             # todo 清除缓存
             pass
+
+    def add_history_record(self, file_name, stock_code, chart_type):
+        record_layout = QHBoxLayout()
+
+        file_label = QLabel(file_name)
+        file_label.setFixedWidth(200)
+        file_label.setFixedHeight(30)
+
+        stock_label = QLabel(stock_code)
+        stock_label.setFixedWidth(100)
+        stock_label.setFixedHeight(30)
+
+        chart_label = QLabel(chart_type)
+        chart_label.setFixedWidth(200)
+        chart_label.setFixedHeight(30)
+
+        view_button = QPushButton("查询")
+        view_button.setFixedWidth(60)
+        view_button.setFixedHeight(30)
+        view_button.clicked.connect(lambda: self.on_view_button_clicked(file_name, stock_code, chart_type))
+
+        record_layout.addWidget(file_label)
+        record_layout.addWidget(stock_label)
+        record_layout.addWidget(chart_label)
+        record_layout.addWidget(view_button)
+
+        # 创建记录项的容器并设置边框
+        record_layout_widget = QWidget()
+        record_layout_widget.setLayout(record_layout)
+        record_layout_widget.setStyleSheet("border: 2px solid #959493; "
+                                           "border-radius: 5px;")
+        file_label.setStyleSheet("QLabel { border: white; }")
+        stock_label.setStyleSheet("QLabel { border: white; }")
+        chart_label.setStyleSheet("QLabel { border: white; }")
+        view_button.setStyleSheet('''
+            QPushButton {
+                background-color: rgb(52, 59, 72);
+                border: 2px solid rgb(52, 59, 72);
+                border-radius: 5px;
+                padding: 5px;
+                color: rgb(221, 221, 221);
+            }
+            QPushButton:hover {
+                background-color: rgb(61, 70, 86);
+                border: 2px solid rgb(61, 70, 86);
+            }
+            QPushButton:pressed {
+                background-color: rgb(43, 50, 61);
+                border: 2px solid rgb(43, 50, 61);
+            }''')
+        self.scrollAreaLayout.addWidget(record_layout_widget)
+
+    def on_view_button_clicked(self, file_name, stock_code, chart_type):
+        # todo 打开图片
+        print(f"Viewing record: {file_name}, {stock_code}, {chart_type}")
