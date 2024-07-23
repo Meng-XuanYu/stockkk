@@ -101,9 +101,7 @@ class Interface:
             );
         ''')
         self.__cursor.execute(f'''
-            insert into default_file_name (magic_num)
-            values (%s)
-            on duplicate key update magic_num = values (magic_num);
+            insert ignore into default_file_name (magic_num) values (%s)
         ''', (self.__magic_num,))
         self.__connection.commit()
 
@@ -140,16 +138,16 @@ class Interface:
         self.__cur_user = self.__get_user(username, password)
         self.__cur_user.login(self.__create_connection())
         self.__cursor.execute(f'''
-            insert into log_records (username, is_login) values ('{username}', true);
-        ''')
+            insert into log_records (username, is_login) values (%s, true);
+        ''', (username,))
         self.__connection.commit()
 
     def user_logout(self, username):
         self.__cur_user.logout()
         self.__cur_user = None
         self.__cursor.execute(f'''
-            insert into log_records (username, is_login) values ('{username}', false);
-        ''')
+            insert into log_records (username, is_login) values (%s, false);
+        ''', (username,))
         self.__connection.commit()
 
     def get_current_user(self):
@@ -173,8 +171,8 @@ class Interface:
             new_user = User(self, self.__magic_num, username, password=password)
             self.__users[username] = new_user
             self.__cursor.execute(f'''
-                insert into users values ('{new_user.get_name()}', '{new_user.get_encrypted_password()}');
-            ''')
+                insert into users values (%s, %s);
+            ''', (new_user.get_name(), new_user.get_encrypted_password()))
             self.__connection.commit()
 
     def __load_user_info(self):
@@ -197,15 +195,15 @@ class Interface:
         user.rename(new_name)
         self.__users[new_name] = user
         self.__cursor.execute(f'''
-            update users set username = '{new_name}' where username = '{ori_name}';
-        ''')
+            update users set username = %s where username = %s;
+        ''', (new_name, ori_name))
         self.__connection.commit()
 
     def change_user_password(self, user, new_password):
         user.change_password(new_password)
         self.__cursor.execute(f'''
-            update users set password = '{user.get_encrypted_password()}' where username = '{user.get_name()}';
-        ''')
+            update users set password = %s where username = %s;
+        ''', (user.get_encrypted_password(), user.get_name()))
         self.__connection.commit()
 
     def store_chart_into_db(self, stock_code, chart_type, chart_html):
@@ -223,8 +221,8 @@ class Interface:
         # TODO
         # 由于在整体和用户级都有存储，需要考虑一下调用的优先级
         self.__cursor.execute(f'''
-            select {chart_type.get_chart_type_name()} from stocks where stock_code = '{stock_code}';
-        ''')
+            select {chart_type.get_chart_type_name()} from stocks where stock_code = %s;
+        ''', (stock_code,))
         result = self.__cursor.fetchall()
         if len(result) == 0:
             return None
