@@ -51,19 +51,6 @@ class UserLogPage(QWidget):
         title_layout.addStretch()  # 添加弹簧以居中标签
         self.scrollAreaLayout.addLayout(title_layout)
 
-        self.add_history_record("2022-01-01 12:00:00", "登录成功")
-        self.add_history_record("2022-01-01 12:00:00", "登录成功")
-        self.add_history_record("2022-01-01 12:00:00", "登录成功")
-        self.add_history_record("2022-01-01 12:00:00", "登录成功")
-        self.add_history_record("2022-01-01 12:00:00", "登录成功")
-        self.add_history_record("2022-01-01 12:00:00", "登录成功")
-        self.add_history_record("2022-01-01 12:00:00", "登录成功")
-        self.add_history_record("2022-01-01 12:00:00", "登录成功")
-        self.add_history_record("2022-01-01 12:00:00", "登录成功")
-        self.add_history_record("2022-01-01 12:00:00", "登录成功")
-        self.add_history_record("2022-01-01 12:00:00", "登录成功")
-        self.add_history_record("2022-01-01 12:00:00", "登录成功")
-
         # 将滚动区域添加到主布局中
         main_layout.addWidget(self.scrollArea)
         self.setLayout(main_layout)
@@ -90,3 +77,13 @@ class UserLogPage(QWidget):
         type_label.setStyleSheet("QLabel { border: white; }")
         time_label.setStyleSheet("QLabel { border: white; }")
         self.scrollAreaLayout.addWidget(record_layout_widget)
+
+    def load_log_record(self):
+        user = self.interface.get_current_user()
+        if user:
+            log_records = user.get_log_records()
+            for log_record in log_records:
+                if log_record['is_login']:
+                    self.add_history_record(log_record['log_time'].strftime('%Y-%m-%d %H:%M:%S'), "登录")
+                else:
+                    self.add_history_record(log_record['log_time'].strftime('%Y-%m-%d %H:%M:%S'), "退出登录")

@@ -218,7 +218,6 @@ def create_kline_chart(stock_data):
     )
 
     ma10 = stock_data['收盘价'].rolling(window=10).mean().dropna()
-    start_date = ma10.index[0]
 
     line_ma10 = Line()
     line_ma10.add_xaxis(dates[8:])

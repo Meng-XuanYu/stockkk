@@ -1,3 +1,4 @@
+import pandas as pd
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
@@ -15,6 +16,7 @@ from pages.user_log_page import UserLogPage
 from . import picture_generator
 from .picture_window import ChartDisplayWindow
 from .resources_rc import *
+from data.Stock import Stock
 
 
 class UIMainWindow(object):
@@ -982,8 +984,6 @@ class UIMainWindow(object):
                                      'background-repeat: no-repeat;')
         self.stackedWidget.addWidget(self.home_page)
 
-
-
         # 读取数据页面
         self.read_data_page = QWidget()
         self.read_data_page.setObjectName(u'read_data_page')
@@ -1367,7 +1367,8 @@ class UIMainWindow(object):
             self.btn_change_password.setFont(font)
             self.btn_change_password.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
             self.btn_change_password.setLayoutDirection(Qt.LeftToRight)
-            self.btn_change_password.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-lock-unlocked.png);')
+            self.btn_change_password.setStyleSheet(
+                u'background-image: url(:/icons/images/icons/cil-lock-unlocked.png);')
             self.verticalLayout_14.addWidget(self.btn_change_password)
 
             self.btn_change_username.setObjectName(u'btn_change_username')
@@ -1377,7 +1378,8 @@ class UIMainWindow(object):
             self.btn_change_username.setFont(font)
             self.btn_change_username.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
             self.btn_change_username.setLayoutDirection(Qt.LeftToRight)
-            self.btn_change_username.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-featured-playlist.png);')
+            self.btn_change_username.setStyleSheet(
+                u'background-image: url(:/icons/images/icons/cil-featured-playlist.png);')
             self.verticalLayout_14.addWidget(self.btn_change_username)
 
             self.btn_delete_chart_history.setObjectName(u'btn_delete_cache')
@@ -1594,15 +1596,7 @@ class UIMainWindow(object):
 
         self.horizontalLayout_16.addWidget(self.scrollArea)
 
-        self.add_history_record("example_file.xlsx", "123456", "K线图")
-        self.add_history_record("another_file.xlsx", "654321", "总交易量条形图")
-        self.add_history_record("example_file.xlsx", "123456", "K线图")
-        self.add_history_record("another_file.xlsx", "654321", "总交易量条形图")
-        self.add_history_record("example_file.xlsx", "123456", "K线图")
-        self.add_history_record("another_file.xlsx", "654321", "总交易量条形图")
-        self.add_history_record("another_file.xlsx", "654321", "总交易量条形图")
-        self.add_history_record("example_file.xlsx", "123456", "K线图")
-        self.add_history_record("another_file.xlsx", "654321", "总交易量条形图")
+        self.load_chart_record()
 
         self.chartTypeButton.setStyleSheet('''
             QToolButton {
@@ -1642,9 +1636,9 @@ class UIMainWindow(object):
         self.pushButton.clicked.connect(self.select_file)
         self.searchButton.clicked.connect(self.search_stock)
         self.searchButton_picture.clicked.connect(self.generate_chart)
-        self.btn_delete_log_history.clicked.connect(self.delete_log_history)
+        self.btn_delete_log_history.clicked.connect(self.delete_user_log_history)
         self.btn_delete_user.clicked.connect(self.delete_user)
-        self.btn_delete_chart_history.clicked.connect(self.delete_chart_history)
+        self.btn_delete_chart_history.clicked.connect(self.delete_user_chart_history)
         self.btn_delete_cache.clicked.connect(self.delete_cache)
 
         # 登录注册页面
@@ -1660,6 +1654,8 @@ class UIMainWindow(object):
         self.stackedWidget.addWidget(self.change_username_page)
 
         self.user_log_page = UserLogPage(self.interface)
+        self.user_log_page.load_log_record()
+
         self.stackedWidget.addWidget(self.user_log_page)
 
         # 最后的处理
@@ -1748,6 +1744,7 @@ class UIMainWindow(object):
         else:
             self.error_label_pic_page.setStyleSheet('color: #dad873;')
             self.error_label_pic_page.setText('请先输入股票代码')
+
     # 已经精简很多了
 
     def retranslate_ui(self, main_window):
@@ -1892,7 +1889,7 @@ class UIMainWindow(object):
         self.creditsLabel.setText(QCoreApplication.translate('MainWindow', u'By: XuanYu_Master', None))
         self.version.setText(QCoreApplication.translate('MainWindow', u'v0.8.9', None))
 
-    def delete_log_history(self):
+    def delete_user_log_history(self):
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Question)
         icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
@@ -1904,7 +1901,7 @@ class UIMainWindow(object):
         if result == QMessageBox.Yes:
             self.interface.get_current_user().clear_log_records()
 
-    def delete_chart_history(self):
+    def delete_user_chart_history(self):
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Question)
         icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
@@ -1941,10 +1938,10 @@ class UIMainWindow(object):
         msg_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
         result = msg_box.exec_()
         if result == QMessageBox.Yes:
-            # todo 清除缓存
-            pass
+            self.interface.delete_log_history()
+            self.interface.delete_chart_history()
 
-    def add_history_record(self, file_name, stock_code, chart_type):
+    def add_history_record(self, date, file_name, stock_code, chart_type):
         record_layout = QHBoxLayout()
 
         file_label = QLabel(file_name)
@@ -1995,9 +1992,19 @@ class UIMainWindow(object):
             }''')
         self.scrollAreaLayout.addWidget(record_layout_widget)
 
-    def on_view_button_clicked(self, file_name, stock_code, chart_type):
-        # todo 从数据库中获取html和stock对象
-        new_chart_window = ChartDisplayWindow(chart_html, stock)
+    def load_chart_record(self):
+        user = self.interface.get_current_user()
+        if user:
+            chart_records = user.get_chart_records()
+            for chart_record in chart_records:
+                self.add_history_record(chart_record['store_time'], chart_record['file_name'],
+                                        chart_record['stock_code'], chart_record['chart_type'])
+
+    def on_view_button_clicked(self, date_time):
+        chart_and_data = self.interface.get_current_user().get_chart_and_data_in_records(date_time)
+        chart_html = chart_and_data['chart']
+        stock_data = pd.read_json(chart_and_data['stock_data'])
+        new_chart_window = ChartDisplayWindow(chart_html, Stock(self.interface, stock_code, stock_data))
         new_chart_window.show()
         self.chart_display_windows.append(new_chart_window)
         print(f"Viewing record: {file_name}, {stock_code}, {chart_type}")

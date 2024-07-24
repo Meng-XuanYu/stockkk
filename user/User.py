@@ -65,7 +65,8 @@ class User:
                 stock_code varchar(50),
                 chart_type varchar(50),
                 chart longtext,
-                file_name varchar(260)
+                file_name varchar(260),
+                stock_data json
             );
         ''')
         self.__cursor.execute('''
@@ -81,6 +82,12 @@ class User:
         self.__cursor = None
         self.__connection = None
 
+    def get_log_records(self):
+        self.__cursor.execute('''
+            SELECT * FROM log_records ORDER BY id ASC;
+        ''')
+        return self.__cursor.fetchall()
+
     def clear_log_records(self):
         self.__cursor.execute('''
             truncate table log_records;
@@ -91,11 +98,23 @@ class User:
             truncate table chart_records;
         ''')
 
-    def store_chart_into_user_db(self, stock_code, chart_type, chart_html, file_name):
-        sql = f'''
-            insert ignore into chart_records (stock_code, chart_type, chart, file_name) values (%s, %s, %s, %s)
-        '''
-        self.__cursor.execute(sql, (stock_code, chart_type.get_chart_type_name(), chart_html, file_name))
+    def get_chart_records(self):
+        self.__cursor.execute('''
+            SELECT store_time, stock_code, chart_type, file_name FROM chart_records ORDER BY store_time ASC;
+        ''')
+        return self.__cursor.fetchall()
+
+    def get_chart_and_data_in_records(self, store_time):
+        self.__cursor.execute(f'''
+            SELECT chart, stock_data FROM chart_records WHERE store_time = %s
+        ''', store_time)
+        return self.__cursor.fetchall()[0]
+
+    def store_chart_into_user_db(self, stock_code, chart_type, chart_html, file_name, stock_data):
+        self.__cursor.execute(f'''
+            insert ignore into chart_records (stock_code, chart_type, chart, file_name, stock_data)
+            values (%s, %s, %s, %s, %s);
+        ''', (stock_code, chart_type.get_chart_type_name(), chart_html, file_name, stock_data.to_json()))
         self.__connection.commit()
 
     def delete(self):

@@ -217,9 +217,9 @@ class Interface:
         ''', (user.get_encrypted_password(), user.get_name()))
         self.__connection.commit()
 
-    def store_chart_into_db(self, stock_code, chart_type, chart_html):
+    def store_chart_into_db(self, stock_code, chart_type, chart_html, stock_data):
         if self.__cur_user is not None:
-            self.__cur_user.store_chart_into_user_db(stock_code, chart_type, chart_html, self.__file_name)
+            self.__cur_user.store_chart_into_user_db(stock_code, chart_type, chart_html, self.__file_name, stock_data)
         sql = f'''
             insert into stocks (stock_code, {chart_type.get_chart_type_name()})
             values (%s, %s)
@@ -228,9 +228,9 @@ class Interface:
         self.__cursor.execute(sql, (stock_code, chart_html))
         self.__connection.commit()
 
-    def store_chart_into_user_db_only(self, stock_code, chart_type, chart_html):
+    def store_chart_into_user_db_only(self, stock_code, chart_type, chart_html, stock_data):
         if self.__cur_user is not None:
-            self.__cur_user.store_chart_into_user_db(stock_code, chart_type, chart_html, self.__file_name)
+            self.__cur_user.store_chart_into_user_db(stock_code, chart_type, chart_html, self.__file_name, stock_data)
 
     def get_chart_from_db(self, stock_code, chart_type):
         # TODO
@@ -253,3 +253,13 @@ class Interface:
 
     def get_window(self):
         return self.__window
+
+    def delete_log_history(self):
+        self.__cursor.execute('''
+            truncate table log_records;
+        ''')
+
+    def delete_chart_history(self):
+        self.__cursor.execute('''
+            truncate table stocks;
+        ''')
