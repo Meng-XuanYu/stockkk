@@ -1,3 +1,4 @@
+import atexit
 import sys
 import os
 import platform
@@ -5,6 +6,7 @@ from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import QMainWindow, QApplication, QHeaderView, QMessageBox
 from interface.Interface import Interface
 from widgets import *
+
 widgets = None
 
 
@@ -149,6 +151,11 @@ class MainWindow(QMainWindow):
         UIFunctions.reset_style(self, 'btn_home')
 
 
+def on_exit(interface):
+    if interface.get_current_user() is not None:
+        interface.get_current_user().logout()
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     app.setWindowIcon(QIcon('icon.ico'))
@@ -156,4 +163,5 @@ if __name__ == '__main__':
     window = MainWindow(interface, first_time=True)
     interface.set_window(window)
     window.show()
+    atexit.register(on_exit, interface)
     sys.exit(app.exec())
