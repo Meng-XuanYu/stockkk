@@ -62,7 +62,7 @@ class ChartDisplayWindow(QWidget):
             self.data.to_csv(file_path, index=False, encoding='utf-8', quoting=csv.QUOTE_NONNUMERIC)
 
     def export_table(self):
-        file_path, _ = QFileDialog.getSaveFileName(None, "保存表格文件", "", "HTML files (*.html);;All files (*)")
+        file_path, _ = QFileDialog.getSaveFileName(None, "保存图表文件", "", "HTML files (*.html);;All files (*)")
 
         with open(file_path, mode='w', encoding='utf-8') as file:
             file.write(self.html)
