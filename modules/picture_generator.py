@@ -276,9 +276,18 @@ def create_price_line_chart(stock_data):
     close_prices = stock_data['收盘价'].tolist()
 
     # 计算移动平均线
-    ma5 = stock_data['收盘价'].rolling(window=5).mean().dropna()
-    ma10 = stock_data['收盘价'].rolling(window=10).mean().dropna()
-    ma30 = stock_data['收盘价'].rolling(window=30).mean().dropna()
+    ma5 = stock_data['收盘价'].rolling(window=5).mean()
+    ma10 = stock_data['收盘价'].rolling(window=10).mean()
+    ma30 = stock_data['收盘价'].rolling(window=30).mean()
+
+    # 找出金叉和死叉
+    golden_cross = []
+    death_cross = []
+    for i in range(1, len(ma5)):
+        if ma5[i - 1] < ma30[i - 1] and ma5[i] > ma30[i]:
+            golden_cross.append((dates[i], close_prices[i]))
+        elif ma5[i - 1] > ma30[i - 1] and ma5[i] < ma30[i]:
+            death_cross.append((dates[i], close_prices[i]))
 
     line = Line(
         init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%',
@@ -286,9 +295,28 @@ def create_price_line_chart(stock_data):
     line.add_xaxis(dates)
     line.add_yaxis('开盘价', open_prices, label_opts=opts.LabelOpts(is_show=False))
     line.add_yaxis('收盘价', close_prices, label_opts=opts.LabelOpts(is_show=False))
-    line.add_yaxis('MA5', ma5.tolist(), label_opts=opts.LabelOpts(is_show=False), linestyle_opts=opts.LineStyleOpts(width=2, type_='solid'))
-    line.add_yaxis('MA10', ma10.tolist(), label_opts=opts.LabelOpts(is_show=False), linestyle_opts=opts.LineStyleOpts(width=2, type_='dashed'))
-    line.add_yaxis('MA30', ma30.tolist(), label_opts=opts.LabelOpts(is_show=False), linestyle_opts=opts.LineStyleOpts(width=2, type_='dotted'))
+    line.add_yaxis('MA5', ma5.tolist(), label_opts=opts.LabelOpts(is_show=False),
+                   linestyle_opts=opts.LineStyleOpts(width=2, type_='solid'))
+    line.add_yaxis('MA10', ma10.tolist(), label_opts=opts.LabelOpts(is_show=False),
+                   linestyle_opts=opts.LineStyleOpts(width=2, type_='dashed'))
+    line.add_yaxis('MA30', ma30.tolist(), label_opts=opts.LabelOpts(is_show=False),
+                   linestyle_opts=opts.LineStyleOpts(width=2, type_='dotted'))
+
+    line.set_series_opts(
+        markpoint_opts=opts.MarkPointOpts(
+            data=[
+                     opts.MarkPointItem(
+                         name='金叉', coord=[date, price], value='金叉',
+                         symbol='triangle', symbol_size=10, itemstyle_opts=opts.ItemStyleOpts(color='gold')
+                     ) for date, price in golden_cross
+                 ] + [
+                     opts.MarkPointItem(
+                         name='死叉', coord=[date, price], value='死叉',
+                         symbol='triangle-down', symbol_size=10, itemstyle_opts=opts.ItemStyleOpts(color='red')
+                     ) for date, price in death_cross
+                 ]
+        )
+    )
 
     line.set_global_opts(
         title_opts=opts.TitleOpts(title='股票价格折线图'),
@@ -303,6 +331,4 @@ def create_price_line_chart(stock_data):
     )
 
     return line.render_embed()
-
-
 
