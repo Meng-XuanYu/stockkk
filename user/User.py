@@ -84,7 +84,7 @@ class User:
 
     def get_log_records(self):
         self.__cursor.execute('''
-            SELECT * FROM log_records ORDER BY id ASC;
+            SELECT * FROM log_records ORDER BY id DESC;
         ''')
         return self.__cursor.fetchall()
 
@@ -122,3 +122,9 @@ class User:
             drop database stockkk_user_{self.__username};
         ''')
         self.__connection.commit()
+
+    def get_lastest_chart(self):
+        self.__cursor.execute('''
+            SELECT store_time, stock_code, chart_type, file_name FROM chart_records ORDER BY store_time DESC LIMIT 1;
+        ''')
+        return self.__cursor.fetchall()[0]

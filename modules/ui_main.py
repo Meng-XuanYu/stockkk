@@ -1,3 +1,7 @@
+import os
+from datetime import datetime
+from io import StringIO
+
 import pandas as pd
 from PySide6.QtCore import *
 from PySide6.QtGui import *
@@ -695,18 +699,6 @@ class UIMainWindow(object):
 
         self.btn_history = QPushButton(self.topMenu)
 
-        self.btn_delete_cache = QPushButton(self.topMenu)
-        self.btn_delete_cache.setObjectName(u'btn_delete_cache')
-        size_policy.setHeightForWidth(self.btn_delete_cache.sizePolicy().hasHeightForWidth())
-        self.btn_delete_cache.setSizePolicy(size_policy)
-        self.btn_delete_cache.setMinimumSize(QSize(0, 45))
-        self.btn_delete_cache.setFont(font)
-        self.btn_delete_cache.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.btn_delete_cache.setLayoutDirection(Qt.LeftToRight)
-        self.btn_delete_cache.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-x-circle.png);')
-
-        self.verticalLayout_8.addWidget(self.btn_delete_cache)
-
         self.verticalMenuLayout.addWidget(self.topMenu, 0, Qt.AlignTop)
 
         self.bottomMenu = QFrame(self.leftMenuFrame)
@@ -1019,8 +1011,8 @@ class UIMainWindow(object):
         self.labelBoxBlenderInstalation = QLabel(self.frame_title_wid_1)
         self.labelBoxBlenderInstalation.setObjectName(u'labelBoxBlenderInstalation')
         self.labelBoxBlenderInstalation.setGeometry(QRect(10, 0, 1130, 24))
-        self.labelBoxBlenderInstalation.setFont(font)
-        self.labelBoxBlenderInstalation.setStyleSheet(u'')
+        self.labelBoxBlenderInstalation.setStyleSheet("color: #77E4C8;"
+                                                      "font-size: 14px;")
         self.labelBoxBlenderInstalation.setTextFormat(Qt.AutoText)
         self.labelBoxBlenderInstalation.setWordWrap(False)
         self.labelBoxBlenderInstalation.setMargin(-1)
@@ -1259,6 +1251,8 @@ class UIMainWindow(object):
         self.errorLabel.setObjectName('errorLabel')
         self.errorLabel.setText('')
         self.errorLabel.setAlignment(Qt.AlignCenter)
+        self.errorLabel.setStyleSheet("color:#FFDE4D;"
+                                      "font-size: 12px;")
         self.verticalLayout.addWidget(self.errorLabel)
 
         QMetaObject.connectSlotsByName(main_window)
@@ -1382,7 +1376,7 @@ class UIMainWindow(object):
                 u'background-image: url(:/icons/images/icons/cil-featured-playlist.png);')
             self.verticalLayout_14.addWidget(self.btn_change_username)
 
-            self.btn_delete_chart_history.setObjectName(u'btn_delete_cache')
+            self.btn_delete_chart_history.setObjectName(u'btn_delete_chart_history')
             size_policy.setHeightForWidth(self.btn_delete_chart_history.sizePolicy().hasHeightForWidth())
             self.btn_delete_chart_history.setSizePolicy(size_policy)
             self.btn_delete_chart_history.setMinimumSize(QSize(0, 45))
@@ -1392,7 +1386,7 @@ class UIMainWindow(object):
             self.btn_delete_chart_history.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-chart.png);')
             self.verticalLayout_14.addWidget(self.btn_delete_chart_history)
 
-            self.btn_delete_log_history.setObjectName(u'btn_delete_history')
+            self.btn_delete_log_history.setObjectName(u'btn_delete_log_history')
             size_policy.setHeightForWidth(self.btn_delete_log_history.sizePolicy().hasHeightForWidth())
             self.btn_delete_log_history.setSizePolicy(size_policy)
             self.btn_delete_log_history.setMinimumSize(QSize(0, 45))
@@ -1434,6 +1428,18 @@ class UIMainWindow(object):
 
             self.btn_register.hide()
             self.btn_login.hide()
+
+        self.btn_delete_cache = QPushButton(self.topMenu)
+        self.btn_delete_cache.setObjectName(u'btn_delete_cache')
+        size_policy.setHeightForWidth(self.btn_delete_cache.sizePolicy().hasHeightForWidth())
+        self.btn_delete_cache.setSizePolicy(size_policy)
+        self.btn_delete_cache.setMinimumSize(QSize(0, 45))
+        self.btn_delete_cache.setFont(font)
+        self.btn_delete_cache.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.btn_delete_cache.setLayoutDirection(Qt.LeftToRight)
+        self.btn_delete_cache.setStyleSheet(u'background-image: url(:/icons/images/icons/cil-x-circle.png);')
+
+        self.verticalLayout_8.addWidget(self.btn_delete_cache)
 
         self.verticalLayout_13.addWidget(self.topMenus, 0, Qt.AlignTop)
 
@@ -1530,17 +1536,11 @@ class UIMainWindow(object):
             action.triggered.connect(lambda checked, t=chart_type: self.chartTypeButton.setText(t))
         self.chartTypeButton.setMenu(self.chartTypeMenu)
         # 添加错误提示框
-        self.error_label_pic_page = QLabel()
-        self.error_label_pic_page.setObjectName('errorLabel')
-        self.error_label_pic_page.setText('')
-        self.error_label_pic_page.setFixedSize(200, 30)
-        self.error_label_pic_page.setAlignment(Qt.AlignCenter)
         search_layout_pic_page = QHBoxLayout()
         search_layout_pic_page.setSpacing(10)
         search_layout_pic_page.addWidget(self.searchLineEdit_picture)
         search_layout_pic_page.addWidget(self.chartTypeButton)
         search_layout_pic_page.addWidget(self.searchButton_picture)
-        search_layout_pic_page.addWidget(self.error_label_pic_page)
 
         self.horizontalLayout_15.addStretch()
         self.horizontalLayout_15.addLayout(search_layout_pic_page)
@@ -1574,12 +1574,15 @@ class UIMainWindow(object):
         self.scrollAreaLayout.setObjectName(u'scrollAreaLayout')
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
-        title_layout = QHBoxLayout()
-        title_label = QLabel("可视化历史记录")
-        title_label.setAlignment(Qt.AlignCenter)
-        title_label.setFixedWidth(300)
-        title_label.setFixedHeight(50)
-        title_label.setStyleSheet("""
+        self.title_layout = QHBoxLayout()
+        if self.interface.get_current_user() is None:
+            self.title_label = QLabel("可视化历史记录，登录后可使用该功能")
+        else:
+            self.title_label = QLabel("可视化历史记录")
+        self.title_label.setAlignment(Qt.AlignCenter)
+        self.title_label.setFixedWidth(300)
+        self.title_label.setFixedHeight(50)
+        self.title_label.setStyleSheet("""
             QLabel {
                 font-size: 16px;
                 font-weight: bold;
@@ -1589,10 +1592,10 @@ class UIMainWindow(object):
                 border: transparent;
             }
         """)
-        title_layout.addStretch()  # 添加弹簧以居中标签
-        title_layout.addWidget(title_label)
-        title_layout.addStretch()  # 添加弹簧以居中标签
-        self.scrollAreaLayout.addLayout(title_layout)
+        self.title_layout.addStretch()  # 添加弹簧以居中标签
+        self.title_layout.addWidget(self.title_label)
+        self.title_layout.addStretch()  # 添加弹簧以居中标签
+        self.scrollAreaLayout.addLayout(self.title_layout)
 
         self.horizontalLayout_16.addWidget(self.scrollArea)
 
@@ -1654,7 +1657,6 @@ class UIMainWindow(object):
         self.stackedWidget.addWidget(self.change_username_page)
 
         self.user_log_page = UserLogPage(self.interface)
-        self.user_log_page.load_log_record()
 
         self.stackedWidget.addWidget(self.user_log_page)
 
@@ -1663,25 +1665,45 @@ class UIMainWindow(object):
 
     def select_file(self):
         options = QFileDialog.Options()
-        file_name, _ = QFileDialog.getOpenFileName(None, '选择文件', '',
+        file_path, _ = QFileDialog.getOpenFileName(None, '选择文件', '',
                                                    'Excel Files (*.xlsx);;CSV Files (*.csv);;All Files (*)',
                                                    options=options)
-        if file_name:
-            self.lineEdit.setText(file_name)
-            self.load_data(file_name)
+        if file_path:
+            self.load_data(file_path)  # 这里仍然传递文件路径，因为load_data需要完整路径
 
     def select_chart_type(self, chart_type):
         self.chartTypeButton.setText(chart_type)
 
-    def load_data(self, file_name):
+    def load_data(self, file_path):
         import pandas as pd
 
-        if file_name.endswith('.xlsx'):
-            self.stock_data = pd.read_excel(file_name)
-        elif file_name.endswith('.csv'):
-            self.stock_data = pd.read_csv(file_name)
+        if file_path.endswith('.xlsx'):
+            self.stock_data = pd.read_excel(file_path)
+        elif file_path.endswith('.csv'):
+            self.stock_data = pd.read_csv(file_path)
         else:
+            information_box = QMessageBox()
+            information_box.setIcon(QMessageBox.Warning)
+            icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+            information_box.setIconPixmap(icon_pixmap)
+            information_box.setText("导入数据类型错误，请选择正确的类型")
+            information_box.setWindowTitle("导入失败")
+            information_box.setStandardButtons(QMessageBox.Ok)
+            information_box.exec_()
             return
+        information_box = QMessageBox()
+        information_box.setIcon(QMessageBox.Warning)
+        icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+        information_box.setIconPixmap(icon_pixmap)
+        information_box.setText("导入股市数据成功！")
+        information_box.setWindowTitle("导入成功")
+        information_box.setStandardButtons(QMessageBox.Ok)
+        information_box.exec_()
+
+        self.errorLabel.setText('可以在下面表格中查看导入数据的特定代码股票数据')
+        file_name = os.path.basename(file_path)
+        self.interface.set_file_name(file_name)
+        self.lineEdit.setText(file_path)
 
         self.stock_data['日期'] = pd.to_datetime(self.stock_data['日期']).dt.strftime('%Y-%m-%d')
         self.interface.import_data_frame(self.stock_data)
@@ -1693,15 +1715,19 @@ class UIMainWindow(object):
                 filtered_data = self.interface.search_stock_by_code(stock_code)
                 self.display_data(filtered_data.get_data_frame())
                 self.errorLabel.setText(f'搜索成功：{stock_code}, 请在数据表格中查看数据')
-                self.errorLabel.setStyleSheet('color: #58b368;')
+                self.errorLabel.setStyleSheet('color: #58b368;'
+                                              'font-size: 12px;')
             except StockDataNotFoundException:
                 self.errorLabel.setText('未导入股票数据，请先导入数据')
-                self.errorLabel.setStyleSheet('color: #fb7756;')
+                self.errorLabel.setStyleSheet('color: #fb7756;'
+                                              'font-size: 12px;')
             except StockCodeNotFoundException:
                 self.errorLabel.setText(f'未找到股票代码：{stock_code}')
-                self.errorLabel.setStyleSheet('color: #fb7756;')
+                self.errorLabel.setStyleSheet('color: #fb7756;'
+                                              'font-size: 12px;')
         else:
-            self.errorLabel.setStyleSheet('color: #dad873;')
+            self.errorLabel.setStyleSheet('color: #dad873;'
+                                          'font-size: 12px;')
             self.errorLabel.setText('请输入股票代码')
 
     def display_data(self, data):
@@ -1718,6 +1744,11 @@ class UIMainWindow(object):
 
     def generate_chart(self):
         stock_code = self.searchLineEdit_picture.text()
+        information_box = QMessageBox()
+        information_box.setIcon(QMessageBox.Warning)
+        icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+        information_box.setIconPixmap(icon_pixmap)
+
         if stock_code:
             try:
                 stock = self.interface.search_stock_by_code(stock_code)
@@ -1725,25 +1756,41 @@ class UIMainWindow(object):
 
                 # 根据选择的图表类型生成相应的图表
                 if chart_type_text == '选择图表类型':
-                    self.error_label_pic_page.setText('未选择图表类型')
-                    self.error_label_pic_page.setStyleSheet('color: #fb7756;')
+                    information_box.setText("请先选择图表类型")
+                    information_box.setWindowTitle("生成失败")
+                    information_box.setStandardButtons(QMessageBox.Ok)
+                    information_box.exec_()
                 else:
                     chart_html = picture_generator.create_chart(stock,
                                                                 ChartType.get_chart_type_from_text(chart_type_text))
-                    self.error_label_pic_page.setText('图片生成成功')
-                    self.error_label_pic_page.setStyleSheet('color: #58b368;')
                     new_chart_window = ChartDisplayWindow(chart_html, stock)
                     new_chart_window.show()
                     self.chart_display_windows.append(new_chart_window)
+                    information_box.setText("如果是首次生成图片，请耐心等待")
+                    information_box.setWindowTitle("生成成功")
+                    information_box.setStandardButtons(QMessageBox.Ok)
+                    information_box.exec_()
+                    user = self.interface.get_current_user()
+                    if user is not None:
+                        chart_record = user.get_lastest_chart()
+                        self.add_history_record(chart_record['store_time'], chart_record['file_name'],
+                                            chart_record['stock_code'],
+                                            ChartType.get_back_chart_type_name(chart_record['chart_type']))
             except StockDataNotFoundException:
-                self.error_label_pic_page.setText('未导入股票数据，请先导入数据')
-                self.error_label_pic_page.setStyleSheet('color: #fb7756;')
+                information_box.setText("请先导入股票数据")
+                information_box.setWindowTitle("生成失败")
+                information_box.setStandardButtons(QMessageBox.Ok)
+                information_box.exec_()
             except StockCodeNotFoundException:
-                self.error_label_pic_page.setText('未找到' f'未找到股票代码：{stock_code}')
-                self.error_label_pic_page.setStyleSheet('color: #fb7756;')
+                information_box.setText("请输入正确的股票代码")
+                information_box.setWindowTitle("生成失败")
+                information_box.setStandardButtons(QMessageBox.Ok)
+                information_box.exec_()
         else:
-            self.error_label_pic_page.setStyleSheet('color: #dad873;')
-            self.error_label_pic_page.setText('请先输入股票代码')
+            information_box.setText("请先输入股票代码")
+            information_box.setWindowTitle("生成失败")
+            information_box.setStandardButtons(QMessageBox.Ok)
+            information_box.exec_()
 
     # 已经精简很多了
 
@@ -1772,9 +1819,9 @@ class UIMainWindow(object):
                                                          'li.checked::marker { content: "\\2612"; }\n'
                                                          '</style></head><body style=" font-family:\'Arial\'; font-size:10pt; font-weight:400; font-style:normal;">\n'
                                                          '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">Stockkk</span></p>\n'
-                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#ffffff;">可以让别XuanYu_Master叫</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#ffffff;">可以让别余真💩叫</span></p>\n'
                                                          '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-le'
-                                                         'ft:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#bd93f9;">Created by: yxs</span></p>\n'
+                                                         'ft:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#bd93f9;">Created by: Master_XuanYu</span></p>\n'
                                                          '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">Convert UI</span></p>\n'
                                                          '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:9pt; color:#ffffff;">pyside6-uic main.ui(已弃用 &gt; ui_main.py</span></p>\n'
                                                          '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">Convert QRC</span></p>\n'
@@ -1887,7 +1934,7 @@ class UIMainWindow(object):
             self.btn_delete_chart_history.setText(QCoreApplication.translate('MainWindow', u'清除图片记录', None))
             self.btn_delete_log_history.setText(QCoreApplication.translate('MainWindow', u'清除登录记录', None))
         self.creditsLabel.setText(QCoreApplication.translate('MainWindow', u'By: XuanYu_Master', None))
-        self.version.setText(QCoreApplication.translate('MainWindow', u'v0.8.9', None))
+        self.version.setText(QCoreApplication.translate('MainWindow', u'v1.0.0', None))
 
     def delete_user_log_history(self):
         msg_box = QMessageBox()
@@ -1912,6 +1959,7 @@ class UIMainWindow(object):
         result = msg_box.exec_()
         if result == QMessageBox.Yes:
             self.interface.get_current_user().clear_chart_records()
+            self.clear_all_history_records()
 
     def delete_user(self):
         msg_box = QMessageBox()
@@ -1944,6 +1992,10 @@ class UIMainWindow(object):
     def add_history_record(self, date, file_name, stock_code, chart_type):
         record_layout = QHBoxLayout()
 
+        date_label = QLabel(date.strftime('%Y-%m-%d %H:%M:%S'))
+        date_label.setFixedWidth(200)
+        date_label.setFixedHeight(30)
+
         file_label = QLabel(file_name)
         file_label.setFixedWidth(200)
         file_label.setFixedHeight(30)
@@ -1959,8 +2011,9 @@ class UIMainWindow(object):
         view_button = QPushButton("查询")
         view_button.setFixedWidth(60)
         view_button.setFixedHeight(30)
-        view_button.clicked.connect(lambda: self.on_view_button_clicked(file_name, stock_code, chart_type))
+        view_button.clicked.connect(lambda: self.on_view_button_clicked(date, stock_code))
 
+        record_layout.addWidget(date_label)
         record_layout.addWidget(file_label)
         record_layout.addWidget(stock_label)
         record_layout.addWidget(chart_label)
@@ -1971,6 +2024,8 @@ class UIMainWindow(object):
         record_layout_widget.setLayout(record_layout)
         record_layout_widget.setStyleSheet("border: 2px solid #959493; "
                                            "border-radius: 5px;")
+        record_layout_widget.setFixedHeight(60)
+        date_label.setStyleSheet("QLabel { border: white; }")
         file_label.setStyleSheet("QLabel { border: white; }")
         stock_label.setStyleSheet("QLabel { border: white; }")
         chart_label.setStyleSheet("QLabel { border: white; }")
@@ -1990,7 +2045,7 @@ class UIMainWindow(object):
                 background-color: rgb(43, 50, 61);
                 border: 2px solid rgb(43, 50, 61);
             }''')
-        self.scrollAreaLayout.addWidget(record_layout_widget)
+        self.scrollAreaLayout.insertWidget(1, record_layout_widget, alignment=Qt.AlignTop)
 
     def load_chart_record(self):
         user = self.interface.get_current_user()
@@ -1998,13 +2053,43 @@ class UIMainWindow(object):
             chart_records = user.get_chart_records()
             for chart_record in chart_records:
                 self.add_history_record(chart_record['store_time'], chart_record['file_name'],
-                                        chart_record['stock_code'], chart_record['chart_type'])
+                                        chart_record['stock_code'], ChartType.get_back_chart_type_name(chart_record['chart_type']))
 
-    def on_view_button_clicked(self, date_time):
+    def on_view_button_clicked(self, date_time, stock_code):
         chart_and_data = self.interface.get_current_user().get_chart_and_data_in_records(date_time)
         chart_html = chart_and_data['chart']
-        stock_data = pd.read_json(chart_and_data['stock_data'])
+        stock_data = pd.read_json(StringIO(chart_and_data['stock_data']))
         new_chart_window = ChartDisplayWindow(chart_html, Stock(self.interface, stock_code, stock_data))
         new_chart_window.show()
         self.chart_display_windows.append(new_chart_window)
-        print(f"Viewing record: {file_name}, {stock_code}, {chart_type}")
+
+    def clear_all_history_records(self):
+        while self.scrollAreaLayout.count():
+            item = self.scrollAreaLayout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+        while self.title_layout.count():
+            item = self.title_layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+        self.title_layout = QHBoxLayout()
+        self.title_label = QLabel("可视化历史记录")
+        self.title_label.setAlignment(Qt.AlignCenter)
+        self.title_label.setFixedWidth(300)
+        self.title_label.setFixedHeight(50)
+        self.title_label.setStyleSheet("""
+                    QLabel {
+                        font-size: 16px;
+                        font-weight: bold;
+                        color: #9AB1D6; 
+                        padding: 0px; 
+                        border-radius: 5px; 
+                        border: transparent;
+                    }
+                """)
+        self.title_layout.addStretch()  # 添加弹簧以居中标签
+        self.title_layout.addWidget(self.title_label)
+        self.title_layout.addStretch()  # 添加弹簧以居中标签
+        self.scrollAreaLayout.addLayout(self.title_layout)

@@ -1,5 +1,5 @@
 from PySide6.QtGui import Qt
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QScrollArea, QHBoxLayout
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QScrollArea, QHBoxLayout, QSpacerItem, QSizePolicy
 
 
 class UserLogPage(QWidget):
@@ -14,6 +14,27 @@ class UserLogPage(QWidget):
         # 设置主窗口的布局
         main_layout = QVBoxLayout()
         main_layout.setContentsMargins(10, 10, 10, 10)  # 移除主布局的边距
+
+        # 添加标题布局
+        title_layout = QHBoxLayout()
+        title_label = QLabel("账号登录历史记录")
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setStyleSheet("""
+                            QLabel {
+                                font-size: 16px;
+                                font-weight: bold;
+                                color: #9AB1D6; 
+                                padding: 0px; 
+                                border-radius: 5px; 
+                                border: transparent;
+                            }
+                        """)
+        title_layout.addStretch()  # 添加弹簧以居中标签
+        title_layout.addWidget(title_label)
+        title_layout.addStretch()  # 添加弹簧以居中标签
+
+        # 将标题布局添加到主布局中
+        main_layout.addLayout(title_layout)
 
         # 添加滚动区域
         self.scrollArea = QScrollArea(self)
@@ -31,25 +52,10 @@ class UserLogPage(QWidget):
         self.scrollAreaLayout = QVBoxLayout(self.scrollAreaWidgetContents)
         self.scrollAreaLayout.setObjectName('scrollAreaLayout')
         self.scrollAreaLayout.setContentsMargins(10, 10, 10, 10)  # 设置滚动区域内部内容的边距
+        self.scrollAreaLayout.setSpacing(10)  # 设置滚动区域内部内容的间距
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
-        title_layout = QHBoxLayout()
-        title_label = QLabel("账号登录历史记录")
-        title_label.setAlignment(Qt.AlignCenter)
-        title_label.setStyleSheet("""
-                            QLabel {
-                                font-size: 16px;
-                                font-weight: bold;
-                                color: #9AB1D6; 
-                                padding: 0px; 
-                                border-radius: 5px; 
-                                border: transparent;
-                            }
-                        """)
-        title_layout.addStretch()  # 添加弹簧以居中标签
-        title_layout.addWidget(title_label)
-        title_layout.addStretch()  # 添加弹簧以居中标签
-        self.scrollAreaLayout.addLayout(title_layout)
+        self.load_log_record()
 
         # 将滚动区域添加到主布局中
         main_layout.addWidget(self.scrollArea)
@@ -74,9 +80,10 @@ class UserLogPage(QWidget):
         record_layout_widget.setLayout(record_layout)
         record_layout_widget.setStyleSheet("border: 2px solid #959493; "
                                            "border-radius: 5px;")
+        record_layout_widget.setFixedHeight(60)
         type_label.setStyleSheet("QLabel { border: white; }")
         time_label.setStyleSheet("QLabel { border: white; }")
-        self.scrollAreaLayout.addWidget(record_layout_widget)
+        self.scrollAreaLayout.addWidget(record_layout_widget, alignment=Qt.AlignTop)
 
     def load_log_record(self):
         user = self.interface.get_current_user()

@@ -40,3 +40,17 @@ class ChartType(Enum):
             return mapping[text]
         else:
             return None
+
+    @staticmethod
+    def get_back_chart_type_name(text):
+        mapping = {
+            'open_close': '开盘和收盘价格平均条形图',
+            'total_volume': '总交易量条形图',
+            'high_price': '最高价格条形图',
+            'low_price': '最低价格条形图',
+            'compound_growth': '复合增长条形图',
+            'amplitude_scatter': '振幅散点图',
+            'turnover_rate': '换手率条形图',
+            'kline': 'K线图',
+        }
+        return mapping[text]

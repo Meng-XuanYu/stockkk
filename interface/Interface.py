@@ -263,3 +263,6 @@ class Interface:
         self.__cursor.execute('''
             truncate table stocks;
         ''')
+
+    def get_file_name(self):
+        return self.__file_name
