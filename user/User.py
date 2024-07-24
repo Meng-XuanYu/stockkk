@@ -14,20 +14,19 @@ class User:
 
     @staticmethod
     def __decrypt(encrypted_password, key):
-        # result = ''
-        # for i in range(len(encrypted_password)):
-        #     result += chr(ord(encrypted_password[i]) ^ ord(key[i % len(key)]))
-        # return result
-        return encrypted_password
+        result = ''
+        skip_len = len('stockkk_password_')
+        skipped_encrypted_password = encrypted_password[skip_len:]
+        for i in range(len(skipped_encrypted_password)):
+            result += chr(ord(skipped_encrypted_password[i]) ^ ord(key[i % len(key)]))
+        return result
 
     @staticmethod
     def __encrypt(password, key):
-        # result = ''
-        # for i in range(len(password)):
-        #     result += chr(ord(password[i]) ^ ord(key[i % len(key)]))
-        #     print(result)
-        # return result
-        return password
+        result = 'stockkk_password_'
+        for i in range(len(password)):
+            result += chr(ord(password[i]) ^ ord(key[i % len(key)]))
+        return result
 
     def get_name(self):
         return self.__username
@@ -84,7 +83,7 @@ class User:
 
     def get_log_records(self):
         self.__cursor.execute('''
-            SELECT * FROM log_records ORDER BY id DESC;
+            select * from log_records order by id desc;
         ''')
         return self.__cursor.fetchall()
 
@@ -100,13 +99,13 @@ class User:
 
     def get_chart_records(self):
         self.__cursor.execute('''
-            SELECT store_time, stock_code, chart_type, file_name FROM chart_records ORDER BY store_time ASC;
+            select store_time, stock_code, chart_type, file_name from chart_records order by store_time asc;
         ''')
         return self.__cursor.fetchall()
 
     def get_chart_and_data_in_records(self, store_time):
         self.__cursor.execute(f'''
-            SELECT chart, stock_data FROM chart_records WHERE store_time = %s
+            select chart, stock_data from chart_records where store_time = %s
         ''', store_time)
         return self.__cursor.fetchall()[0]
 
@@ -125,6 +124,6 @@ class User:
 
     def get_lastest_chart(self):
         self.__cursor.execute('''
-            SELECT store_time, stock_code, chart_type, file_name FROM chart_records ORDER BY store_time DESC LIMIT 1;
+            select store_time, stock_code, chart_type, file_name from chart_records order by store_time desc limit 1;
         ''')
         return self.__cursor.fetchall()[0]

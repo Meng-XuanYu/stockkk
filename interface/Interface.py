@@ -233,8 +233,6 @@ class Interface:
             self.__cur_user.store_chart_into_user_db(stock_code, chart_type, chart_html, self.__file_name, stock_data)
 
     def get_chart_from_db(self, stock_code, chart_type):
-        # TODO
-        # 由于在整体和用户级都有存储，需要考虑一下调用的优先级
         self.__cursor.execute(f'''
             select {chart_type.get_chart_type_name()} from stocks where stock_code = %s;
         ''', (stock_code,))

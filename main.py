@@ -153,7 +153,7 @@ class MainWindow(QMainWindow):
 
 def on_exit(interface):
     if interface.get_current_user() is not None:
-        interface.get_current_user().logout()
+        interface.user_logout()
 
 
 if __name__ == '__main__':
