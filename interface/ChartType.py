@@ -10,6 +10,7 @@ class ChartType(Enum):
     AMPLITUDE_SCATTER = 6
     TURNOVER_RATE = 7
     KLINE = 8
+    PRICE_LINE = 9
 
     def get_chart_type_name(self):
         mapping = {
@@ -21,6 +22,7 @@ class ChartType(Enum):
             ChartType.AMPLITUDE_SCATTER: 'amplitude_scatter',
             ChartType.TURNOVER_RATE: 'turnover_rate',
             ChartType.KLINE: 'kline',
+            ChartType.PRICE_LINE: 'price_line',
         }
         return mapping[self]
 
@@ -35,6 +37,7 @@ class ChartType(Enum):
             '振幅散点图': ChartType.AMPLITUDE_SCATTER,
             '换手率条形图': ChartType.TURNOVER_RATE,
             'K线图': ChartType.KLINE,
+            '价格折线图': ChartType.PRICE_LINE,
         }
         if text in mapping:
             return mapping[text]
@@ -52,5 +55,6 @@ class ChartType(Enum):
             'amplitude_scatter': '振幅散点图',
             'turnover_rate': '换手率条形图',
             'kline': 'K线图',
+            'price_line': '价格折线图',
         }
         return mapping[text]

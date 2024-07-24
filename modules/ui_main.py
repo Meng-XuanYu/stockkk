@@ -1530,7 +1530,7 @@ class UIMainWindow(object):
         # 创建图表类型菜单
         self.chartTypeMenu = QMenu(self.chartTypeButton)
         chart_types = ['开盘和收盘价格平均条形图', '总交易量条形图', '最高价格条形图',
-                       '最低价格条形图', '复合增长条形图', '振幅散点图', '换手率条形图', 'K线图']
+                       '最低价格条形图', '复合增长条形图', '振幅散点图', '换手率条形图', 'K线图', '价格折线图']
         for chart_type in chart_types:
             action = self.chartTypeMenu.addAction(chart_type)
             action.triggered.connect(lambda checked, t=chart_type: self.chartTypeButton.setText(t))

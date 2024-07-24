@@ -84,7 +84,8 @@ class Interface:
                 compound_growth longtext default null,
                 amplitude_scatter longtext default null,
                 turnover_rate longtext default null,
-                kline longtext default null
+                kline longtext default null,
+                price_line longtext default null
             );
         ''')
         self.__cursor.execute('''

@@ -20,6 +20,7 @@ def create_chart(stock, chart_type):
         ChartType.AMPLITUDE_SCATTER: create_amplitude_scatter_chart,
         ChartType.TURNOVER_RATE: create_turnover_rate_chart,
         ChartType.KLINE: create_kline_chart,
+        ChartType.PRICE_LINE: create_price_line_chart,
     }
     chart = mapping[chart_type](stock.get_data_frame())
     stock.store_chart(chart_type, chart)
@@ -80,13 +81,12 @@ def create_total_volume_chart(stock_data):
 def create_high_price_chart(stock_data):
     dates = stock_data['日期'].tolist()
     high_prices = stock_data['最高价'].tolist()
-
-    line = Line(
+    bar = Bar(
         init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%',
                                 bg_color='rgb(40, 44, 52)', is_fill_bg_color=True))
-    line.add_xaxis(dates)
-    line.add_yaxis('最高价', high_prices, label_opts=opts.LabelOpts(is_show=False))
-    line.set_global_opts(
+    bar.add_xaxis(dates)
+    bar.add_yaxis('最高价', high_prices, label_opts=opts.LabelOpts(is_show=False))
+    bar.set_global_opts(
         title_opts=opts.TitleOpts(title='最高价格条形图'),
         xaxis_opts=opts.AxisOpts(axislabel_opts=opts.LabelOpts(rotate=-45)),
 
@@ -100,20 +100,22 @@ def create_high_price_chart(stock_data):
         toolbox_opts=opts.ToolboxOpts(is_show=True, feature={'dataZoom': {'yAxisIndex': 'none'}})
     )
 
-    return line.render_embed()
+    return bar.render_embed()
 
 
 def create_low_price_chart(stock_data):
     dates = stock_data['日期'].tolist()
     low_prices = stock_data['最低价'].tolist()
 
-    line = Line(init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%',
-                                        bg_color='rgb(40, 44, 52)', is_fill_bg_color=True))
-    line.add_xaxis(dates)
-    line.add_yaxis('最低价', low_prices, label_opts=opts.LabelOpts(is_show=False))
-    line.set_global_opts(
+    bar = Bar(
+        init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%',
+                                bg_color='rgb(40, 44, 52)', is_fill_bg_color=True))
+    bar.add_xaxis(dates)
+    bar.add_yaxis('最低价', low_prices, label_opts=opts.LabelOpts(is_show=False))
+    bar.set_global_opts(
         title_opts=opts.TitleOpts(title='最低价格条形图'),
         xaxis_opts=opts.AxisOpts(axislabel_opts=opts.LabelOpts(rotate=-45)),
+
         tooltip_opts=opts.TooltipOpts(trigger='axis', axis_pointer_type='shadow'),
 
         yaxis_opts=opts.AxisOpts(
@@ -124,7 +126,7 @@ def create_low_price_chart(stock_data):
         toolbox_opts=opts.ToolboxOpts(is_show=True, feature={'dataZoom': {'yAxisIndex': 'none'}})
     )
 
-    return line.render_embed()
+    return bar.render_embed()
 
 
 def create_compound_growth_chart(stock_data):
@@ -264,3 +266,43 @@ def create_kline_chart(stock_data):
     )
 
     return kline.render_embed()
+
+
+def create_price_line_chart(stock_data):
+    stock_data = stock_data.reset_index(drop=True)
+
+    dates = stock_data['日期'].tolist()
+    open_prices = stock_data['开盘价'].tolist()
+    close_prices = stock_data['收盘价'].tolist()
+
+    # 计算移动平均线
+    ma5 = stock_data['收盘价'].rolling(window=5).mean().dropna()
+    ma10 = stock_data['收盘价'].rolling(window=10).mean().dropna()
+    ma30 = stock_data['收盘价'].rolling(window=30).mean().dropna()
+
+    line = Line(
+        init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%',
+                                bg_color='rgb(40, 44, 52)', is_fill_bg_color=True))
+    line.add_xaxis(dates)
+    line.add_yaxis('开盘价', open_prices, label_opts=opts.LabelOpts(is_show=False))
+    line.add_yaxis('收盘价', close_prices, label_opts=opts.LabelOpts(is_show=False))
+    line.add_yaxis('MA5', ma5.tolist(), label_opts=opts.LabelOpts(is_show=False), linestyle_opts=opts.LineStyleOpts(width=2, type_='solid'))
+    line.add_yaxis('MA10', ma10.tolist(), label_opts=opts.LabelOpts(is_show=False), linestyle_opts=opts.LineStyleOpts(width=2, type_='dashed'))
+    line.add_yaxis('MA30', ma30.tolist(), label_opts=opts.LabelOpts(is_show=False), linestyle_opts=opts.LineStyleOpts(width=2, type_='dotted'))
+
+    line.set_global_opts(
+        title_opts=opts.TitleOpts(title='股票价格折线图'),
+        xaxis_opts=opts.AxisOpts(axislabel_opts=opts.LabelOpts(rotate=-45)),
+        tooltip_opts=opts.TooltipOpts(trigger='axis', axis_pointer_type='line'),
+        yaxis_opts=opts.AxisOpts(
+            is_scale=True,
+            splitarea_opts=opts.SplitAreaOpts(is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1))
+        ),
+        datazoom_opts=[opts.DataZoomOpts(type_='inside')],
+        toolbox_opts=opts.ToolboxOpts(is_show=True, feature={'dataZoom': {'yAxisIndex': 'none'}})
+    )
+
+    return line.render_embed()
+
+
+
