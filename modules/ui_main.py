@@ -1540,7 +1540,7 @@ class UIMainWindow(object):
         # 创建图表类型菜单
         self.chartTypeMenu = QMenu(self.chartTypeButton)
         chart_types = ['开盘和收盘价格平均条形图', '总交易量条形图', '最高价格条形图',
-                       '最低价格条形图', '复合增长条形图', '振幅散点图', '换手率条形图', 'K线图', '价格折线图', 'RSI']
+                       '最低价格条形图', '复合增长条形图', '振幅散点图', '换手率条形图', 'K线图', '价格折线图', 'RSI图', 'MACD图']
         for chart_type in chart_types:
             action = self.chartTypeMenu.addAction(chart_type)
             action.triggered.connect(lambda checked, t=chart_type: self.chartTypeButton.setText(t))
@@ -1829,15 +1829,15 @@ class UIMainWindow(object):
                                                          'li.unchecked::marker { content: "\\2610"; }\n'
                                                          'li.checked::marker { content: "\\2612"; }\n'
                                                          '</style></head><body style=" font-family:\'Arial\'; font-size:10pt; font-weight:400; font-style:normal;">\n'
-                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">Stockkk</span></p>\n'
-                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#ffffff;">可以让别Master_XuanYu真💩叫</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">功能简介</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#ffffff;">1.\n2.\n3.\n</span></p>\n'
                                                          '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-le'
-                                                         'ft:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#bd93f9;">Created by:余 </span></p>\n'
-                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">Convert UI</span></p>\n'
-                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:9pt; color:#ffffff;">pyside6-uic main.ui(已弃用 &gt; ui_main.py</span></p>\n'
-                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">Convert QRC</span></p>\n'
+                                                         'ft:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#bd93f9;">Created by:Master_XuanYu </span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">使用小tips</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:9pt; color:#ffffff;">待完善捏</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">注意事项</span></p>\n'
                                                          '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:9pt; color:#ffffff;"'
-                                                         '>pyside6-rcc resources.qrc -o resources_rc.py</span></p></body></html>',
+                                                         '>保护好自己的信息哦</span></p></body></html>',
                                                          None))
         self.titleRightInfo.setText(
             QCoreApplication.translate('MainWindow', u'Stock APP - Stock market data visualizer and analysis tool.',
@@ -1946,7 +1946,7 @@ class UIMainWindow(object):
             self.btn_delete_chart_history.setText(QCoreApplication.translate('MainWindow', u'清除图片记录', None))
             self.btn_delete_log_history.setText(QCoreApplication.translate('MainWindow', u'清除登录记录', None))
         self.creditsLabel.setText(QCoreApplication.translate('MainWindow', u'By: XuanYu_Master', None))
-        self.version.setText(QCoreApplication.translate('MainWindow', u'v1.0.0', None))
+        self.version.setText(QCoreApplication.translate('MainWindow', u'v2.0.0', None))
 
     def delete_user_log_history(self):
         msg_box = QMessageBox()

@@ -87,7 +87,8 @@ class Interface:
                 turnover_rate longtext default null,
                 kline longtext default null,
                 price_line longtext default null,
-                rsi longtext default null
+                rsi longtext default null,
+                macd longtext default null
             );
         ''')
         self.__cursor.execute('''

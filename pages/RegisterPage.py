@@ -36,7 +36,7 @@ class RegisterPage(QWidget):
         layout.addSpacing(3)
 
         username_requirements = QLabel(
-            '用户名要求：6-20个字符，只能包含字母、数字和下划线', self)
+            '用户名要求：6-20个字符，只能包含字母、数字和下划线，不区分大小写', self)
         username_requirements.setStyleSheet('color: rgb(150, 150, 150);')
         layout.addWidget(username_requirements)
 
@@ -78,7 +78,7 @@ class RegisterPage(QWidget):
         super().resizeEvent(event)
 
     def register(self):
-        username = self.username_input.text()
+        username = self.username_input.text().lower()
         password = self.password_input.text()
         confirm_password = self.confirm_password_input.text()
         if not username or not password or not confirm_password:
@@ -112,7 +112,7 @@ class RegisterPage(QWidget):
             information_box.setIcon(QMessageBox.Warning)
             icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
             information_box.setIconPixmap(icon_pixmap)
-            information_box.setText("注册成功，已帮您自动登录")
+            information_box.setText("注册成功，已自动登录")
             information_box.setWindowTitle("注册成功")
             information_box.setStandardButtons(QMessageBox.Ok)
             information_box.exec_()

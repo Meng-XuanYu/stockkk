@@ -42,7 +42,7 @@ class ChangeUsernamePage(QWidget):
         layout.addSpacing(3)
 
         username_requirements = QLabel(
-            '用户名要求：6-20个字符，只能包含字母、数字和下划线', self)
+            '用户名要求：6-20个字符，只能包含字母、数字和下划线，不区分大小写', self)
         username_requirements.setStyleSheet('color: rgb(150, 150, 150);')
         layout.addWidget(username_requirements)
 
@@ -71,7 +71,7 @@ class ChangeUsernamePage(QWidget):
         result = msg_box.exec_()
         if result == QMessageBox.Yes:
             current_password = self.current_password_input.text()
-            new_username = self.new_username_input.text()
+            new_username = self.new_username_input.text().lower()
             if not current_password or not new_username:
                 QMessageBox.warning(self, "修改用户名失败", "所有字段不能为空")
                 return
