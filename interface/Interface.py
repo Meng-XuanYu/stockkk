@@ -25,6 +25,7 @@ class Interface:
         self.__cur_user = None
         self.__window = window
         self.__set_default_file_name()
+        self.__all_data_frame = None
 
     @staticmethod
     def __create_connection():
@@ -126,6 +127,7 @@ class Interface:
 
     def import_data_frame(self, data_frame):
         grouped = data_frame.groupby('股票代码')
+        self.__all_data_frame = data_frame
         self.__stock_data_frame_dic = {str(key): Stock(self, str(key), value) for key, value in grouped}
 
     def search_stock_by_code(self, stock_code):
@@ -263,5 +265,8 @@ class Interface:
             truncate table stocks;
         ''')
 
-    def get_file_name(self):
-        return self.__file_name
+    def get_stock_all_data(self):
+        if self.__all_data_frame is not None:
+            return self.__all_data_frame
+        else:
+            raise StockDataNotFoundException('未导入股票数据')

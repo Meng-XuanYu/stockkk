@@ -1,12 +1,9 @@
 import os
-from datetime import datetime
 from io import StringIO
-
 import pandas as pd
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
-
 import main
 from exceptions.StockDataNotFoundException import StockDataNotFoundException
 from exceptions.StockCodeNotFoundException import StockCodeNotFoundException
@@ -18,6 +15,7 @@ from pages.LoginPage import LoginPage
 from pages.RegisterPage import RegisterPage
 from pages.user_log_page import UserLogPage
 from . import picture_generator
+from .market_analysis_window import MarketAnalysisWindow
 from .picture_window import ChartDisplayWindow
 from .resources_rc import *
 from data.Stock import Stock
@@ -1048,6 +1046,18 @@ class UIMainWindow(object):
 
         self.gridLayout.addWidget(self.pushButton, 0, 1, 1, 1)
 
+        self.pushButton_all = QPushButton(self.frame_content_wid_1)
+        self.pushButton_all.setObjectName(u'pushButton_all')
+        self.pushButton_all.setMinimumSize(QSize(150, 30))
+        self.pushButton_all.setFont(font)
+        self.pushButton_all.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.pushButton_all.setStyleSheet(u'background-color: rgb(52, 59, 72);')
+        icon4 = QIcon()
+        icon4.addFile(u':/icons/images/icons/cil-magnifying-glass.png', QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.pushButton_all.setIcon(icon4)
+
+        self.gridLayout.addWidget(self.pushButton_all, 0, 2, 1, 1)
+
         self.labelVersion_3 = QLabel(self.frame_content_wid_1)
         self.labelVersion_3.setObjectName(u'labelVersion_3')
         self.labelVersion_3.setStyleSheet(u'color: rgb(113, 126, 149);')
@@ -1643,6 +1653,7 @@ class UIMainWindow(object):
         self.btn_delete_user.clicked.connect(self.delete_user)
         self.btn_delete_chart_history.clicked.connect(self.delete_user_chart_history)
         self.btn_delete_cache.clicked.connect(self.delete_cache)
+        self.pushButton_all.clicked.connect(self.market_analysis)
 
         # 登录注册页面
         self.register_page = RegisterPage(self.interface)
@@ -1795,7 +1806,7 @@ class UIMainWindow(object):
     # 已经精简很多了
 
     def retranslate_ui(self, main_window):
-        self.btn_picture.setText(QCoreApplication.translate('MainWindow', u'\u6570\u636e\u53ef\u89c6\u5316', None))
+        self.btn_picture.setText(QCoreApplication.translate('MainWindow', u'单股聚焦', None))
 
         # 小组件名称
         main_window.setWindowTitle(QCoreApplication.translate('MainWindow', u'MainWindow', None))
@@ -1844,6 +1855,7 @@ class UIMainWindow(object):
         self.lineEdit.setPlaceholderText(
             QCoreApplication.translate('MainWindow', u'点击右侧按钮选择文件', None))
         self.pushButton.setText(QCoreApplication.translate('MainWindow', u'选取', None))
+        self.pushButton_all.setText(QCoreApplication.translate('MainWindow', u'大盘分析', None))
         self.labelVersion_3.setText(
             QCoreApplication.translate('MainWindow', u'请选取股市信息文件，各类表格文件均可', None))
         ___qtablewidgetitem = self.tableWidget.horizontalHeaderItem(0)
@@ -2093,3 +2105,16 @@ class UIMainWindow(object):
         self.title_layout.addWidget(self.title_label)
         self.title_layout.addStretch()  # 添加弹簧以居中标签
         self.scrollAreaLayout.addLayout(self.title_layout)
+
+    def market_analysis(self):
+        try:
+            market_analysis_window = MarketAnalysisWindow(self.interface)
+            market_analysis_window.show()
+            # self.display_data(filtered_data.get_data_frame())
+            # self.errorLabel.setText(f'搜索成功：{stock_code}, 请在数据表格中查看数据')
+            # self.errorLabel.setStyleSheet('color: #58b368;'
+            #                               'font-size: 12px;')
+        except StockDataNotFoundException:
+            self.errorLabel.setText('未导入股票数据，请先导入数据')
+            self.errorLabel.setStyleSheet('color: #fb7756;'
+                                          'font-size: 12px;')
