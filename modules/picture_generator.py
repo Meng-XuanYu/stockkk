@@ -1,3 +1,4 @@
+import numpy as np
 from pyecharts import options as opts
 from pyecharts.charts import Kline, Bar, Scatter, Line, Grid
 from pyecharts.globals import ThemeType
@@ -222,7 +223,7 @@ def create_kline_chart(stock_data):
     ma10 = stock_data['收盘价'].rolling(window=10).mean().dropna()
 
     line_ma10 = Line()
-    line_ma10.add_xaxis(dates[8:])
+    line_ma10.add_xaxis(dates[9:])
     line_ma10.add_yaxis(
         'MA10',
         ma10.tolist(),
@@ -232,9 +233,9 @@ def create_kline_chart(stock_data):
     )
     line_ma10.set_global_opts(legend_opts=opts.LegendOpts(pos_left='right'))
 
-    ma20 = stock_data['收盘价'].rolling(window=20, min_periods=1).mean().dropna()
+    ma20 = stock_data['收盘价'].rolling(window=20).mean().dropna()
     line_ma20 = Line()
-    line_ma20.add_xaxis(dates[18:])
+    line_ma20.add_xaxis(dates[19:])
     line_ma20.add_yaxis(
         'MA20',
         ma20.tolist(),
@@ -276,6 +277,15 @@ def create_kline_chart(stock_data):
         label_opts=opts.LabelOpts(is_show=False)
     )
 
+    # 计算金叉和死叉点
+    buy_signal = np.where((macd > dea) & (macd.shift(1) < dea.shift(1)), 1, 0)
+    sell_signal = np.where((macd < dea) & (macd.shift(1) > dea.shift(1)), 1, 0)
+
+    buy_dates = np.array(dates)[buy_signal == 1].tolist()
+    sell_dates = np.array(dates)[sell_signal == 1].tolist()
+    buy_points = stock_data.loc[buy_signal == 1, '收盘价'].tolist()
+    sell_points = stock_data.loc[sell_signal == 1, '收盘价'].tolist()
+
     kline.set_global_opts(
         xaxis_opts=opts.AxisOpts(is_scale=True),
         yaxis_opts=opts.AxisOpts(
@@ -293,6 +303,28 @@ def create_kline_chart(stock_data):
     kline.overlap(line_dif)
     kline.overlap(line_dea)
     kline.overlap(bar_macd)
+
+    # 添加金叉和死叉标记点
+    kline.add_yaxis(
+        '金叉',
+        [],
+        markpoint_opts=opts.MarkPointOpts(
+            data=[opts.MarkPointItem(name='金叉', coord=[buy_dates[i], buy_points[i]], value=buy_points[i],
+                                     itemstyle_opts=opts.ItemStyleOpts(color='red')) for i in range(len(buy_dates))],
+            symbol='triangle',
+            symbol_size=13
+        )
+    )
+    kline.add_yaxis(
+        '死叉',
+        [],
+        markpoint_opts=opts.MarkPointOpts(
+            data=[opts.MarkPointItem(name='死叉', coord=[sell_dates[i], sell_points[i]], value=sell_points[i],
+                                     itemstyle_opts=opts.ItemStyleOpts(color='green')) for i in range(len(sell_dates))],
+            symbol='arrow',
+            symbol_size=13
+        )
+    )
 
     grid = Grid(init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%',
                                         bg_color='rgb(40, 44, 52)', is_fill_bg_color=True))

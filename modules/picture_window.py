@@ -8,7 +8,7 @@ class ChartDisplayWindow(QWidget):
     def __init__(self, html, data):
         super().__init__()
         self.setWindowTitle("Chart Display")
-        self.setMinimumSize(QSize(800, 600))
+        self.setMinimumSize(QSize(1100, 600))
         self.html = html
         self.data = data.get_data_frame()
 
