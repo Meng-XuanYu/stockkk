@@ -2107,14 +2107,19 @@ class UIMainWindow(object):
         self.scrollAreaLayout.addLayout(self.title_layout)
 
     def market_analysis(self):
+        information_box = QMessageBox()
+        information_box.setIcon(QMessageBox.Warning)
+        icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+        information_box.setIconPixmap(icon_pixmap)
         try:
             market_analysis_window = MarketAnalysisWindow(self.interface)
             market_analysis_window.show()
-            # self.display_data(filtered_data.get_data_frame())
-            # self.errorLabel.setText(f'搜索成功：{stock_code}, 请在数据表格中查看数据')
-            # self.errorLabel.setStyleSheet('color: #58b368;'
-            #                               'font-size: 12px;')
+            information_box.setText("如果是首次生成图片，请耐心等待")
+            information_box.setWindowTitle("大盘分析成功")
+            information_box.setStandardButtons(QMessageBox.Ok)
+            information_box.exec_()
         except StockDataNotFoundException:
-            self.errorLabel.setText('未导入股票数据，请先导入数据')
-            self.errorLabel.setStyleSheet('color: #fb7756;'
-                                          'font-size: 12px;')
+            information_box.setText("未导入股票数据，请先导入数据")
+            information_box.setWindowTitle("大盘分析失败")
+            information_box.setStandardButtons(QMessageBox.Ok)
+            information_box.exec_()
