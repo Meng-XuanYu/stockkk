@@ -245,16 +245,21 @@ class MarketAnalysisWindow(QWidget):
     def create_price_change_pie_chart(self):
         all_stocks_data = self.interface.get_stock_all_data()
 
-        # 计算每个股票的涨跌幅度
-        all_stocks_data['涨跌幅度'] = (all_stocks_data['收盘价'] - all_stocks_data['开盘价']) / all_stocks_data[
-            '开盘价'] * 100
+        # 计算每只股票一年内的涨跌幅度
+        yearly_price_change = all_stocks_data.groupby('股票代码').agg({
+            '开盘价': 'first',
+            '收盘价': 'last'
+        }).reset_index()
+        yearly_price_change['涨跌幅度'] = (yearly_price_change['收盘价'] - yearly_price_change['开盘价']) / \
+                                          yearly_price_change['开盘价'] * 100
 
         # 根据涨跌幅度分类
-        all_stocks_data['涨跌分类'] = pd.cut(all_stocks_data['涨跌幅度'], bins=[-float('inf'), -5, 0, 5, float('inf')],
-                                             labels=['大跌', '小跌', '小涨', '大涨'])
+        yearly_price_change['涨跌分类'] = pd.cut(yearly_price_change['涨跌幅度'],
+                                                 bins=[-float('inf'), -5, 0, 5, float('inf')],
+                                                 labels=['大跌', '小跌', '小涨', '大涨'])
 
         # 计算涨跌分类的分布
-        price_change_distribution = all_stocks_data['涨跌分类'].value_counts()
+        price_change_distribution = yearly_price_change['涨跌分类'].value_counts()
 
         # 转换为DataFrame以便于绘图
         price_change_df = pd.DataFrame({
@@ -272,9 +277,7 @@ class MarketAnalysisWindow(QWidget):
             label_opts=opts.LabelOpts(is_show=True, formatter="{b}: {c} ({d}%)")
         )
         pie.set_global_opts(
-            title_opts=opts.TitleOpts(title='股票涨跌分布饼图'),
+            title_opts=opts.TitleOpts(title='股票一年涨跌分布饼图'),
             legend_opts=opts.LegendOpts(orient='vertical', pos_top='15%', pos_left='2%')
         )
         return pie.render_embed()
-
-
