@@ -1540,7 +1540,7 @@ class UIMainWindow(object):
         # 创建图表类型菜单
         self.chartTypeMenu = QMenu(self.chartTypeButton)
         chart_types = ['开盘和收盘价格平均条形图', '总交易量条形图', '最高价格条形图',
-                       '最低价格条形图', '复合增长条形图', '振幅散点图', '换手率条形图', 'K线图', '价格折线图']
+                       '最低价格条形图', '复合增长条形图', '振幅散点图', '换手率条形图', 'K线图', '价格折线图', 'RSI']
         for chart_type in chart_types:
             action = self.chartTypeMenu.addAction(chart_type)
             action.triggered.connect(lambda checked, t=chart_type: self.chartTypeButton.setText(t))
@@ -1785,8 +1785,8 @@ class UIMainWindow(object):
                     if user is not None:
                         chart_record = user.get_lastest_chart()
                         self.add_history_record(chart_record['store_time'], chart_record['file_name'],
-                                            chart_record['stock_code'],
-                                            ChartType.get_back_chart_type_name(chart_record['chart_type']))
+                                                chart_record['stock_code'],
+                                                ChartType.get_back_chart_type_name(chart_record['chart_type']))
             except StockDataNotFoundException:
                 information_box.setText("请先导入股票数据")
                 information_box.setWindowTitle("生成失败")
@@ -2065,7 +2065,8 @@ class UIMainWindow(object):
             chart_records = user.get_chart_records()
             for chart_record in chart_records:
                 self.add_history_record(chart_record['store_time'], chart_record['file_name'],
-                                        chart_record['stock_code'], ChartType.get_back_chart_type_name(chart_record['chart_type']))
+                                        chart_record['stock_code'],
+                                        ChartType.get_back_chart_type_name(chart_record['chart_type']))
 
     def on_view_button_clicked(self, date_time, stock_code):
         chart_and_data = self.interface.get_current_user().get_chart_and_data_in_records(date_time)

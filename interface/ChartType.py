@@ -11,6 +11,7 @@ class ChartType(Enum):
     TURNOVER_RATE = 7
     KLINE = 8
     PRICE_LINE = 9
+    RSI = 10
 
     def get_chart_type_name(self):
         mapping = {
@@ -23,6 +24,7 @@ class ChartType(Enum):
             ChartType.TURNOVER_RATE: 'turnover_rate',
             ChartType.KLINE: 'kline',
             ChartType.PRICE_LINE: 'price_line',
+            ChartType.RSI: 'rsi',
         }
         return mapping[self]
 
@@ -38,6 +40,7 @@ class ChartType(Enum):
             '换手率条形图': ChartType.TURNOVER_RATE,
             'K线图': ChartType.KLINE,
             '价格折线图': ChartType.PRICE_LINE,
+            'RSI': ChartType.RSI,
         }
         if text in mapping:
             return mapping[text]
@@ -56,5 +59,6 @@ class ChartType(Enum):
             'turnover_rate': '换手率条形图',
             'kline': 'K线图',
             'price_line': '价格折线图',
+            'rsi': 'RSI',
         }
         return mapping[text]

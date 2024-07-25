@@ -22,6 +22,7 @@ def create_chart(stock, chart_type):
         ChartType.TURNOVER_RATE: create_turnover_rate_chart,
         ChartType.KLINE: create_kline_chart,
         ChartType.PRICE_LINE: create_price_line_chart,
+        ChartType.RSI: create_rsi_chart,
     }
     chart = mapping[chart_type](stock.get_data_frame())
     stock.store_chart(chart_type, chart)
@@ -286,6 +287,31 @@ def create_kline_chart(stock_data):
     buy_points = stock_data.loc[buy_signal == 1, '收盘价'].tolist()
     sell_points = stock_data.loc[sell_signal == 1, '收盘价'].tolist()
 
+    ma = stock_data['收盘价'].rolling(window=20, min_periods=1).mean()
+    sd = stock_data['收盘价'].rolling(window=20, min_periods=1).std()
+    upper_bond = ma + 2 * sd
+    lower_bond = ma - 2 * sd
+
+    upper_bond_line = Line()
+    upper_bond_line.add_xaxis(dates)
+    upper_bond_line.add_yaxis(
+        '上轨',
+        upper_bond.tolist(),
+        is_smooth=True,
+        is_symbol_show=False,
+        label_opts=opts.LabelOpts(is_show=False)
+    )
+
+    lower_bond_line = Line()
+    lower_bond_line.add_xaxis(dates)
+    lower_bond_line.add_yaxis(
+        '下轨',
+        lower_bond.tolist(),
+        is_smooth=True,
+        is_symbol_show=False,
+        label_opts=opts.LabelOpts(is_show=False)
+    )
+
     kline.set_global_opts(
         xaxis_opts=opts.AxisOpts(is_scale=True),
         yaxis_opts=opts.AxisOpts(
@@ -303,6 +329,8 @@ def create_kline_chart(stock_data):
     kline.overlap(line_dif)
     kline.overlap(line_dea)
     kline.overlap(bar_macd)
+    kline.overlap(upper_bond_line)
+    kline.overlap(lower_bond_line)
 
     # 添加金叉和死叉标记点
     kline.add_yaxis(
@@ -374,12 +402,12 @@ def create_price_line_chart(stock_data):
         markpoint_opts=opts.MarkPointOpts(
             data=[
                      opts.MarkPointItem(
-                         name='金叉', coord=[date, price], value='金叉',
+                         name='金叉', coord=[date, price],
                          symbol='triangle', symbol_size=10, itemstyle_opts=opts.ItemStyleOpts(color='gold')
                      ) for date, price in golden_cross
                  ] + [
                      opts.MarkPointItem(
-                         name='死叉', coord=[date, price], value='死叉',
+                         name='死叉', coord=[date, price],
                          symbol='triangle-down', symbol_size=10, itemstyle_opts=opts.ItemStyleOpts(color='red')
                      ) for date, price in death_cross
                  ]
@@ -399,4 +427,44 @@ def create_price_line_chart(stock_data):
     )
 
     return line.render_embed()
+
+
+def create_rsi_chart(stock_data):
+    stock_data = stock_data.reset_index(drop=True)
+
+    dates = stock_data['日期'].tolist()
+    price_change = stock_data['收盘价'].diff()
+    positive_change = price_change.apply(lambda x: x if x > 0 else 0)
+    negative_change = price_change.apply(lambda x: -x if x < 0 else 0)
+    average_gain = positive_change.rolling(window=14, min_periods=1).mean()
+    average_loss = negative_change.rolling(window=14, min_periods=1).mean()
+    si = average_loss / average_gain
+    rsi = 100 - (100 / (1 + si))
+
+    line_rsi = Line(
+        init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%',
+                                bg_color='rgb(40, 44, 52)', is_fill_bg_color=True))
+    line_rsi.add_xaxis(dates)
+    line_rsi.add_yaxis(
+        'RSI',
+        rsi.tolist(),
+        is_smooth=True,
+        is_symbol_show=False,
+        label_opts=opts.LabelOpts(is_show=False),
+        linestyle_opts=opts.LineStyleOpts(width=2, type_='dotted')
+    )
+
+    line_rsi.set_global_opts(
+        title_opts=opts.TitleOpts(title='RSI指标图'),
+        xaxis_opts=opts.AxisOpts(axislabel_opts=opts.LabelOpts(rotate=-45)),
+        tooltip_opts=opts.TooltipOpts(trigger='axis', axis_pointer_type='line'),
+        yaxis_opts=opts.AxisOpts(
+            is_scale=True,
+            splitarea_opts=opts.SplitAreaOpts(is_show=True, areastyle_opts=opts.AreaStyleOpts(opacity=1))
+        ),
+        datazoom_opts=[opts.DataZoomOpts(type_='inside')],
+        toolbox_opts=opts.ToolboxOpts(is_show=True, feature={'dataZoom': {'yAxisIndex': 'none'}})
+    )
+
+    return line_rsi.render_embed()
 
