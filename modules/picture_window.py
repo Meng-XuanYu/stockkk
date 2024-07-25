@@ -43,7 +43,7 @@ class ChartDisplayWindow(QWidget):
 
         self.webEngineView.setHtml(self.html)
         self.export_data_button = QPushButton("导出股票数据")
-        self.export_table_button = QPushButton("导出表格文件")
+        self.export_table_button = QPushButton("导出图表文件")
 
         button_layout.addWidget(self.export_data_button)
         button_layout.addWidget(self.export_table_button)

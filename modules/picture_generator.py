@@ -243,6 +243,39 @@ def create_kline_chart(stock_data):
         label_opts=opts.LabelOpts(is_show=False)
     )
 
+    ema12 = stock_data['收盘价'].ewm(span=12, adjust=False).mean()
+    ema26 = stock_data['收盘价'].ewm(span=26, adjust=False).mean()
+    dif = ema12 - ema26
+    line_dif = Line()
+    line_dif.add_xaxis(dates)
+    line_dif.add_yaxis(
+        'DIF',
+        dif.tolist(),
+        is_smooth=True,
+        is_symbol_show=False,
+        label_opts=opts.LabelOpts(is_show=False)
+    )
+
+    dea = dif.ewm(span=9, adjust=False).mean()
+    line_dea = Line()
+    line_dea.add_xaxis(dates)
+    line_dea.add_yaxis(
+        'DEA',
+        dea.tolist(),
+        is_smooth=True,
+        is_symbol_show=False,
+        label_opts=opts.LabelOpts(is_show=False)
+    )
+
+    macd = 2 * (dif - dea)
+    bar_macd = Bar()
+    bar_macd.add_xaxis(dates)
+    bar_macd.add_yaxis(
+        'MACD',
+        macd.tolist(),
+        label_opts=opts.LabelOpts(is_show=False)
+    )
+
     kline.set_global_opts(
         xaxis_opts=opts.AxisOpts(is_scale=True),
         yaxis_opts=opts.AxisOpts(
@@ -257,6 +290,9 @@ def create_kline_chart(stock_data):
 
     kline.overlap(line_ma10)
     kline.overlap(line_ma20)
+    kline.overlap(line_dif)
+    kline.overlap(line_dea)
+    kline.overlap(bar_macd)
 
     grid = Grid(init_opts=opts.InitOpts(theme=ThemeType.DARK, width='100%', height='500%',
                                         bg_color='rgb(40, 44, 52)', is_fill_bg_color=True))

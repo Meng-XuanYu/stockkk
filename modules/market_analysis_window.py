@@ -66,7 +66,7 @@ class MarketAnalysisWindow(QWidget):
             webEngineView.setHtml(html)
             self.webEngineViews.append(webEngineView)
 
-            button = QPushButton("导出表格文件")
+            button = QPushButton("导出图像文件")
             button.clicked.connect(lambda _, idx=len(self.webEngineViews) - 1: self.export_table(idx))
             self.export_buttons.append(button)
 
