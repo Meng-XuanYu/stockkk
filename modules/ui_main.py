@@ -13,6 +13,7 @@ from pages.ChangePasswordPage import ChangePasswordPage
 from pages.ChangeUsernamePage import ChangeUsernamePage
 from pages.LoginPage import LoginPage
 from pages.RegisterPage import RegisterPage
+from pages.picture_page import PicturePage
 from pages.user_log_page import UserLogPage
 from . import picture_generator
 from .market_analysis_window import MarketAnalysisWindow
@@ -43,521 +44,11 @@ class UIMainWindow(object):
         font.setBold(False)
         font.setItalic(False)
         self.styleSheet.setFont(font)
-        self.styleSheet.setStyleSheet(u'\n'
-                                      '\n'
-                                      'QWidget{\n'
-                                      '	color: rgb(221, 221, 221);\n'
-                                      '	font: 10pt "Arial";\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'Tooltip */\n'
-                                      'QToolTip {\n'
-                                      '	color: #ffffff;\n'
-                                      '	background-color: rgba(33, 37, 43, 180);\n'
-                                      '	border: 1px solid rgb(44, 49, 58);\n'
-                                      '	background-image: none;\n'
-                                      '	background-position: left center;\n'
-                                      '    background-repeat: no-repeat;\n'
-                                      '	border: none;\n'
-                                      '	border-left: 2px solid rgb(255, 121, 198);\n'
-                                      '	text-align: left;\n'
-                                      '	padding-left: 8px;\n'
-                                      '	margin: 0px;\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'Bg App */\n'
-                                      '#bgApp {	\n'
-                                      '	background-color: rgb(40, 44, 52);\n'
-                                      '	border: 1px solid rgb(44, 49, 58);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'Left Menu */\n'
-                                      '#leftMenuBg {	\n'
-                                      '	background-color: rgb(33, 37, 43);\n'
-                                      '}\n'
-                                      '#topLogo {\n'
-                                      '	background-'
-                                      'color: rgb(33, 37, 43);\n'
-                                      '	background-image: url(./images/images/stockkk_top.jpg);\n'
-                                      '	background-position: centered;\n'
-                                      '	background-repeat: no-repeat;\n'
-                                      ' height: 10px;\n'
-                                      ' width: 10px;\n'
-                                      '}\n'
-                                      '#titleLeftApp { font: 63 12pt "Arial"; }\n'
-                                      '#titleLeftDescription { font: 8pt "Arial"; color: rgb(189, 147, 249); }\n'
-                                      '\n'
-                                      '/* MENUS */\n'
-                                      '#topMenu .QPushButton {	\n'
-                                      '	background-position: left center;\n'
-                                      '    background-repeat: no-repeat;\n'
-                                      '	border: none;\n'
-                                      '	border-left: 22px solid transparent;\n'
-                                      '	background-color: transparent;\n'
-                                      '	text-align: left;\n'
-                                      '	padding-left: 44px;\n'
-                                      '}\n'
-                                      '#topMenu .QPushButton:hover {\n'
-                                      '	background-color: rgb(40, 44, 52);\n'
-                                      '}\n'
-                                      '#topMenu .QPushButton:pressed {	\n'
-                                      '	background-color: rgb(189, 147, 249);\n'
-                                      '	color: rgb(255, 255, 255);\n'
-                                      '}\n'
-                                      '#bottomMenu .QPushButton {	\n'
-                                      '	background-position: left center;\n'
-                                      '    background-repeat: no-repeat;\n'
-                                      '	border: none;\n'
-                                      '	border-left: 20px solid transparent;\n'
-                                      '	background-color:transparent;\n'
-                                      '	text-align: left;\n'
-                                      '	padding-l'
-                                      'eft: 44px;\n'
-                                      '}\n'
-                                      '#bottomMenu .QPushButton:hover {\n'
-                                      '	background-color: rgb(40, 44, 52);\n'
-                                      '}\n'
-                                      '#bottomMenu .QPushButton:pressed {	\n'
-                                      '	background-color: rgb(189, 147, 249);\n'
-                                      '	color: rgb(255, 255, 255);\n'
-                                      '}\n'
-                                      '#leftMenuFrame{\n'
-                                      '	border-top: 3px solid rgb(44, 49, 58);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* Toggle Button */\n'
-                                      '#toggleButton {\n'
-                                      '	background-position: left center;\n'
-                                      '    background-repeat: no-repeat;\n'
-                                      '	border: none;\n'
-                                      '	border-left: 20px solid transparent;\n'
-                                      '	background-color: rgb(37, 41, 48);\n'
-                                      '	text-align: left;\n'
-                                      '	padding-left: 44px;\n'
-                                      '	color: rgb(113, 126, 149);\n'
-                                      '}\n'
-                                      '#toggleButton:hover {\n'
-                                      '	background-color: rgb(40, 44, 52);\n'
-                                      '}\n'
-                                      '#toggleButton:pressed {\n'
-                                      '	background-color: rgb(189, 147, 249);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* Title Menu */\n'
-                                      '#titleRightInfo { padding-left: 10px; }\n'
-                                      '\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'Extra Tab */\n'
-                                      '#extraLeftBox {	\n'
-                                      '	background-color: rgb(44, 49, 58);\n'
-                                      '}\n'
-                                      ''
-                                      '#extraTopBg{	\n'
-                                      '	background-color: rgb(189, 147, 249)\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* Icon */\n'
-                                      '#extraIcon {\n'
-                                      '	background-position: center;\n'
-                                      '	background-repeat: no-repeat;\n'
-                                      '	background-image: url(:/icons/images/icons/cil-heart.png);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* Label */\n'
-                                      '#extraLabel { color: rgb(255, 255, 255); }\n'
-                                      '\n'
-                                      '/* Btn Close */\n'
-                                      '#extraCloseColumnBtn { background-color: rgba(255, 255, 255, 0); border: none;  border-radius: 5px; }\n'
-                                      '#extraCloseColumnBtn:hover { background-color: rgb(196, 161, 249); border-style: solid; border-radius: 4px; }\n'
-                                      '#extraCloseColumnBtn:pressed { background-color: rgb(180, 141, 238); border-style: solid; border-radius: 4px; }\n'
-                                      '\n'
-                                      '/* Extra Content */\n'
-                                      '#extraContent{\n'
-                                      '	border-top: 3px solid rgb(40, 44, 52);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* Extra Top Menus */\n'
-                                      '#extraTopMenu .QPushButton {\n'
-                                      'background-position: left center;\n'
-                                      '    background-repeat: no-repeat;\n'
-                                      '	border: none;\n'
-                                      '	border-left: 22px solid transparent;\n'
-                                      '	background-color:transparent;\n'
-                                      '	text-align: lef'
-                                      't;\n'
-                                      '	padding-left: 44px;\n'
-                                      '}\n'
-                                      '#extraTopMenu .QPushButton:hover {\n'
-                                      '	background-color: rgb(40, 44, 52);\n'
-                                      '}\n'
-                                      '#extraTopMenu .QPushButton:pressed {	\n'
-                                      '	background-color: rgb(189, 147, 249);\n'
-                                      '	color: rgb(255, 255, 255);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'Content App */\n'
-                                      '#contentTopBg{	\n'
-                                      '	background-color: rgb(33, 37, 43);\n'
-                                      '}\n'
-                                      '#contentBottom{\n'
-                                      '	border-top: 3px solid rgb(44, 49, 58);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* Top Buttons */\n'
-                                      '#rightButtons .QPushButton { background-color: rgba(255, 255, 255, 0); border: none;  border-radius: 5px; }\n'
-                                      '#rightButtons .QPushButton:hover { background-color: rgb(44, 49, 57); border-style: solid; border-radius: 4px; }\n'
-                                      '#rightButtons .QPushButton:pressed { background-color: rgb(23, 26, 30); border-style: solid; border-radius: 4px; }\n'
-                                      '\n'
-                                      '/* Theme Settings */\n'
-                                      '#extraRightBox { background-color: rgb(44, 49, 58); }\n'
-                                      '#themeSettingsTopDetail { background-color: rgb(189'
-                                      ', 147, 249); }\n'
-                                      '\n'
-                                      '/* Bottom Bar */\n'
-                                      '#bottomBar { background-color: rgb(44, 49, 58); }\n'
-                                      '#bottomBar QLabel { font-size: 11px; color: rgb(113, 126, 149); padding-left: 10px; padding-right: 10px; padding-bottom: 2px; }\n'
-                                      '\n'
-                                      '/* CONTENT SETTINGS */\n'
-                                      '/* MENUS */\n'
-                                      '#contentSettings .QPushButton {	\n'
-                                      '	background-position: left center;\n'
-                                      '    background-repeat: no-repeat;\n'
-                                      '	border: none;\n'
-                                      '	border-left: 22px solid transparent;\n'
-                                      '	background-color:transparent;\n'
-                                      '	text-align: left;\n'
-                                      '	padding-left: 44px;\n'
-                                      '}\n'
-                                      '#contentSettings .QPushButton:hover {\n'
-                                      '	background-color: rgb(40, 44, 52);\n'
-                                      '}\n'
-                                      '#contentSettings .QPushButton:pressed {	\n'
-                                      '	background-color: rgb(189, 147, 249);\n'
-                                      '	color: rgb(255, 255, 255);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'QTableWidget */\n'
-                                      'QTableWidget {	\n'
-                                      '	background-color: transparent;\n'
-                                      '	padding: 10px;\n'
-                                      '	border-radius: 5px;\n'
-                                      '	gridline-color: rgb(44, 49, 58);\n'
-                                      ''
-                                      '	border-bottom: 1px solid rgb(44, 49, 60);\n'
-                                      '}\n'
-                                      'QTableWidget::item{\n'
-                                      '	border-color: rgb(44, 49, 60);\n'
-                                      '	padding-left: 5px;\n'
-                                      '	padding-right: 5px;\n'
-                                      '	gridline-color: rgb(44, 49, 60);\n'
-                                      '}\n'
-                                      'QTableWidget::item:selected{\n'
-                                      '	background-color: rgb(189, 147, 249);\n'
-                                      '}\n'
-                                      'QHeaderView::section{\n'
-                                      '	background-color: rgb(33, 37, 43);\n'
-                                      '	max-width: 30px;\n'
-                                      '	border: 1px solid rgb(44, 49, 58);\n'
-                                      '	border-style: none;\n'
-                                      '    border-bottom: 1px solid rgb(44, 49, 60);\n'
-                                      '    border-right: 1px solid rgb(44, 49, 60);\n'
-                                      '}\n'
-                                      'QTableWidget::horizontalHeader {	\n'
-                                      '	background-color: rgb(33, 37, 43);\n'
-                                      '}\n'
-                                      'QHeaderView::section:horizontal\n'
-                                      '{\n'
-                                      '    border: 1px solid rgb(33, 37, 43);\n'
-                                      '	background-color: rgb(33, 37, 43);\n'
-                                      '	padding: 3px;\n'
-                                      '	border-top-left-radius: 7px;\n'
-                                      '    border-top-right-radius: 7px;\n'
-                                      '}\n'
-                                      'QHeaderView::section:vertical\n'
-                                      '{\n'
-                                      '    border: 1px solid rgb(44, 49, 60);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* ////////////////////////////////////////////////////////////////////////////'
-                                      '/////////////////////\n'
-                                      'LineEdit */\n'
-                                      'QLineEdit {\n'
-                                      '	background-color: rgb(33, 37, 43);\n'
-                                      '	border-radius: 5px;\n'
-                                      '	border: 2px solid rgb(33, 37, 43);\n'
-                                      '	padding-left: 10px;\n'
-                                      '	selection-color: rgb(255, 255, 255);\n'
-                                      '	selection-background-color: rgb(255, 121, 198);\n'
-                                      '}\n'
-                                      'QLineEdit:hover {\n'
-                                      '	border: 2px solid rgb(64, 71, 88);\n'
-                                      '}\n'
-                                      'QLineEdit:focus {\n'
-                                      '	border: 2px solid rgb(91, 101, 124);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'PlainTextEdit */\n'
-                                      'QPlainTextEdit {\n'
-                                      '	background-color: rgb(27, 29, 35);\n'
-                                      '	border-radius: 5px;\n'
-                                      '	padding: 10px;\n'
-                                      '	selection-color: rgb(255, 255, 255);\n'
-                                      '	selection-background-color: rgb(255, 121, 198);\n'
-                                      '}\n'
-                                      'QPlainTextEdit  QScrollBar:vertical {\n'
-                                      '    width: 8px;\n'
-                                      ' }\n'
-                                      'QPlainTextEdit  QScrollBar:horizontal {\n'
-                                      '    height: 8px;\n'
-                                      ' }\n'
-                                      'QPlainTextEdit:hover {\n'
-                                      '	border: 2px solid rgb(64, 71, 88);\n'
-                                      '}\n'
-                                      'QPlainTextEdit:focus {\n'
-                                      '	border: 2px solid '
-                                      'rgb(91, 101, 124);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'ScrollBars */\n'
-                                      'QScrollBar:horizontal {\n'
-                                      '    border: none;\n'
-                                      '    background: rgb(52, 59, 72);\n'
-                                      '    height: 8px;\n'
-                                      '    margin: 0px 21px 0 21px;\n'
-                                      '	border-radius: 0px;\n'
-                                      '}\n'
-                                      'QScrollBar::handle:horizontal {\n'
-                                      '    background: rgb(189, 147, 249);\n'
-                                      '    min-width: 25px;\n'
-                                      '	border-radius: 4px\n'
-                                      '}\n'
-                                      'QScrollBar::add-line:horizontal {\n'
-                                      '    border: none;\n'
-                                      '    background: rgb(55, 63, 77);\n'
-                                      '    width: 20px;\n'
-                                      '	border-top-right-radius: 4px;\n'
-                                      '    border-bottom-right-radius: 4px;\n'
-                                      '    subcontrol-position: right;\n'
-                                      '    subcontrol-origin: margin;\n'
-                                      '}\n'
-                                      'QScrollBar::sub-line:horizontal {\n'
-                                      '    border: none;\n'
-                                      '    background: rgb(55, 63, 77);\n'
-                                      '    width: 20px;\n'
-                                      '	border-top-left-radius: 4px;\n'
-                                      '    border-bottom-left-radius: 4px;\n'
-                                      '    subcontrol-position: left;\n'
-                                      '    subcontrol-origin: margin;\n'
-                                      '}\n'
-                                      'QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal\n'
-                                      '{\n'
-                                      '     background: none;\n'
-                                      '}\n'
-                                      'QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal\n'
-                                      '{\n'
-                                      '     background: none;\n'
-                                      '}\n'
-                                      ' QScrollBar:vertical {\n'
-                                      '	border: none;\n'
-                                      '    background: rgb(52, 59, 72);\n'
-                                      '    width: 8px;\n'
-                                      '    margin: 21px 0 21px 0;\n'
-                                      '	border-radius: 0px;\n'
-                                      ' }\n'
-                                      ' QScrollBar::handle:vertical {	\n'
-                                      '	background: rgb(189, 147, 249);\n'
-                                      '    min-height: 25px;\n'
-                                      '	border-radius: 4px\n'
-                                      ' }\n'
-                                      ' QScrollBar::add-line:vertical {\n'
-                                      '     border: none;\n'
-                                      '    background: rgb(55, 63, 77);\n'
-                                      '     height: 20px;\n'
-                                      '	border-bottom-left-radius: 4px;\n'
-                                      '    border-bottom-right-radius: 4px;\n'
-                                      '     subcontrol-position: bottom;\n'
-                                      '     subcontrol-origin: margin;\n'
-                                      ' }\n'
-                                      ' QScrollBar::sub-line:vertical {\n'
-                                      '	border: none;\n'
-                                      '    background: rgb(55, 63, 77);\n'
-                                      '     height: 20px;\n'
-                                      '	border-top-left-radius: 4px;\n'
-                                      '    border-top-right-radius: 4px;\n'
-                                      '     subcontrol-position: top;\n'
-                                      '     subcontrol-origin: margin;\n'
-                                      ''
-                                      ' }\n'
-                                      ' QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {\n'
-                                      '     background: none;\n'
-                                      ' }\n'
-                                      '\n'
-                                      ' QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {\n'
-                                      '     background: none;\n'
-                                      ' }\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'CheckBox */\n'
-                                      'QCheckBox::indicator {\n'
-                                      '    border: 3px solid rgb(52, 59, 72);\n'
-                                      '	width: 15px;\n'
-                                      '	height: 15px;\n'
-                                      '	border-radius: 10px;\n'
-                                      '    background: rgb(44, 49, 60);\n'
-                                      '}\n'
-                                      'QCheckBox::indicator:hover {\n'
-                                      '    border: 3px solid rgb(58, 66, 81);\n'
-                                      '}\n'
-                                      'QCheckBox::indicator:checked {\n'
-                                      '    background: 3px solid rgb(52, 59, 72);\n'
-                                      '	border: 3px solid rgb(52, 59, 72);	\n'
-                                      '	background-image: url(:/icons/images/icons/cil-check-alt.png);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'RadioButton */\n'
-                                      'QRadioButton::indicator {\n'
-                                      '    border: 3px solid rgb(52, 59, 72);\n'
-                                      '	width: 15px;\n'
-                                      '	height: 15px;\n'
-                                      '	border-radius: 10px;\n'
-                                      '    background: rgb(44, 49, 60);\n'
-                                      '}\n'
-                                      'QRadioButton::indicator:hover {\n'
-                                      '    border: 3px solid rgb(58, 66, 81);\n'
-                                      '}\n'
-                                      'QRadioButton::indicator:checked {\n'
-                                      '    background: 3px solid rgb(94, 106, 130);\n'
-                                      '	border: 3px solid rgb(52, 59, 72);	\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'ComboBox */\n'
-                                      'QComboBox{\n'
-                                      '	background-color: rgb(27, 29, 35);\n'
-                                      '	border-radius: 5px;\n'
-                                      '	border: 2px solid rgb(33, 37, 43);\n'
-                                      '	padding: 5px;\n'
-                                      '	padding-left: 10px;\n'
-                                      '}\n'
-                                      'QComboBox:hover{\n'
-                                      '	border: 2px solid rgb(64, 71, 88);\n'
-                                      '}\n'
-                                      'QComboBox::drop-down {\n'
-                                      '	subcontrol-origin: padding;\n'
-                                      '	subcontrol-position: top right;\n'
-                                      '	width: 25px; \n'
-                                      '	border-left-width: 3px;\n'
-                                      '	border-left-color: rgba(39, 44, 54, 150);\n'
-                                      '	border-left-style: solid;\n'
-                                      '	border-top-right-radius: 3px;\n'
-                                      '	border-bottom-right-radius: 3px;	\n'
-                                      '	background-image: url(:/icons/images/icons/cil-arrow-bottom.png'
-                                      ');\n'
-                                      '	background-position: center;\n'
-                                      '	background-repeat: no-repeat;\n'
-                                      ' }\n'
-                                      'QComboBox QAbstractItemView {\n'
-                                      '	color: rgb(255, 121, 198);	\n'
-                                      '	background-color: rgb(33, 37, 43);\n'
-                                      '	padding: 10px;\n'
-                                      '	selection-background-color: rgb(39, 44, 54);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'Sliders */\n'
-                                      'QSlider::groove:horizontal {\n'
-                                      '    border-radius: 5px;\n'
-                                      '    height: 10px;\n'
-                                      '	margin: 0px;\n'
-                                      '	background-color: rgb(52, 59, 72);\n'
-                                      '}\n'
-                                      'QSlider::groove:horizontal:hover {\n'
-                                      '	background-color: rgb(55, 62, 76);\n'
-                                      '}\n'
-                                      'QSlider::handle:horizontal {\n'
-                                      '    background-color: rgb(189, 147, 249);\n'
-                                      '    border: none;\n'
-                                      '    height: 10px;\n'
-                                      '    width: 10px;\n'
-                                      '    margin: 0px;\n'
-                                      '	border-radius: 5px;\n'
-                                      '}\n'
-                                      'QSlider::handle:horizontal:hover {\n'
-                                      '    background-color: rgb(195, 155, 255);\n'
-                                      '}\n'
-                                      'QSlider::handle:horizontal:pressed {\n'
-                                      '    background-color: rgb(255, 121, 198);\n'
-                                      '}\n'
-                                      '\n'
-                                      'QSlider::groove:'
-                                      'vertical {\n'
-                                      '    border-radius: 5px;\n'
-                                      '    width: 10px;\n'
-                                      '    margin: 0px;\n'
-                                      '	background-color: rgb(52, 59, 72);\n'
-                                      '}\n'
-                                      'QSlider::groove:vertical:hover {\n'
-                                      '	background-color: rgb(55, 62, 76);\n'
-                                      '}\n'
-                                      'QSlider::handle:vertical {\n'
-                                      '    background-color: rgb(189, 147, 249);\n'
-                                      '	border: none;\n'
-                                      '    height: 10px;\n'
-                                      '    width: 10px;\n'
-                                      '    margin: 0px;\n'
-                                      '	border-radius: 5px;\n'
-                                      '}\n'
-                                      'QSlider::handle:vertical:hover {\n'
-                                      '    background-color: rgb(195, 155, 255);\n'
-                                      '}\n'
-                                      'QSlider::handle:vertical:pressed {\n'
-                                      '    background-color: rgb(255, 121, 198);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'CommandLinkButton */\n'
-                                      'QCommandLinkButton {	\n'
-                                      '	color: rgb(255, 121, 198);\n'
-                                      '	border-radius: 5px;\n'
-                                      '	padding: 5px;\n'
-                                      '	color: rgb(255, 170, 255);\n'
-                                      '}\n'
-                                      'QCommandLinkButton:hover {	\n'
-                                      '	color: rgb(255, 170, 255);\n'
-                                      '	background-color: rgb(44, 49, 60);\n'
-                                      '}\n'
-                                      'QCommandLinkButton:pressed {	\n'
-                                      '	color: rgb(189, 147,'
-                                      ' 249);\n'
-                                      '	background-color: rgb(52, 58, 71);\n'
-                                      '}\n'
-                                      '\n'
-                                      '/* /////////////////////////////////////////////////////////////////////////////////////////////////\n'
-                                      'Button */\n'
-                                      '#pagesContainer QPushButton {\n'
-                                      '	border: 2px solid rgb(52, 59, 72);\n'
-                                      '	border-radius: 5px;	\n'
-                                      '	background-color: rgb(52, 59, 72);\n'
-                                      '}\n'
-                                      '#pagesContainer QPushButton:hover {\n'
-                                      '	background-color: rgb(57, 65, 80);\n'
-                                      '	border: 2px solid rgb(61, 70, 86);\n'
-                                      '}\n'
-                                      '#pagesContainer QPushButton:pressed {	\n'
-                                      '	background-color: rgb(35, 40, 49);\n'
-                                      '	border: 2px solid rgb(43, 50, 61);\n'
-                                      '}\n'
-                                      '\n'
-                                      '')
+
+        style_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'themes', 'styles.qss')
+        with open(style_file_path, 'r') as f:
+            self.styleSheet.setStyleSheet(f.read())
+
         self.appMargins = QVBoxLayout(self.styleSheet)
         self.appMargins.setSpacing(0)
         self.appMargins.setObjectName(u'appMargins')
@@ -973,7 +464,7 @@ class UIMainWindow(object):
                                      'background-position: center;\n'
                                      'background-repeat: no-repeat;')
         self.stackedWidget.addWidget(self.home_page)
-
+        # --------------------------------------------------------------------------------
         # 读取数据页面
         self.read_data_page = QWidget()
         self.read_data_page.setObjectName(u'read_data_page')
@@ -1189,39 +680,6 @@ class UIMainWindow(object):
         size_policy3.setVerticalStretch(0)
         size_policy3.setHeightForWidth(self.tableWidget.sizePolicy().hasHeightForWidth())
         self.tableWidget.setSizePolicy(size_policy3)
-        palette = QPalette()
-        brush = QBrush(QColor(221, 221, 221, 255))
-        brush.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Active, QPalette.WindowText, brush)
-        brush1 = QBrush(QColor(0, 0, 0, 0))
-        brush1.setStyle(Qt.SolidPattern)
-        palette.setBrush(QPalette.Active, QPalette.Button, brush1)
-        palette.setBrush(QPalette.Active, QPalette.Text, brush)
-        palette.setBrush(QPalette.Active, QPalette.ButtonText, brush)
-        brush2 = QBrush(QColor(0, 0, 0, 255))
-        brush2.setStyle(Qt.NoBrush)
-        palette.setBrush(QPalette.Active, QPalette.Base, brush2)
-        palette.setBrush(QPalette.Active, QPalette.Window, brush1)
-        palette.setBrush(QPalette.Active, QPalette.PlaceholderText, brush)
-        palette.setBrush(QPalette.Inactive, QPalette.WindowText, brush)
-        palette.setBrush(QPalette.Inactive, QPalette.Button, brush1)
-        palette.setBrush(QPalette.Inactive, QPalette.Text, brush)
-        palette.setBrush(QPalette.Inactive, QPalette.ButtonText, brush)
-        brush3 = QBrush(QColor(0, 0, 0, 255))
-        brush3.setStyle(Qt.NoBrush)
-        palette.setBrush(QPalette.Inactive, QPalette.Base, brush3)
-        palette.setBrush(QPalette.Inactive, QPalette.Window, brush1)
-        palette.setBrush(QPalette.Inactive, QPalette.PlaceholderText, brush)
-        palette.setBrush(QPalette.Disabled, QPalette.WindowText, brush)
-        palette.setBrush(QPalette.Disabled, QPalette.Button, brush1)
-        palette.setBrush(QPalette.Disabled, QPalette.Text, brush)
-        palette.setBrush(QPalette.Disabled, QPalette.ButtonText, brush)
-        brush4 = QBrush(QColor(0, 0, 0, 255))
-        brush4.setStyle(Qt.NoBrush)
-        palette.setBrush(QPalette.Disabled, QPalette.Base, brush4)
-        palette.setBrush(QPalette.Disabled, QPalette.Window, brush1)
-        palette.setBrush(QPalette.Disabled, QPalette.PlaceholderText, brush)
-        self.tableWidget.setPalette(palette)
         self.tableWidget.setFrameShape(QFrame.NoFrame)
         self.tableWidget.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
         self.tableWidget.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
@@ -1326,6 +784,7 @@ class UIMainWindow(object):
         self.verticalLayout_14.setObjectName(u'verticalLayout_14')
         self.verticalLayout_14.setContentsMargins(0, 0, 0, 0)
 
+        # 边栏按钮是否显示
         self.btn_login = QPushButton(self.topMenus)
         self.btn_register = QPushButton(self.topMenus)
         self.btn_logout = QPushButton(self.topMenus)
@@ -1655,7 +1114,7 @@ class UIMainWindow(object):
         self.btn_delete_cache.clicked.connect(self.delete_cache)
         self.pushButton_all.clicked.connect(self.market_analysis)
 
-        # 登录注册页面
+        # 页面
         self.register_page = RegisterPage(self.interface)
         self.login_page = LoginPage(self.interface)
         self.stackedWidget.addWidget(self.login_page)
@@ -1668,7 +1127,6 @@ class UIMainWindow(object):
         self.stackedWidget.addWidget(self.change_username_page)
 
         self.user_log_page = UserLogPage(self.interface)
-
         self.stackedWidget.addWidget(self.user_log_page)
 
         # 最后的处理
@@ -1681,9 +1139,6 @@ class UIMainWindow(object):
                                                    options=options)
         if file_path:
             self.load_data(file_path)  # 这里仍然传递文件路径，因为load_data需要完整路径
-
-    def select_chart_type(self, chart_type):
-        self.chartTypeButton.setText(chart_type)
 
     def load_data(self, file_path):
         import pandas as pd
@@ -1751,60 +1206,6 @@ class UIMainWindow(object):
             for col in range(len(data.columns)):
                 self.tableWidget.setItem(row + 1, col, QTableWidgetItem(str(data.iat[row, col])))
 
-    # setupUi
-
-    def generate_chart(self):
-        stock_code = self.searchLineEdit_picture.text()
-        information_box = QMessageBox()
-        information_box.setIcon(QMessageBox.Warning)
-        icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
-        information_box.setIconPixmap(icon_pixmap)
-
-        if stock_code:
-            try:
-                stock = self.interface.search_stock_by_code(stock_code)
-                chart_type_text = self.chartTypeButton.text()
-
-                # 根据选择的图表类型生成相应的图表
-                if chart_type_text == '选择图表类型':
-                    information_box.setText("请先选择图表类型")
-                    information_box.setWindowTitle("生成失败")
-                    information_box.setStandardButtons(QMessageBox.Ok)
-                    information_box.exec_()
-                else:
-                    chart_html = picture_generator.create_chart(stock,
-                                                                ChartType.get_chart_type_from_text(chart_type_text))
-                    new_chart_window = ChartDisplayWindow(chart_html, stock)
-                    new_chart_window.show()
-                    self.chart_display_windows.append(new_chart_window)
-                    information_box.setText("如果是首次生成图片，请耐心等待")
-                    information_box.setWindowTitle("生成成功")
-                    information_box.setStandardButtons(QMessageBox.Ok)
-                    information_box.exec_()
-                    user = self.interface.get_current_user()
-                    if user is not None:
-                        chart_record = user.get_lastest_chart()
-                        self.add_history_record(chart_record['store_time'], chart_record['file_name'],
-                                                chart_record['stock_code'],
-                                                ChartType.get_back_chart_type_name(chart_record['chart_type']))
-            except StockDataNotFoundException:
-                information_box.setText("请先导入股票数据")
-                information_box.setWindowTitle("生成失败")
-                information_box.setStandardButtons(QMessageBox.Ok)
-                information_box.exec_()
-            except StockCodeNotFoundException:
-                information_box.setText("请输入正确的股票代码")
-                information_box.setWindowTitle("生成失败")
-                information_box.setStandardButtons(QMessageBox.Ok)
-                information_box.exec_()
-        else:
-            information_box.setText("请先输入股票代码")
-            information_box.setWindowTitle("生成失败")
-            information_box.setStandardButtons(QMessageBox.Ok)
-            information_box.exec_()
-
-    # 已经精简很多了
-
     def retranslate_ui(self, main_window):
         self.btn_picture.setText(QCoreApplication.translate('MainWindow', u'单股聚焦', None))
 
@@ -1858,61 +1259,6 @@ class UIMainWindow(object):
         self.pushButton_all.setText(QCoreApplication.translate('MainWindow', u'大盘分析', None))
         self.labelVersion_3.setText(
             QCoreApplication.translate('MainWindow', u'请选取股市信息文件，各类表格文件均可', None))
-        ___qtablewidgetitem = self.tableWidget.horizontalHeaderItem(0)
-        ___qtablewidgetitem.setText(QCoreApplication.translate('MainWindow', u'0', None))
-        ___qtablewidgetitem1 = self.tableWidget.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate('MainWindow', u'1', None))
-        ___qtablewidgetitem2 = self.tableWidget.horizontalHeaderItem(2)
-        ___qtablewidgetitem2.setText(QCoreApplication.translate('MainWindow', u'2', None))
-        ___qtablewidgetitem3 = self.tableWidget.horizontalHeaderItem(3)
-        ___qtablewidgetitem3.setText(QCoreApplication.translate('MainWindow', u'3', None))
-        ___qtablewidgetitem4 = self.tableWidget.horizontalHeaderItem(4)
-        ___qtablewidgetitem4.setText(QCoreApplication.translate('MainWindow', u'4', None))
-        ___qtablewidgetitem5 = self.tableWidget.horizontalHeaderItem(5)
-        ___qtablewidgetitem5.setText(QCoreApplication.translate('MainWindow', u'5', None))
-        ___qtablewidgetitem6 = self.tableWidget.horizontalHeaderItem(6)
-        ___qtablewidgetitem6.setText(QCoreApplication.translate('MainWindow', u'6', None))
-        ___qtablewidgetitem7 = self.tableWidget.horizontalHeaderItem(7)
-        ___qtablewidgetitem7.setText(QCoreApplication.translate('MainWindow', u'7', None))
-        ___qtablewidgetitem8 = self.tableWidget.horizontalHeaderItem(8)
-        ___qtablewidgetitem8.setText(QCoreApplication.translate('MainWindow', u'8', None))
-        ___qtablewidgetitem9 = self.tableWidget.horizontalHeaderItem(9)
-        ___qtablewidgetitem9.setText(QCoreApplication.translate('MainWindow', u'9', None))
-        ___qtablewidgetitem10 = self.tableWidget.verticalHeaderItem(0)
-        ___qtablewidgetitem10.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem11 = self.tableWidget.verticalHeaderItem(1)
-        ___qtablewidgetitem11.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem12 = self.tableWidget.verticalHeaderItem(2)
-        ___qtablewidgetitem12.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem13 = self.tableWidget.verticalHeaderItem(3)
-        ___qtablewidgetitem13.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem14 = self.tableWidget.verticalHeaderItem(4)
-        ___qtablewidgetitem14.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem15 = self.tableWidget.verticalHeaderItem(5)
-        ___qtablewidgetitem15.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem16 = self.tableWidget.verticalHeaderItem(6)
-        ___qtablewidgetitem16.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem17 = self.tableWidget.verticalHeaderItem(7)
-        ___qtablewidgetitem17.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem18 = self.tableWidget.verticalHeaderItem(8)
-        ___qtablewidgetitem18.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem19 = self.tableWidget.verticalHeaderItem(9)
-        ___qtablewidgetitem19.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem20 = self.tableWidget.verticalHeaderItem(10)
-        ___qtablewidgetitem20.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem21 = self.tableWidget.verticalHeaderItem(11)
-        ___qtablewidgetitem21.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem22 = self.tableWidget.verticalHeaderItem(12)
-        ___qtablewidgetitem22.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem23 = self.tableWidget.verticalHeaderItem(13)
-        ___qtablewidgetitem23.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem24 = self.tableWidget.verticalHeaderItem(14)
-        ___qtablewidgetitem24.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-        ___qtablewidgetitem25 = self.tableWidget.verticalHeaderItem(15)
-        ___qtablewidgetitem25.setText(QCoreApplication.translate('MainWindow', u'New Row', None))
-
-        __sortingEnabled = self.tableWidget.isSortingEnabled()
-        self.tableWidget.setSortingEnabled(False)
         ___qtablewidgetitem26 = self.tableWidget.item(0, 0)
         ___qtablewidgetitem26.setText(QCoreApplication.translate('MainWindow', u'\u80a1\u7968\u4ee3\u7801', None))
         ___qtablewidgetitem27 = self.tableWidget.item(0, 1)
@@ -1933,8 +1279,6 @@ class UIMainWindow(object):
         ___qtablewidgetitem34.setText(QCoreApplication.translate('MainWindow', u'\u632f\u5e45', None))
         ___qtablewidgetitem35 = self.tableWidget.item(0, 9)
         ___qtablewidgetitem35.setText(QCoreApplication.translate('MainWindow', u'\u6362\u624b\u7387', None))
-        self.tableWidget.setSortingEnabled(__sortingEnabled)
-
         if self.interface.get_current_user() is None:
             self.btn_login.setText(QCoreApplication.translate('MainWindow', u'\u7528\u6237\u767b\u5f55', None))
             self.btn_register.setText(QCoreApplication.translate('MainWindow', u'\u7528\u6237\u6ce8\u518c', None))
@@ -2001,6 +1345,83 @@ class UIMainWindow(object):
             self.interface.delete_log_history()
             self.interface.delete_chart_history()
 
+    def market_analysis(self):
+        information_box = QMessageBox()
+        information_box.setIcon(QMessageBox.Warning)
+        icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+        information_box.setIconPixmap(icon_pixmap)
+        try:
+            market_analysis_window = MarketAnalysisWindow(self.interface)
+            market_analysis_window.show()
+            information_box.setText("如果是首次生成图片，请耐心等待")
+            information_box.setWindowTitle("大盘分析成功")
+            information_box.setStandardButtons(QMessageBox.Ok)
+            information_box.exec_()
+        except StockDataNotFoundException:
+            information_box.setText("未导入股票数据，请先导入数据")
+            information_box.setWindowTitle("大盘分析失败")
+            information_box.setStandardButtons(QMessageBox.Ok)
+            information_box.exec_()
+
+    def generate_chart(self):
+        stock_code = self.searchLineEdit_picture.text()
+        information_box = QMessageBox()
+        information_box.setIcon(QMessageBox.Warning)
+        icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
+        information_box.setIconPixmap(icon_pixmap)
+
+        if stock_code:
+            try:
+                stock = self.interface.search_stock_by_code(stock_code)
+                chart_type_text = self.chartTypeButton.text()
+
+                # 根据选择的图表类型生成相应的图表
+                if chart_type_text == '选择图表类型':
+                    information_box.setText("请先选择图表类型")
+                    information_box.setWindowTitle("生成失败")
+                    information_box.setStandardButtons(QMessageBox.Ok)
+                    information_box.exec_()
+                else:
+                    chart_html = picture_generator.create_chart(stock,
+                                                                ChartType.get_chart_type_from_text(chart_type_text))
+                    new_chart_window = ChartDisplayWindow(chart_html, stock)
+                    new_chart_window.show()
+                    self.chart_display_windows.append(new_chart_window)
+                    information_box.setText("如果是首次生成图片，请耐心等待")
+                    information_box.setWindowTitle("生成成功")
+                    information_box.setStandardButtons(QMessageBox.Ok)
+                    information_box.exec_()
+                    user = self.interface.get_current_user()
+                    if user is not None:
+                        chart_record = user.get_lastest_chart()
+                        self.add_history_record(chart_record['store_time'], chart_record['file_name'],
+                                                chart_record['stock_code'],
+                                                ChartType.get_back_chart_type_name(chart_record['chart_type']))
+            except StockDataNotFoundException:
+                information_box.setText("请先导入股票数据")
+                information_box.setWindowTitle("生成失败")
+                information_box.setStandardButtons(QMessageBox.Ok)
+                information_box.exec_()
+            except StockCodeNotFoundException:
+                information_box.setText("请输入正确的股票代码")
+                information_box.setWindowTitle("生成失败")
+                information_box.setStandardButtons(QMessageBox.Ok)
+                information_box.exec_()
+        else:
+            information_box.setText("请先输入股票代码")
+            information_box.setWindowTitle("生成失败")
+            information_box.setStandardButtons(QMessageBox.Ok)
+            information_box.exec_()
+
+    def load_chart_record(self):
+        user = self.interface.get_current_user()
+        if user:
+            chart_records = user.get_chart_records()
+            for chart_record in chart_records:
+                self.add_history_record(chart_record['store_time'], chart_record['file_name'],
+                                        chart_record['stock_code'],
+                                        ChartType.get_back_chart_type_name(chart_record['chart_type']))
+
     def add_history_record(self, date, file_name, stock_code, chart_type):
         record_layout = QHBoxLayout()
 
@@ -2059,15 +1480,6 @@ class UIMainWindow(object):
             }''')
         self.scrollAreaLayout.insertWidget(1, record_layout_widget, alignment=Qt.AlignTop)
 
-    def load_chart_record(self):
-        user = self.interface.get_current_user()
-        if user:
-            chart_records = user.get_chart_records()
-            for chart_record in chart_records:
-                self.add_history_record(chart_record['store_time'], chart_record['file_name'],
-                                        chart_record['stock_code'],
-                                        ChartType.get_back_chart_type_name(chart_record['chart_type']))
-
     def on_view_button_clicked(self, date_time, stock_code):
         chart_and_data = self.interface.get_current_user().get_chart_and_data_in_records(date_time)
         chart_html = chart_and_data['chart']
@@ -2106,21 +1518,3 @@ class UIMainWindow(object):
         self.title_layout.addWidget(self.title_label)
         self.title_layout.addStretch()  # 添加弹簧以居中标签
         self.scrollAreaLayout.addLayout(self.title_layout)
-
-    def market_analysis(self):
-        information_box = QMessageBox()
-        information_box.setIcon(QMessageBox.Warning)
-        icon_pixmap = QPixmap('images/images/stockkk.jpg').scaled(64, 64)
-        information_box.setIconPixmap(icon_pixmap)
-        try:
-            market_analysis_window = MarketAnalysisWindow(self.interface)
-            market_analysis_window.show()
-            information_box.setText("如果是首次生成图片，请耐心等待")
-            information_box.setWindowTitle("大盘分析成功")
-            information_box.setStandardButtons(QMessageBox.Ok)
-            information_box.exec_()
-        except StockDataNotFoundException:
-            information_box.setText("未导入股票数据，请先导入数据")
-            information_box.setWindowTitle("大盘分析失败")
-            information_box.setStandardButtons(QMessageBox.Ok)
-            information_box.exec_()
