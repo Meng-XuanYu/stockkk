@@ -1,5 +1,3 @@
-# MAIN FILE
-# ///////////////////////////////////////////////////////////////
 from PySide6.QtCore import QPropertyAnimation, QEasingCurve, QParallelAnimationGroup, QEvent, QTimer
 from PySide6.QtGui import QIcon, Qt, QColor
 from PySide6.QtWidgets import QPushButton, QGraphicsDropShadowEffect, QSizeGrip
@@ -8,15 +6,11 @@ from main import MainWindow
 from modules import Settings
 from widgets import CustomGrip
 
-# GLOBALS
-# ///////////////////////////////////////////////////////////////
 GLOBAL_STATE = False
 GLOBAL_TITLE_BAR = True
 
 
 class UIFunctions(MainWindow):
-    # MAXIMIZE/RESTORE
-    # ///////////////////////////////////////////////////////////////
     def maximize_restore(self):
         global GLOBAL_STATE
         status = GLOBAL_STATE
@@ -44,19 +38,13 @@ class UIFunctions(MainWindow):
             self.top_grip.show()
             self.bottom_grip.show()
 
-    # RETURN STATUS
-    # ///////////////////////////////////////////////////////////////
     def return_status(self):
         return GLOBAL_STATE
 
-    # SET STATUS
-    # ///////////////////////////////////////////////////////////////
     def set_status(self, status):
         global GLOBAL_STATE
         GLOBAL_STATE = status
 
-    # TOGGLE MENU
-    # ///////////////////////////////////////////////////////////////
     def toggle_menu(self, enable):
         if enable:
             # GET WIDTH
@@ -78,8 +66,6 @@ class UIFunctions(MainWindow):
             self.animation.setEasingCurve(QEasingCurve.InOutQuart)
             self.animation.start()
 
-    # TOGGLE LEFT BOX
-    # ///////////////////////////////////////////////////////////////
     # noinspection DuplicatedCode
     def toggle_left_box(self, enable):
         if enable:
@@ -108,9 +94,6 @@ class UIFunctions(MainWindow):
 
         UIFunctions.start_box_animation(self, width, width_right_box, 'left')
 
-    # TOGGLE RIGHT BOX
-    # ///////////////////////////////////////////////////////////////
-    # noinspection DuplicatedCode
     def toggle_right_box(self, enable):
         if enable:
             # GET WIDTH
@@ -172,8 +155,6 @@ class UIFunctions(MainWindow):
         self.group.addAnimation(self.right_box)
         self.group.start()
 
-    # SELECT/DESELECT MENU
-    # ///////////////////////////////////////////////////////////////
     # SELECT
     def select_menu(get_style):
         select = get_style + Settings.MENU_SELECTED_STYLESHEET
@@ -200,8 +181,6 @@ class UIFunctions(MainWindow):
             if w.objectName() != widget:
                 w.setStyleSheet(UIFunctions.deselect_menu(w.styleSheet()))
 
-    # START - GUI DEFINITIONS
-    # ///////////////////////////////////////////////////////////////
     def ui_definitions(self):
         def double_click_maximize_restore(event):
             # IF DOUBLE CLICK CHANGE STATUS

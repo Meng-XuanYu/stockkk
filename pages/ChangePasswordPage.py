@@ -2,8 +2,6 @@ import re
 from PySide6.QtGui import Qt, QPixmap
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox, QSizePolicy
 
-from main import widgets
-
 
 class ChangePasswordPage(QWidget):
     def __init__(self, interface):
