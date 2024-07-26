@@ -1,12 +1,7 @@
 import atexit
 import sys
-import os
-import platform
-from PySide6.QtGui import QIcon, QPixmap
-from PySide6.QtWidgets import QMainWindow, QApplication, QHeaderView, QMessageBox
 from interface.Interface import Interface
-from widgets import *
-
+from modules import *
 widgets = None
 
 
