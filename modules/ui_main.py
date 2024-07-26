@@ -13,7 +13,6 @@ from pages.ChangePasswordPage import ChangePasswordPage
 from pages.ChangeUsernamePage import ChangeUsernamePage
 from pages.LoginPage import LoginPage
 from pages.RegisterPage import RegisterPage
-from pages.picture_page import PicturePage
 from pages.user_log_page import UserLogPage
 from . import picture_generator
 from .market_analysis_window import MarketAnalysisWindow
