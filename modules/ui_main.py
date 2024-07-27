@@ -477,6 +477,7 @@ class UIMainWindow(object):
         self.row_1.setObjectName(u'row_1')
         self.row_1.setFrameShape(QFrame.StyledPanel)
         self.row_1.setFrameShadow(QFrame.Raised)
+        self.row_1.setStyleSheet("border: none;")
         self.verticalLayout_16 = QVBoxLayout(self.row_1)
         self.verticalLayout_16.setSpacing(0)
         self.verticalLayout_16.setObjectName(u'verticalLayout_16')
@@ -570,6 +571,7 @@ class UIMainWindow(object):
         self.row_3.setMinimumSize(QSize(0, 0))
         self.row_3.setFrameShape(QFrame.StyledPanel)
         self.row_3.setFrameShadow(QFrame.Raised)
+        self.row_3.setStyleSheet("border: none;")
         self.horizontalLayout_13 = QHBoxLayout(self.row_3)
         self.horizontalLayout_13.setSpacing(0)
         self.horizontalLayout_13.setObjectName(u'horizontalLayout_13')
@@ -580,6 +582,11 @@ class UIMainWindow(object):
         self.row_4.setMinimumSize(QSize(0, 0))
         self.row_4.setFrameShape(QFrame.StyledPanel)
         self.row_4.setFrameShadow(QFrame.Raised)
+        self.row_4.setStyleSheet("""
+            QFrame {
+                border: none;  /* 移除边框 */
+            }
+        """)
         self.horizontalLayout_14 = QHBoxLayout(self.row_4)
         self.horizontalLayout_14.setSpacing(0)
         self.horizontalLayout_14.setObjectName(u'horizontalLayout_14')
@@ -590,6 +597,11 @@ class UIMainWindow(object):
         self.row_2.setMinimumSize(QSize(0, 150))
         self.row_2.setFrameShape(QFrame.StyledPanel)
         self.row_2.setFrameShadow(QFrame.Raised)
+        self.row_2.setStyleSheet("""
+            QFrame {
+                border: none;  /* 移除边框 */
+            }
+        """)
         self.horizontalLayout_12 = QHBoxLayout(self.row_2)
         self.horizontalLayout_12.setSpacing(0)
         self.horizontalLayout_12.setObjectName(u'horizontalLayout_12')
@@ -978,6 +990,11 @@ class UIMainWindow(object):
         self.row_3_picture.setObjectName(u'row_3_picture')
         self.row_3_picture.setFrameShape(QFrame.StyledPanel)
         self.row_3_picture.setFrameShadow(QFrame.Raised)
+        self.row_3_picture.setStyleSheet("""
+            QFrame {
+                border: none;  /* 移除边框 */
+            }
+        """)
         self.horizontalLayout_15 = QHBoxLayout(self.row_3_picture)
         self.horizontalLayout_15.setObjectName(u'horizontalLayout_15')
         self.horizontalLayout_15.setContentsMargins(0, 0, 0, 0)
@@ -1020,6 +1037,11 @@ class UIMainWindow(object):
         self.row_2_picture.setObjectName(u'row_2_picture')
         self.row_2_picture.setFrameShape(QFrame.StyledPanel)
         self.row_2_picture.setFrameShadow(QFrame.Raised)
+        self.row_2_picture.setStyleSheet("""
+            QFrame {
+                border: none;  /* 移除边框 */
+            }
+        """)
         self.horizontalLayout_16 = QHBoxLayout(self.row_2_picture)
         self.horizontalLayout_16.setObjectName(u'horizontalLayout_16')
         self.horizontalLayout_16.setContentsMargins(0, 0, 0, 0)
