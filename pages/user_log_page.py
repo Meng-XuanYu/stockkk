@@ -16,7 +16,7 @@ class UserLogPage(QWidget):
         main_layout.setContentsMargins(10, 10, 10, 10)  # 移除主布局的边距
 
         # 添加标题布局
-        title_layout = QHBoxLayout()
+        self.title_layout = QHBoxLayout()
         title_label = QLabel("账号登录历史记录")
         title_label.setAlignment(Qt.AlignCenter)
         title_label.setStyleSheet("""
@@ -29,12 +29,12 @@ class UserLogPage(QWidget):
                                 border: transparent;
                             }
                         """)
-        title_layout.addStretch()  # 添加弹簧以居中标签
-        title_layout.addWidget(title_label)
-        title_layout.addStretch()  # 添加弹簧以居中标签
+        self.title_layout.addStretch()  # 添加弹簧以居中标签
+        self.title_layout.addWidget(title_label)
+        self.title_layout.addStretch()  # 添加弹簧以居中标签
 
         # 将标题布局添加到主布局中
-        main_layout.addLayout(title_layout)
+        main_layout.addLayout(self.title_layout)
 
         # 添加滚动区域
         self.scrollArea = QScrollArea(self)
@@ -94,3 +94,34 @@ class UserLogPage(QWidget):
                     self.add_history_record(log_record['log_time'].strftime('%Y-%m-%d %H:%M:%S'), "登录")
                 else:
                     self.add_history_record(log_record['log_time'].strftime('%Y-%m-%d %H:%M:%S'), "退出登录")
+
+    def clear_all_history_records(self):
+        while self.scrollAreaLayout.count():
+            item = self.scrollAreaLayout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+        while self.title_layout.count():
+            item = self.title_layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+        self.title_layout = QHBoxLayout()
+        self.title_label = QLabel("账号登录历史记录")
+        self.title_label.setAlignment(Qt.AlignCenter)
+        self.title_label.setFixedWidth(300)
+        self.title_label.setFixedHeight(50)
+        self.title_label.setStyleSheet("""
+                    QLabel {
+                        font-size: 16px;
+                        font-weight: bold;
+                        color: #9AB1D6; 
+                        padding: 0px; 
+                        border-radius: 5px; 
+                        border: transparent;
+                    }
+                """)
+        self.title_layout.addStretch()  # 添加弹簧以居中标签
+        self.title_layout.addWidget(self.title_label)
+        self.title_layout.addStretch()  # 添加弹簧以居中标签
+        self.scrollAreaLayout.addLayout(self.title_layout)

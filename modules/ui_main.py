@@ -1329,6 +1329,7 @@ class UIMainWindow(object):
         result = msg_box.exec_()
         if result == QMessageBox.Yes:
             self.interface.get_current_user().clear_log_records()
+            self.user_log_page.clear_all_history_records()
 
     def delete_user_chart_history(self):
         msg_box = QMessageBox()
