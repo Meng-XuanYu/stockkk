@@ -1239,9 +1239,9 @@ class UIMainWindow(object):
         self.btn_read_data.setText(QCoreApplication.translate('MainWindow', u'读取数据', None))
         self.btn_delete_cache.setText(QCoreApplication.translate('MainWindow', u'清除缓存', None))
         self.btn_history.setText(QCoreApplication.translate('MainWindow', u'用户登录历史记录', None))
-        self.toggle_left_box.setText(QCoreApplication.translate('MainWindow', u'使用帮助', None))
-        self.extraLabel.setText(QCoreApplication.translate('MainWindow', u'使用帮助', None))
-        self.extraCloseColumnBtn.setToolTip(QCoreApplication.translate('MainWindow', u'收起使用帮助', None))
+        self.toggle_left_box.setText(QCoreApplication.translate('MainWindow', u'爱心提示', None))
+        self.extraLabel.setText(QCoreApplication.translate('MainWindow', u'爱心提示', None))
+        self.extraCloseColumnBtn.setToolTip(QCoreApplication.translate('MainWindow', u'收起爱心提示', None))
         self.extraCloseColumnBtn.setText('')
         self.textEdit.setHtml(QCoreApplication.translate('MainWindow',
                                                          u'<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">\n'
@@ -1252,14 +1252,19 @@ class UIMainWindow(object):
                                                          'li.checked::marker { content: "\\2612"; }\n'
                                                          '</style></head><body style=" font-family:\'Arial\'; font-size:10pt; font-weight:400; font-style:normal;">\n'
                                                          '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">功能简介</span></p>\n'
-                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#ffffff;">1.\n2.\n3.\n</span></p>\n'
-                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-le'
-                                                         'ft:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#bd93f9;">Created by:Master_XuanYu </span></p>\n'
-                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">使用小tips</span></p>\n'
-                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:9pt; color:#ffffff;">待完善捏</span></p>\n'
-                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">注意事项</span></p>\n'
-                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:9pt; color:#ffffff;"'
-                                                         '>保护好自己的信息哦</span></p></body></html>',
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#ffffff;">1.股票数据的导入、分析和相关指标的计算</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#ffffff;">2.股票数据与相关指标通过各类图表进行可视化</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#ffffff;">3.各类图表实现鼠标交互，支持查看数值、拖动图表、放大缩小等多种交互功能</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#ffffff;">4.基于本地数据库的多用户注册、登录与管理</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin右:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#ffffff;">5.基于本地数据库的用户登录记录与图表生成历史存储</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin右:0px; -qt-block-indent:0; text-indent:0px;"><span style=" color:#bd93f9;">项目地址：https://github.com/Meng-XuanYu/stockkk</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin右:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">使用小tips</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin右:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:9pt; color:#ffffff;">1.记得先导入数据</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin右:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:9pt; color:#ffffff;">2.保留缓存，可以加载图片更快</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin右:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:9pt; color:#ffffff;">3.注册账号后可以使用历史记录功能哦，查看更方便快捷</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin右:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size9pt; color:#ffffff;">4.可以点击左工具栏上面第一个展开左侧工具栏，查看每个按钮对应名称</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin左:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:12pt; font-weight:600; color:#ff79c6;">注意事项</span></p>\n'
+                                                         '<p align="center" style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin右:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:9pt; color:red;">请确保导入的数据中包含了所需图像的信息</span></p></body></html>',
                                                          None))
         self.titleRightInfo.setText(
             QCoreApplication.translate('MainWindow', u'Stock APP - Stock market data visualizer and analysis tool.',
