@@ -39,12 +39,3 @@ https://doc.qt.io/qt-5/qtdesigner-index.html
 Before running, fill in the SQL related configuration in the config/config.json file under the project directory, you can start by relevant commands:
 Windows:	`python main.py`
 MacOS and Linux:	 `python3 main.py`
-
-## Sample picture
-
-![image-20240728000629160](C:\Users\meng\AppData\Roaming\Typora\typora-user-images\image-20240728000629160.png)
-
-![image-20240728000540215](C:\Users\meng\AppData\Roaming\Typora\typora-user-images\image-20240728000540215.png)
-
-![image-20240728000556639](C:\Users\meng\AppData\Roaming\Typora\typora-user-images\image-20240728000556639.png)
-
