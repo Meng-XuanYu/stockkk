@@ -1315,7 +1315,7 @@ class UIMainWindow(object):
             self.btn_delete_user.setText(QCoreApplication.translate('MainWindow', u'注销账号', None))
             self.btn_delete_chart_history.setText(QCoreApplication.translate('MainWindow', u'清除图片记录', None))
             self.btn_delete_log_history.setText(QCoreApplication.translate('MainWindow', u'清除登录记录', None))
-        self.creditsLabel.setText(QCoreApplication.translate('MainWindow', u'By: XuanYu_Master', None))
+        self.creditsLabel.setText(QCoreApplication.translate('MainWindow', u'Author: Meng-XuanYu and Yu-XinShi', None))
         self.version.setText(QCoreApplication.translate('MainWindow', u'v2.0.0', None))
 
     def delete_user_log_history(self):
