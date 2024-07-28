@@ -2,7 +2,7 @@
 
 ## Authors
 
-XuanYu_Master and YXS from BUAA
+XuanYu_Master and Eric-YuXS from BUAA
 
 ## Brief introduction of the function
 
