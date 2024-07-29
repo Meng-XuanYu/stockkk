@@ -41,6 +41,19 @@ class User:
         return self.__encrypted_password
 
     def rename(self, new_name):
+        self.__cursor.execute(f'''
+            create database stockkk_user_{new_name};
+        ''')
+        self.__cursor.execute(f'''use stockkk_user_{self.__username};''')
+        self.__cursor.execute(f'''show tables;''')
+        tables = self.__cursor.fetchall()
+        for table_dic in tables:
+            table_name = list(table_dic.values())[0]
+            self.__cursor.execute(f'''
+                rename table stockkk_user_{self.__username}.{table_name} to stockkk_user_{new_name}.{table_name};
+            ''')
+        self.__cursor.execute(f'''drop database stockkk_user_{self.__username};''')
+        self.__cursor.execute(f'''use stockkk_user_{new_name};''')
         self.__username = new_name
 
     def change_password(self, new_password):
